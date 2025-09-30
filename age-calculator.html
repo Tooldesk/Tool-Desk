@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Age Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --bright-yellow: #FFD700;
+            --vibrant-blue: #1E90FF;
+            --dark-blue: #0066CC;
+            --light-yellow: #FFF9C4;
+            --light-blue: #E3F2FD;
+            --dark-yellow: #FFA000;
+        }
+
+        body {
+            background: linear-gradient(135deg, #E3F2FD, #FFF9C4);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+        }
+
+        header {
+            background: var(--vibrant-blue);
+            color: white;
+            padding: 25px;
+            text-align: center;
+            position: relative;
+        }
+
+        header::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 100%;
+            height: 20px;
+            background: var(--bright-yellow);
+            clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 70%);
+        }
+
+        header h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        header p {
+            margin-top: 10px;
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+
+        .tool-container {
+            padding: 30px;
+        }
+
+        .input-section {
+            margin-bottom: 30px;
+        }
+
+        .input-title {
+            text-align: center;
+            margin-bottom: 20px;
+            color: var(--dark-blue);
+            font-weight: 700;
+            font-size: 1.4rem;
+        }
+
+        .date-input {
+            width: 100%;
+            padding: 16px;
+            border: 3px solid var(--light-blue);
+            border-radius: 16px;
+            font-size: 1.2rem;
+            text-align: center;
+            background: var(--light-blue);
+            transition: all 0.3s ease;
+        }
+
+        .date-input:focus {
+            outline: none;
+            border-color: var(--vibrant-blue);
+            background: #f0f8ff;
+            box-shadow: 0 0 0 3px rgba(30, 144, 255, 0.2);
+        }
+
+        .result-section {
+            display: none;
+            margin-top: 30px;
+            background: linear-gradient(135deg, var(--bright-yellow), #FFB300);
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 8px 20px rgba(255, 215, 0, 0.3);
+            text-align: center;
+        }
+
+        .result-title {
+            margin-bottom: 20px;
+            color: #1a237e;
+            font-weight: 800;
+            font-size: 1.6rem;
+            text-shadow: 0 1px 2px rgba(255,255,255,0.5);
+        }
+
+        .age-display {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 25px;
+        }
+
+        .age-box {
+            background: rgba(255, 255, 255, 0.7);
+            padding: 20px;
+            border-radius: 16px;
+            min-width: 100px;
+        }
+
+        .age-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #1a237e;
+        }
+
+        .age-label {
+            font-size: 1rem;
+            color: #1a237e;
+            font-weight: 600;
+            margin-top: 5px;
+        }
+
+        .birth-info {
+            background: rgba(255, 255, 255, 0.7);
+            padding: 15px;
+            border-radius: 12px;
+            display: inline-block;
+            font-weight: 600;
+            color: #1a237e;
+        }
+
+        .format-info {
+            text-align: center;
+            margin: 20px 0;
+            padding: 15px;
+            background: var(--light-blue);
+            border-radius: 12px;
+            border: 1px solid var(--vibrant-blue);
+            color: var(--dark-blue);
+            font-weight: 600;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 500px) {
+            .container {
+                border-radius: 16px;
+            }
+            
+            header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .tool-container {
+                padding: 20px;
+            }
+            
+            .date-input {
+                padding: 14px;
+                font-size: 1.1rem;
+            }
+            
+            .age-value {
+                font-size: 2rem;
+            }
+            
+            .age-box {
+                min-width: 80px;
+                padding: 15px;
+            }
+            
+            .result-title {
+                font-size: 1.4rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Age Calculator</h1>
+            <p>Find out your exact age in years, months, and days</p>
+        </header>
+        
+        <div class="tool-container">
+            <div class="format-info">
+                <p>Enter your birthdate to calculate your age</p>
+            </div>
+            
+            <div class="input-section">
+                <h3 class="input-title">Enter Your Birthdate</h3>
+                <input type="date" id="birthdateInput" class="date-input" max="">
+            </div>
+            
+            <div class="result-section" id="resultSection">
+                <h3 class="result-title">Your Age</h3>
+                <div class="age-display">
+                    <div class="age-box">
+                        <div class="age-value" id="years">0</div>
+                        <div class="age-label">Years</div>
+                    </div>
+                    <div class="age-box">
+                        <div class="age-value" id="months">0</div>
+                        <div class="age-label">Months</div>
+                    </div>
+                    <div class="age-box">
+                        <div class="age-value" id="days">0</div>
+                        <div class="age-label">Days</div>
+                    </div>
+                </div>
+                <div class="birth-info" id="birthInfo"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set max date to today
+            const today = new Date();
+            const maxDate = today.toISOString().split('T')[0];
+            document.getElementById('birthdateInput').max = maxDate;
+            
+            // DOM Elements
+            const birthdateInput = document.getElementById('birthdateInput');
+            const resultSection = document.getElementById('resultSection');
+            const yearsElement = document.getElementById('years');
+            const monthsElement = document.getElementById('months');
+            const daysElement = document.getElementById('days');
+            const birthInfoElement = document.getElementById('birthInfo');
+            
+            // Event Listener
+            birthdateInput.addEventListener('change', calculateAge);
+            
+            // Calculate age function
+            function calculateAge() {
+                const birthdate = new Date(birthdateInput.value);
+                const today = new Date();
+                
+                // Validate date
+                if (isNaN(birthdate.getTime()) || birthdate > today) {
+                    resultSection.style.display = 'none';
+                    return;
+                }
+                
+                // Calculate age
+                let years = today.getFullYear() - birthdate.getFullYear();
+                let months = today.getMonth() - birthdate.getMonth();
+                let days = today.getDate() - birthdate.getDate();
+                
+                // Adjust for negative days
+                if (days < 0) {
+                    months--;
+                    // Get days in previous month
+                    const prevMonth = new Date(today.getFullYear(), today.getMonth(), 0);
+                    days += prevMonth.getDate();
+                }
+                
+                // Adjust for negative months
+                if (months < 0) {
+                    years--;
+                    months += 12;
+                }
+                
+                // Display results
+                yearsElement.textContent = years;
+                monthsElement.textContent = months;
+                daysElement.textContent = days;
+                
+                // Format birthdate for display
+                const options = { year: 'numeric', month: 'long', day: 'numeric' };
+                const formattedBirthdate = birthdate.toLocaleDateString('en-US', options);
+                birthInfoElement.textContent = `Born on: ${formattedBirthdate}`;
+                
+                // Show result section
+                resultSection.style.display = 'block';
+                
+                // Add animation effect
+                resultSection.style.opacity = '0';
+                resultSection.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    resultSection.style.transition = 'opacity 0.5s, transform 0.5s';
+                    resultSection.style.opacity = '1';
+                    resultSection.style.transform = 'translateY(0)';
+                }, 10);
+            }
+            
+            // Initialize with today's date as max
+            birthdateInput.max = maxDate;
+        });
+    </script>
+</body>
+</html>
