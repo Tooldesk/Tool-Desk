@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JPG to GIF Converter</title>
+    <title>WebP to PNG Converter</title>
     <style>
         * {
             margin: 0;
@@ -176,44 +176,6 @@
             text-align: center;
         }
 
-        .gif-settings {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            max-width: 500px;
-            margin: 20px auto 30px;
-            background: var(--light-yellow);
-            padding: 20px;
-            border-radius: 16px;
-            border: 2px solid var(--bright-yellow);
-        }
-
-        .settings-title {
-            text-align: center;
-            margin-bottom: 15px;
-            color: #e65100;
-            font-weight: 700;
-            font-size: 1.3rem;
-        }
-
-        .setting-item {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .setting-label {
-            font-weight: 600;
-            color: #e65100;
-        }
-
-        .setting-input {
-            padding: 10px;
-            border: 2px solid var(--light-yellow);
-            border-radius: 8px;
-            font-size: 1rem;
-        }
-
         .convert-btn {
             display: inline-block;
             padding: 16px 40px;
@@ -285,10 +247,10 @@
             text-align: center;
             margin: 20px 0;
             padding: 15px;
-            background: var(--light-blue);
+            background: var(--light-yellow);
             border-radius: 12px;
-            border: 1px solid var(--vibrant-blue);
-            color: var(--dark-blue);
+            border: 1px solid var(--bright-yellow);
+            color: #e65100;
             font-weight: 600;
         }
 
@@ -321,10 +283,6 @@
             .convert-btn, .download-btn {
                 padding: 14px 30px;
                 font-size: 1.1rem;
-            }
-            
-            .gif-settings {
-                padding: 15px;
             }
         }
 
@@ -359,77 +317,53 @@
                 width: 100%;
                 max-width: 300px;
             }
-            
-            .gif-settings {
-                padding: 10px;
-            }
-            
-            .setting-input {
-                padding: 8px;
-                font-size: 0.9rem;
-            }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>JPG to GIF Converter</h1>
-            <p>Convert your JPG images to GIF format with animation options</p>
+            <h1>WebP to PNG Converter</h1>
+            <p>Convert your WebP images to high-quality PNG format</p>
         </header>
         
         <div class="tool-container">
             <div class="upload-section" id="uploadSection">
                 <div class="upload-icon">🖼️</div>
-                <p class="upload-text">Drag & drop your JPG image here</p>
+                <p class="upload-text">Drag & drop your WebP image here</p>
                 <p>or</p>
-                <input type="file" id="fileInput" class="file-input" accept="image/jpeg, image/jpg">
-                <button class="upload-btn" id="uploadBtn">Choose JPG File</button>
-                <p style="margin-top: 15px; font-size: 0.9rem; color: #0066cc;">Only JPG/JPEG files supported (Max 10MB)</p>
+                <input type="file" id="fileInput" class="file-input" accept="image/webp">
+                <button class="upload-btn" id="uploadBtn">Choose WebP File</button>
+                <p style="margin-top: 15px; font-size: 0.9rem; color: #0066cc;">Only WebP files supported (Max 10MB)</p>
             </div>
             
             <div class="format-info">
-                <p>✅ Universal browser support</p>
-                <p>✅ Supports simple animations</p>
-                <p>✅ Limited to 256 colors</p>
+                <p>✅ PNG supports transparency</p>
+                <p>✅ Lossless compression</p>
+                <p>✅ Universal compatibility</p>
             </div>
             
             <div class="preview-section" id="previewSection">
                 <h3 class="preview-title">Image Preview</h3>
                 <div class="image-container">
                     <div class="image-box">
-                        <div class="image-label">Original JPG</div>
+                        <div class="image-label">Original WebP</div>
                         <img id="originalPreview" class="image-preview" alt="Original Preview">
                     </div>
                     <div class="image-box">
-                        <div class="image-label">Converted GIF</div>
+                        <div class="image-label">Converted PNG</div>
                         <img id="convertedPreview" class="image-preview" alt="Converted Preview">
                     </div>
                 </div>
             </div>
             
-            <div class="gif-settings">
-                <h3 class="settings-title">GIF Settings</h3>
-                <div class="setting-item">
-                    <label class="setting-label">Animation Duration (ms):</label>
-                    <input type="number" id="durationInput" class="setting-input" min="100" max="5000" value="1000">
-                </div>
-                <div class="setting-item">
-                    <label class="setting-label">Number of Frames:</label>
-                    <input type="number" id="framesInput" class="setting-input" min="1" max="10" value="1">
-                </div>
-                <p style="text-align: center; font-size: 0.9rem; color: #e65100; margin-top: 10px;">
-                    For static images, keep frames at 1
-                </p>
-            </div>
-            
             <div class="convert-section">
-                <button class="convert-btn" id="convertBtn">Convert to GIF</button>
+                <button class="convert-btn" id="convertBtn">Convert to PNG</button>
             </div>
             
             <div class="download-section" id="downloadSection">
-                <h3 class="download-title">Your GIF is Ready!</h3>
-                <button class="download-btn" id="downloadBtn">Download GIF</button>
+                <h3 class="download-title">Your PNG Image is Ready!</h3>
+                <button class="download-btn" id="downloadBtn">Download PNG Image</button>
                 <div class="file-info" id="fileInfo"></div>
             </div>
         </div>
@@ -444,8 +378,6 @@
             const previewSection = document.getElementById('previewSection');
             const originalPreview = document.getElementById('originalPreview');
             const convertedPreview = document.getElementById('convertedPreview');
-            const durationInput = document.getElementById('durationInput');
-            const framesInput = document.getElementById('framesInput');
             const convertBtn = document.getElementById('convertBtn');
             const downloadSection = document.getElementById('downloadSection');
             const downloadBtn = document.getElementById('downloadBtn');
@@ -457,7 +389,7 @@
             // Event Listeners
             uploadBtn.addEventListener('click', () => fileInput.click());
             fileInput.addEventListener('change', handleFileSelect);
-            convertBtn.addEventListener('click', convertToGif);
+            convertBtn.addEventListener('click', convertToPng);
             downloadBtn.addEventListener('click', downloadImage);
             
             // Handle file selection
@@ -466,8 +398,8 @@
                     const file = e.target.files[0];
                     
                     // Validate file type
-                    if (!file.type.match('image/jpeg') && !file.type.match('image/jpg')) {
-                        alert('Please select a valid JPG/JPEG file.');
+                    if (!file.type.match('image/webp')) {
+                        alert('Please select a valid WebP file.');
                         return;
                     }
                     
@@ -490,19 +422,12 @@
                 }
             }
             
-            // Convert JPG to GIF (static)
-            function convertToGif() {
+            // Convert WebP to PNG
+            function convertToPng() {
                 if (!originalFile) {
-                    alert('Please select a JPG image first.');
+                    alert('Please select a WebP image first.');
                     return;
                 }
-                
-                const duration = parseInt(durationInput.value) || 1000;
-                const frames = parseInt(framesInput.value) || 1;
-                
-                // For this implementation, we'll create a static GIF
-                // In a real application, you would use a library like gif.js for actual GIF creation
-                // Since we can't create true GIFs with just canvas, we'll simulate the conversion
                 
                 const canvas = document.createElement('canvas');
                 const ctx = canvas.getContext('2d');
@@ -513,13 +438,11 @@
                     canvas.width = img.width;
                     canvas.height = img.height;
                     
-                    // Draw image on canvas with white background (to handle JPG without transparency)
-                    ctx.fillStyle = 'white';
-                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    // Draw image on canvas (preserving transparency)
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
                     ctx.drawImage(img, 0, 0);
                     
-                    // Create a simulated GIF blob (in reality, this would be a GIF)
-                    // For demonstration purposes, we'll create a JPEG that represents the GIF
+                    // Create PNG blob
                     canvas.toBlob(function(blob) {
                         convertedBlob = blob;
                         
@@ -536,17 +459,17 @@
                         const sizeChange = ((blob.size / originalFile.size) * 100).toFixed(0);
                         
                         fileInfo.innerHTML = `
-                            Original JPG: ${originalSize} KB | 
-                            Converted GIF: ${convertedSize} KB | 
+                            Original WebP: ${originalSize} KB | 
+                            Converted PNG: ${convertedSize} KB | 
                             Size change: ${sizeChange}% of original
                         `;
-                    }, 'image/jpeg', 0.8);
+                    }, 'image/png');
                 };
                 
                 img.src = URL.createObjectURL(originalFile);
             }
             
-            // Download converted GIF
+            // Download converted PNG
             function downloadImage() {
                 if (!convertedBlob) {
                     alert('No converted image available.');
@@ -556,7 +479,7 @@
                 const url = URL.createObjectURL(convertedBlob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = originalFile.name.replace(/\.[^/.]+$/, "") + ".gif";
+                a.download = originalFile.name.replace(/\.[^/.]+$/, "") + ".png";
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);
@@ -583,12 +506,12 @@
                 if (e.dataTransfer.files && e.dataTransfer.files[0]) {
                     const file = e.dataTransfer.files[0];
                     
-                    // Check if it's a JPG file
-                    if (file.type.match('image/jpeg') || file.type.match('image/jpg')) {
+                    // Check if it's a WebP file
+                    if (file.type.match('image/webp')) {
                         fileInput.files = e.dataTransfer.files;
                         handleFileSelect({ target: fileInput });
                     } else {
-                        alert('Please drop a JPG file.');
+                        alert('Please drop a WebP file.');
                     }
                 }
             });
