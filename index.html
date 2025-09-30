@@ -3,196 +3,683 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MultiTools - All-in-One Online Utilities Hub</title>
-    <meta name="description" content="MultiTools is your all-in-one hub for online utilities including image tools, calculators, text tools, developer tools, and SEO utilities.">
-    <link rel="stylesheet" href="css/styles.css">
+    <title>Tool Desk - Simplifying Your Digital Life</title>
+    <style>
+        :root {
+            --primary-color: #e63946;
+            --primary-dark: #c1121f;
+            --primary-light: #f8ad9d;
+            --text-color: #333;
+            --bg-color: #fff;
+            --card-bg: #f8f9fa;
+            --border-color: #e0e0e0;
+            --footer-bg: #2b2d42;
+            --footer-text: #f8f9fa;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        .dark-mode {
+            --primary-color: #e63946;
+            --primary-dark: #c1121f;
+            --primary-light: #8d0801;
+            --text-color: #f8f9fa;
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --border-color: #333;
+            --footer-bg: #0d0d0d;
+            --footer-text: #f8f9fa;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            transition: var(--transition);
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header Styles */
+        header {
+            background-color: var(--bg-color);
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo h1 {
+            font-size: 1.8rem;
+            color: var(--primary-color);
+        }
+
+        .logo span {
+            font-size: 0.9rem;
+            color: var(--text-color);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 25px;
+        }
+
+        .nav-links a {
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-color);
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+            color: var(--text-color);
+            transition: var(--transition);
+        }
+
+        .theme-toggle:hover {
+            color: var(--primary-color);
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--text-color);
+            cursor: pointer;
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 80px 0;
+            text-align: center;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: white;
+        }
+
+        .hero h2 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto 30px;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background-color: white;
+            color: var(--primary-color);
+            padding: 12px 30px;
+            border-radius: 30px;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Tools Section */
+        .tools {
+            padding: 80px 0;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 50px;
+            font-size: 2rem;
+            color: var(--text-color);
+        }
+
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .tool-category {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .tool-category:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .category-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+            color: var(--primary-color);
+        }
+
+        .tool-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .tool-list li a {
+            display: block;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border-color);
+            transition: var(--transition);
+        }
+
+        .tool-list li a:hover {
+            color: var(--primary-color);
+            padding-left: 5px;
+        }
+
+        /* FAQ Section */
+        .faq {
+            padding: 80px 0;
+            background-color: var(--card-bg);
+        }
+
+        .faq-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .faq-item {
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .faq-question {
+            padding: 20px;
+            background-color: var(--bg-color);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+        }
+
+        .faq-answer {
+            padding: 0 20px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .faq-answer.active {
+            padding: 20px;
+            max-height: 500px;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--footer-bg);
+            color: var(--footer-text);
+            padding: 60px 0 20px;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-logo h3 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .footer-links h4 {
+            margin-bottom: 20px;
+            color: var(--primary-light);
+        }
+
+        .footer-links ul {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary-light);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 70px;
+                left: 0;
+                width: 100%;
+                background-color: var(--bg-color);
+                flex-direction: column;
+                padding: 20px;
+                box-shadow: var(--shadow);
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .hero h2 {
+                font-size: 2rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+        }
+    </style>
 </head>
 <body>
+    <!-- Header -->
     <header>
         <div class="container">
-            <div class="header-content">
-                <a href="index.html" class="logo">MultiTools</a>
-                <nav>
-                    <ul class="nav-menu">
-                        <li><a href="index.html" class="active">Home</a></li>
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle">Tools</a>
-                            <ul class="dropdown-menu">
-                                <li><a href="tools/image-tools.html">Image Tools</a></li>
-                                <li><a href="tools/calculators.html">Calculators</a></li>
-                                <li><a href="tools/text-tools.html">Text Tools</a></li>
-                                <li><a href="tools/dev-tools.html">Developer Tools</a></li>
-                                <li><a href="tools/seo-tools.html">SEO Tools</a></li>
-                            </ul>
-                        </li>
-                        <li><a href="about.html">About</a></li>
-                        <li><a href="contact.html">Contact</a></li>
-                    </ul>
-                </nav>
-                <div class="header-actions">
-                    <div class="search-container">
-                        <input type="search" id="search-input" placeholder="Search tools...">
-                        <div id="search-results" class="search-results"></div>
-                    </div>
-                    <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">
-                        <span class="theme-icon">🌙</span>
-                    </button>
-                    <button class="mobile-menu-toggle" aria-label="Toggle mobile menu">
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                    </button>
+            <nav class="navbar">
+                <div class="logo">
+                    <h1>Tool Desk</h1>
+                    <span>Simplifying your digital life</span>
                 </div>
-            </div>
+                <ul class="nav-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="contact.html">Contact Us</a></li>
+                    <li><a href="privacy-policy.html">Privacy Policy</a></li>
+                    <li><a href="disclaimer.html">Disclaimer</a></li>
+                    <li>
+                        <button class="theme-toggle" id="themeToggle">
+                            <i class="fas fa-moon"></i>
+                        </button>
+                    </li>
+                </ul>
+                <button class="mobile-menu-btn" id="mobileMenuBtn">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </nav>
         </div>
     </header>
 
-    <main>
-        <section class="hero">
-            <div class="container">
-                <div class="hero-content">
-                    <h1>Simplify Your Digital Life</h1>
-                    <p>MultiTools is your all-in-one hub for online utilities. Free, easy-to-use tools for image processing, calculations, text manipulation, development, and more.</p>
-                    <div class="hero-actions">
-                        <a href="tools/calculators.html" class="btn btn-primary">Get Started</a>
-                        <a href="#featured-tools" class="btn btn-secondary">Explore Tools</a>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h2>All Your Digital Tools in One Place</h2>
+            <p>Tool Desk offers a comprehensive suite of free online tools for image processing, text manipulation, calculations, web development, and much more.</p>
+            <a href="#tools" class="cta-button">Explore Tools</a>
+        </div>
+    </section>
+
+    <!-- Tools Section -->
+    <section class="tools" id="tools">
+        <div class="container">
+            <h2 class="section-title">Our Tools</h2>
+            <div class="tools-grid">
+                <!-- Image Tools -->
+                <div class="tool-category">
+                    <h3 class="category-title">
+                        <i class="fas fa-image"></i>
+                        Image Tools & Design Tools
+                    </h3>
+                    <ul class="tool-list">
+                        <li><a href="#">Image Converter</a></li>
+                        <li><a href="#">Image Compressor</a></li>
+                        <li><a href="#">Image Resizer</a></li>
+                        <li><a href="#">Image Enlarger</a></li>
+                        <li><a href="#">JPG to PNG Converter</a></li>
+                        <li><a href="#">PNG to JPG Converter</a></li>
+                        <li><a href="#">PNG to GIF Converter</a></li>
+                        <li><a href="#">PNG to WebP Converter</a></li>
+                        <li><a href="#">Image to Base64 Converter</a></li>
+                        <li><a href="#">JPG Converter</a></li>
+                        <li><a href="#">JPG to WebP Converter</a></li>
+                        <li><a href="#">ASCII Art Generator</a></li>
+                        <li><a href="#">Favicon Generator</a></li>
+                        <li><a href="#">Image Cropper</a></li>
+                        <li><a href="#">Image to Text (OCR)</a></li>
+                        <li><a href="#">Image Rotator/Flipper</a></li>
+                        <li><a href="#">JPG to GIF Converter</a></li>
+                        <li><a href="#">WebP to PNG Converter</a></li>
+                        <li><a href="#">ICO to PNG Converter</a></li>
+                        <li><a href="#">WebP to JPG Converter</a></li>
+                        <li><a href="#">PNG to BMP Converter</a></li>
+                        <li><a href="#">JPG to ICO Converter</a></li>
+                    </ul>
+                </div>
+
+                <!-- Calculator Tools -->
+                <div class="tool-category">
+                    <h3 class="category-title">
+                        <i class="fas fa-calculator"></i>
+                        Calculator Tools
+                    </h3>
+                    <ul class="tool-list">
+                        <li><a href="#">Scientific Calculator</a></li>
+                        <li><a href="#">Age Calculator</a></li>
+                        <li><a href="#">Percentage Calculator</a></li>
+                        <li><a href="#">Confidence Interval Calculator</a></li>
+                        <li><a href="#">Margin Calculator</a></li>
+                        <li><a href="#">Paypal Fee Calculator</a></li>
+                        <li><a href="#">CPM Calculator</a></li>
+                        <li><a href="#">Average Calculator</a></li>
+                        <li><a href="#">Sales Tax Calculator</a></li>
+                        <li><a href="#">Probability Calculator</a></li>
+                        <li><a href="#">Discount Calculator</a></li>
+                        <li><a href="#">BMI Calculator</a></li>
+                        <li><a href="#">Loan EMI Calculator</a></li>
+                        <li><a href="#">GST Calculator</a></li>
+                        <li><a href="#">Currency Converter</a></li>
+                    </ul>
+                </div>
+
+                <!-- Text Tools -->
+                <div class="tool-category">
+                    <h3 class="category-title">
+                        <i class="fas fa-font"></i>
+                        Text Tools
+                    </h3>
+                    <ul class="tool-list">
+                        <li><a href="#">Text Case Converter</a></li>
+                        <li><a href="#">Word & Character Counter</a></li>
+                        <li><a href="#">Text Sorter</a></li>
+                        <li><a href="#">Text Reverser</a></li>
+                        <li><a href="#">Article Rewriter</a></li>
+                        <li><a href="#">Backwards Text Generator</a></li>
+                        <li><a href="#">Text Compare</a></li>
+                        <li><a href="#">Lorem Ipsum Generator</a></li>
+                        <li><a href="#">Remove Line Breaks</a></li>
+                        <li><a href="#">Text Repeater</a></li>
+                        <li><a href="#">Comma Separator</a></li>
+                        <li><a href="#">Word to Number Converter</a></li>
+                        <li><a href="#">Text to Hashtags Converter</a></li>
+                        <li><a href="#">Text to Slug Converter</a></li>
+                        <li><a href="#">Case Converter</a></li>
+                        <li><a href="#">Random Word Converter</a></li>
+                        <li><a href="#">Number to Word Converter</a></li>
+                        <li><a href="#">Text to Tags Converter</a></li>
+                        <li><a href="#">Text Encryptor/Decryptor</a></li>
+                    </ul>
+                </div>
+
+                <!-- Web/Developer Tools -->
+                <div class="tool-category">
+                    <h3 class="category-title">
+                        <i class="fas fa-code"></i>
+                        Web/Developer Tools
+                    </h3>
+                    <ul class="tool-list">
+                        <li><a href="#">HTML Minifier</a></li>
+                        <li><a href="#">CSS Minifier</a></li>
+                        <li><a href="#">HTML Beautifier</a></li>
+                        <li><a href="#">JavaScript DeObfuscator</a></li>
+                        <li><a href="#">JSON to JSON Schema</a></li>
+                        <li><a href="#">JSON Editor</a></li>
+                        <li><a href="#">XML to JSON Converter</a></li>
+                        <li><a href="#">TSV to JSON Converter</a></li>
+                        <li><a href="#">JSON to CSV Converter</a></li>
+                        <li><a href="#">JSON to TSV Converter</a></li>
+                        <li><a href="#">HTML Encoder</a></li>
+                        <li><a href="#">JavaScript Minifier</a></li>
+                        <li><a href="#">JavaScript Viewer</a></li>
+                        <li><a href="#">JSON Validator</a></li>
+                        <li><a href="#">JSON Minify</a></li>
+                        <li><a href="#">CSV to JSON Converter</a></li>
+                        <li><a href="#">JSON to XML Converter</a></li>
+                        <li><a href="#">JSON to Text Converter</a></li>
+                        <li><a href="#">JSON Formatter & Validator</a></li>
+                        <li><a href="#">Base64 Encoder/Decoder</a></li>
+                        <li><a href="#">URL Encoder/Decoder</a></li>
+                        <li><a href="#">Color Picker & Converter</a></li>
+                        <li><a href="#">Regex Tester</a></li>
+                    </ul>
+                </div>
+
+                <!-- SEO & Marketing Tools -->
+                <div class="tool-category">
+                    <h3 class="category-title">
+                        <i class="fas fa-chart-line"></i>
+                        SEO & Marketing Tools
+                    </h3>
+                    <ul class="tool-list">
+                        <li><a href="#">Keyword Density Checker</a></li>
+                        <li><a href="#">Meta Tag Generator</a></li>
+                        <li><a href="#">Hashtag Generator</a></li>
+                        <li><a href="#">Meta Tag Analyzer</a></li>
+                        <li><a href="#">Word Counter/Character counter</a></li>
+                        <li><a href="#">Website Ranking Checker</a></li>
+                        <li><a href="#">Google Index Checker</a></li>
+                        <li><a href="#">UTM Builder</a></li>
+                        <li><a href="#">Open Graph Generator</a></li>
+                        <li><a href="#">Keywords Suggestion</a></li>
+                        <li><a href="#">Open Graph Checker</a></li>
+                        <li><a href="#">Google Cache Checker</a></li>
+                        <li><a href="#">Twitter Card Generator</a></li>
+                    </ul>
+                </div>
+
+                <!-- Utility Tools -->
+                <div class="tool-category">
+                    <h3 class="category-title">
+                        <i class="fas fa-tools"></i>
+                        Utility Tools
+                    </h3>
+                    <ul class="tool-list">
+                        <li><a href="#">QR Code Generator & Scanner</a></li>
+                        <li><a href="#">Barcode Generator</a></li>
+                        <li><a href="#">UUID Generator</a></li>
+                        <li><a href="#">MD5 Generator</a></li>
+                        <li><a href="#">Base64 Encode</a></li>
+                        <li><a href="#">Base64 Decode</a></li>
+                        <li><a href="#">Convert SRT to VTT</a></li>
+                        <li><a href="#">RGB to HEX Converter</a></li>
+                        <li><a href="#">HEX to RGB converter</a></li>
+                        <li><a href="#">URL Opener</a></li>
+                        <li><a href="#">Unit Converter</a></li>
+                        <li><a href="#">Time Zone Converter</a></li>
+                        <li><a href="#">Random Number/Password Generator</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="faq">
+        <div class="container">
+            <h2 class="section-title">Frequently Asked Questions</h2>
+            <div class="faq-container">
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>Are all tools on Tool Desk free to use?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Yes, all tools on Tool Desk are completely free to use. We believe in providing accessible digital solutions to everyone without any cost barriers.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>Do I need to create an account to use the tools?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>No, you don't need to create an account to use most of our tools. You can access them directly without any registration. However, some advanced features might require an account in the future.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>Is my data safe when using your tools?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Yes, we take data privacy seriously. For most tools, your data is processed entirely in your browser and never sent to our servers. For tools that require server processing, we delete all data immediately after processing.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>Can I suggest a new tool to be added?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Absolutely! We're always looking to expand our tool collection. Please use our Contact Us page to suggest new tools, and we'll consider adding them in future updates.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>How often are new tools added to the website?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>We regularly update our tool collection based on user feedback and emerging digital needs. We typically add new tools every month to ensure we're providing the most relevant and useful resources.</p>
                     </div>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <section id="featured-tools" class="featured-tools">
-            <div class="container">
-                <h2>Featured Tool Categories</h2>
-                <div class="tools-grid">
-                    <a href="tools/image-tools.html" class="tool-category">
-                        <div class="tool-icon">🖼️</div>
-                        <h3>Image Tools</h3>
-                        <p>Resize, convert, compress, and edit images online</p>
-                    </a>
-                    <a href="tools/calculators.html" class="tool-category">
-                        <div class="tool-icon">🧮</div>
-                        <h3>Calculators</h3>
-                        <p>Financial, math, health, and conversion calculators</p>
-                    </a>
-                    <a href="tools/text-tools.html" class="tool-category">
-                        <div class="tool-icon">📝</div>
-                        <h3>Text Tools</h3>
-                        <p>Format, convert, analyze, and manipulate text</p>
-                    </a>
-                    <a href="tools/dev-tools.html" class="tool-category">
-                        <div class="tool-icon">⚙️</div>
-                        <h3>Developer Tools</h3>
-                        <p>Code formatting, encoding, validation, and more</p>
-                    </a>
-                    <a href="tools/seo-tools.html" class="tool-category">
-                        <div class="tool-icon">🔍</div>
-                        <h3>SEO Tools</h3>
-                        <p>Website analysis, keyword tools, and SEO utilities</p>
-                    </a>
-                </div>
-            </div>
-        </section>
-
-        <section class="how-it-works">
-            <div class="container">
-                <h2>How It Works</h2>
-                <div class="steps">
-                    <div class="step">
-                        <div class="step-number">1</div>
-                        <h3>Choose Your Tool</h3>
-                        <p>Browse our collection of utilities organized by category</p>
-                    </div>
-                    <div class="step">
-                        <div class="step-number">2</div>
-                        <h3>Input Your Data</h3>
-                        <p>Enter your information or upload files as needed</p>
-                    </div>
-                    <div class="step">
-                        <div class="step-number">3</div>
-                        <h3>Get Instant Results</h3>
-                        <p>Process your data and receive immediate results</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section class="faq">
-            <div class="container">
-                <h2>Frequently Asked Questions</h2>
-                <div class="faq-list">
-                    <div class="faq-item">
-                        <button class="faq-question">Are MultiTools free to use?</button>
-                        <div class="faq-answer">
-                            <p>Yes, all tools on MultiTools are completely free to use. We believe in providing accessible utilities for everyone.</p>
-                        </div>
-                    </div>
-                    <div class="faq-item">
-                        <button class="faq-question">Is my data secure?</button>
-                        <div class="faq-answer">
-                            <p>Absolutely! All processing happens in your browser. Your data never leaves your device, ensuring complete privacy.</p>
-                        </div>
-                    </div>
-                    <div class="faq-item">
-                        <button class="faq-question">Do I need to create an account?</button>
-                        <div class="faq-answer">
-                            <p>No account is required. All tools are available immediately without any registration.</p>
-                        </div>
-                    </div>
-                    <div class="faq-item">
-                        <button class="faq-question">Can I suggest new tools?</button>
-                        <div class="faq-answer">
-                            <p>Yes! We welcome suggestions for new tools. Please contact us with your ideas.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-    </main>
-
+    <!-- Footer -->
     <footer>
         <div class="container">
             <div class="footer-content">
-                <div class="footer-section">
-                    <h3>MultiTools</h3>
-                    <p class="tagline">Simplifying your digital life.</p>
-                    <p>Your all-in-one solution for online utilities and tools.</p>
+                <div class="footer-logo">
+                    <h3>Tool Desk</h3>
+                    <p>Simplifying your digital life with a comprehensive collection of free online tools.</p>
                 </div>
-                <div class="footer-section">
-                    <h4>Tools</h4>
+                <div class="footer-links">
+                    <h4>Quick Links</h4>
                     <ul>
-                        <li><a href="tools/image-tools.html">Image Tools</a></li>
-                        <li><a href="tools/calculators.html">Calculators</a></li>
-                        <li><a href="tools/text-tools.html">Text Tools</a></li>
-                        <li><a href="tools/dev-tools.html">Developer Tools</a></li>
-                        <li><a href="tools/seo-tools.html">SEO Tools</a></li>
-                    </ul>
-                </div>
-                <div class="footer-section">
-                    <h4>Company</h4>
-                    <ul>
+                        <li><a href="index.html">Home</a></li>
                         <li><a href="about.html">About Us</a></li>
-                        <li><a href="contact.html">Contact</a></li>
-                        <li><a href="privacy.html">Privacy Policy</a></li>
+                        <li><a href="contact.html">Contact Us</a></li>
+                        <li><a href="privacy-policy.html">Privacy Policy</a></li>
                         <li><a href="disclaimer.html">Disclaimer</a></li>
                     </ul>
                 </div>
-                <div class="footer-section">
+                <div class="footer-links">
                     <h4>Contact</h4>
-                    <p>Email: <a href="mailto:Manojinfo@gmail.com">Manojinfo@gmail.com</a></p>
-                    <div class="social-links">
-                        <a href="#" aria-label="Twitter">🐦</a>
-                        <a href="#" aria-label="GitHub">🐙</a>
-                        <a href="#" aria-label="LinkedIn">💼</a>
-                    </div>
+                    <ul>
+                        <li>Email: <a href="mailto:Manojinfo@gmail.com">Manojinfo@gmail.com</a></li>
+                    </ul>
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2023 MultiTools. All rights reserved.</p>
+                <p>&copy; 2023 Tool Desk. All rights reserved.</p>
             </div>
         </div>
     </footer>
 
-    <script src="js/scripts.js"></script>
+    <script>
+        // Theme Toggle
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+
+        // Check for saved theme preference or default to light mode
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        if (savedTheme === 'dark') {
+            body.classList.add('dark-mode');
+            themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+        }
+
+        themeToggle.addEventListener('click', () => {
+            body.classList.toggle('dark-mode');
+            
+            if (body.classList.contains('dark-mode')) {
+                localStorage.setItem('theme', 'dark');
+                themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+            } else {
+                localStorage.setItem('theme', 'light');
+                themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+            }
+        });
+
+        // Mobile Menu Toggle
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const navLinks = document.querySelector('.nav-links');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+
+        // FAQ Accordion
+        const faqQuestions = document.querySelectorAll('.faq-question');
+
+        faqQuestions.forEach(question => {
+            question.addEventListener('click', () => {
+                const answer = question.nextElementSibling;
+                const isActive = answer.classList.contains('active');
+                
+                // Close all answers
+                document.querySelectorAll('.faq-answer').forEach(item => {
+                    item.classList.remove('active');
+                });
+                
+                // Toggle current answer if it wasn't active
+                if (!isActive) {
+                    answer.classList.add('active');
+                }
+            });
+        });
+    </script>
 </body>
 </html>
