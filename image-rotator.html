@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Rotator/Flipper Tool</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --bright-yellow: #FFD700;
+            --vibrant-blue: #1E90FF;
+            --dark-blue: #0066CC;
+            --light-yellow: #FFF9C4;
+            --light-blue: #E3F2FD;
+            --dark-yellow: #FFA000;
+        }
+
+        body {
+            background: linear-gradient(135deg, #E3F2FD, #FFF9C4);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+        }
+
+        header {
+            background: var(--vibrant-blue);
+            color: white;
+            padding: 25px;
+            text-align: center;
+            position: relative;
+        }
+
+        header::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 100%;
+            height: 20px;
+            background: var(--bright-yellow);
+            clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 70%);
+        }
+
+        header h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        header p {
+            margin-top: 10px;
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+
+        .tool-container {
+            padding: 30px;
+        }
+
+        .upload-section {
+            text-align: center;
+            padding: 35px 25px;
+            border: 3px dashed var(--light-blue);
+            border-radius: 16px;
+            background-color: var(--light-blue);
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .upload-section:hover {
+            border-color: var(--vibrant-blue);
+            background-color: #f0f8ff;
+            transform: translateY(-3px);
+        }
+
+        .upload-icon {
+            font-size: 4rem;
+            color: var(--vibrant-blue);
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .upload-text {
+            margin: 15px 0;
+            color: var(--dark-blue);
+            font-weight: 700;
+            font-size: 1.3rem;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .upload-btn {
+            background: var(--bright-yellow);
+            color: #1a237e;
+            border: none;
+            padding: 14px 32px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+            margin-top: 10px;
+        }
+
+        .upload-btn:hover {
+            background: var(--dark-yellow);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .preview-section {
+            display: none;
+            margin-top: 25px;
+        }
+
+        .preview-title {
+            text-align: center;
+            margin-bottom: 20px;
+            color: var(--dark-blue);
+            font-weight: 700;
+            font-size: 1.4rem;
+        }
+
+        .image-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 25px;
+            justify-content: center;
+        }
+
+        .image-box {
+            flex: 1;
+            min-width: 250px;
+            text-align: center;
+        }
+
+        .image-label {
+            margin-bottom: 12px;
+            font-weight: 600;
+            color: var(--dark-blue);
+        }
+
+        .image-preview {
+            width: 100%;
+            max-height: 300px;
+            object-fit: contain;
+            border-radius: 12px;
+            border: 2px solid var(--light-blue);
+            background: #f8f9fa;
+            transition: transform 0.3s ease;
+        }
+
+        .controls-section {
+            margin: 30px 0;
+            background: var(--light-yellow);
+            padding: 25px;
+            border-radius: 16px;
+            border: 2px solid var(--bright-yellow);
+        }
+
+        .controls-title {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #e65100;
+            font-weight: 700;
+            font-size: 1.4rem;
+        }
+
+        .rotation-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .rotation-btn {
+            padding: 12px 20px;
+            border: 2px solid var(--light-yellow);
+            border-radius: 12px;
+            background: white;
+            color: var(--dark-blue);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            min-width: 120px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .rotation-btn:hover {
+            background: var(--light-yellow);
+            border-color: var(--bright-yellow);
+            transform: translateY(-2px);
+        }
+
+        .rotation-icon {
+            font-size: 1.5rem;
+        }
+
+        .flip-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .flip-btn {
+            padding: 12px 20px;
+            border: 2px solid var(--light-yellow);
+            border-radius: 12px;
+            background: white;
+            color: var(--dark-blue);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            min-width: 120px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .flip-btn:hover {
+            background: var(--light-yellow);
+            border-color: var(--bright-yellow);
+            transform: translateY(-2px);
+        }
+
+        .flip-icon {
+            font-size: 1.5rem;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 25px;
+            flex-wrap: wrap;
+        }
+
+        .reset-btn, .download-btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .reset-btn {
+            background: var(--light-blue);
+            color: var(--dark-blue);
+        }
+
+        .reset-btn:hover {
+            background: #bbdefb;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .download-btn {
+            background: var(--dark-yellow);
+            color: #1a237e;
+        }
+
+        .download-btn:hover {
+            background: #e69500;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .format-info {
+            text-align: center;
+            margin: 20px 0;
+            padding: 15px;
+            background: var(--light-blue);
+            border-radius: 12px;
+            border: 1px solid var(--vibrant-blue);
+            color: var(--dark-blue);
+            font-weight: 600;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .container {
+                border-radius: 16px;
+            }
+            
+            header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .tool-container {
+                padding: 20px;
+            }
+            
+            .upload-section {
+                padding: 25px 15px;
+            }
+            
+            .image-container {
+                gap: 15px;
+            }
+            
+            .image-box {
+                min-width: 200px;
+            }
+            
+            .rotation-btn, .flip-btn, .reset-btn, .download-btn {
+                padding: 10px 15px;
+                font-size: 0.95rem;
+                min-width: 100px;
+            }
+            
+            .action-buttons {
+                gap: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            header h1 {
+                font-size: 1.5rem;
+            }
+            
+            header p {
+                font-size: 1rem;
+            }
+            
+            .upload-icon {
+                font-size: 3rem;
+            }
+            
+            .upload-text {
+                font-size: 1.1rem;
+            }
+            
+            .upload-btn {
+                padding: 10px 20px;
+                font-size: 0.95rem;
+            }
+            
+            .rotation-controls, .flip-controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .rotation-btn, .flip-btn {
+                width: 100%;
+                max-width: 200px;
+            }
+            
+            .reset-btn, .download-btn {
+                width: 100%;
+                max-width: 200px;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Image Rotator/Flipper</h1>
+            <p>Rotate and flip your images in any direction</p>
+        </header>
+        
+        <div class="tool-container">
+            <div class="upload-section" id="uploadSection">
+                <div class="upload-icon">🖼️</div>
+                <p class="upload-text">Drag & drop your image here</p>
+                <p>or</p>
+                <input type="file" id="fileInput" class="file-input" accept="image/*">
+                <button class="upload-btn" id="uploadBtn">Choose Image</button>
+                <p style="margin-top: 15px; font-size: 0.9rem; color: #0066cc;">Supports all image formats (Max 10MB)</p>
+            </div>
+            
+            <div class="format-info">
+                <p>✅ Rotate 90°, 180°, 270°</p>
+                <p>✅ Flip horizontally or vertically</p>
+                <p>✅ Reset to original orientation</p>
+            </div>
+            
+            <div class="preview-section" id="previewSection">
+                <h3 class="preview-title">Image Preview</h3>
+                <div class="image-container">
+                    <div class="image-box">
+                        <div class="image-label">Original Image</div>
+                        <img id="originalPreview" class="image-preview" alt="Original Preview">
+                    </div>
+                    <div class="image-box">
+                        <div class="image-label">Modified Image</div>
+                        <img id="modifiedPreview" class="image-preview" alt="Modified Preview">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="controls-section">
+                <h3 class="controls-title">Rotation Controls</h3>
+                <div class="rotation-controls">
+                    <button class="rotation-btn" id="rotateLeftBtn">
+                        <span class="rotation-icon">↺</span>
+                        Rotate Left (90°)
+                    </button>
+                    <button class="rotation-btn" id="rotate180Btn">
+                        <span class="rotation-icon">🔄</span>
+                        Rotate 180°
+                    </button>
+                    <button class="rotation-btn" id="rotateRightBtn">
+                        <span class="rotation-icon">↻</span>
+                        Rotate Right (90°)
+                    </button>
+                </div>
+                
+                <h3 class="controls-title" style="margin-top: 25px;">Flip Controls</h3>
+                <div class="flip-controls">
+                    <button class="flip-btn" id="flipHorizontalBtn">
+                        <span class="flip-icon">↔️</span>
+                        Flip Horizontal
+                    </button>
+                    <button class="flip-btn" id="flipVerticalBtn">
+                        <span class="flip-icon">↕️</span>
+                        Flip Vertical
+                    </button>
+                </div>
+                
+                <div class="action-buttons">
+                    <button class="reset-btn" id="resetBtn">Reset Image</button>
+                    <button class="download-btn" id="downloadBtn">Download Modified Image</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM Elements
+            const fileInput = document.getElementById('fileInput');
+            const uploadBtn = document.getElementById('uploadBtn');
+            const uploadSection = document.getElementById('uploadSection');
+            const previewSection = document.getElementById('previewSection');
+            const originalPreview = document.getElementById('originalPreview');
+            const modifiedPreview = document.getElementById('modifiedPreview');
+            const rotateLeftBtn = document.getElementById('rotateLeftBtn');
+            const rotate180Btn = document.getElementById('rotate180Btn');
+            const rotateRightBtn = document.getElementById('rotateRightBtn');
+            const flipHorizontalBtn = document.getElementById('flipHorizontalBtn');
+            const flipVerticalBtn = document.getElementById('flipVerticalBtn');
+            const resetBtn = document.getElementById('resetBtn');
+            const downloadBtn = document.getElementById('downloadBtn');
+            
+            let originalFile = null;
+            let currentTransform = { rotate: 0, flipX: false, flipY: false };
+            let originalImageUrl = '';
+            
+            // Event Listeners
+            uploadBtn.addEventListener('click', () => fileInput.click());
+            fileInput.addEventListener('change', handleFileSelect);
+            rotateLeftBtn.addEventListener('click', () => rotateImage(-90));
+            rotate180Btn.addEventListener('click', () => rotateImage(180));
+            rotateRightBtn.addEventListener('click', () => rotateImage(90));
+            flipHorizontalBtn.addEventListener('click', flipHorizontal);
+            flipVerticalBtn.addEventListener('click', flipVertical);
+            resetBtn.addEventListener('click', resetImage);
+            downloadBtn.addEventListener('click', downloadImage);
+            
+            // Handle file selection
+            function handleFileSelect(e) {
+                if (e.target.files && e.target.files[0]) {
+                    const file = e.target.files[0];
+                    
+                    // Validate file type
+                    if (!file.type.match('image.*')) {
+                        alert('Please select a valid image file.');
+                        return;
+                    }
+                    
+                    // Validate file size
+                    if (file.size > 10 * 1024 * 1024) {
+                        alert('File size exceeds 10MB limit. Please choose a smaller file.');
+                        return;
+                    }
+                    
+                    originalFile = file;
+                    
+                    // Display previews
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        originalImageUrl = e.target.result;
+                        originalPreview.src = originalImageUrl;
+                        modifiedPreview.src = originalImageUrl;
+                        currentTransform = { rotate: 0, flipX: false, flipY: false };
+                        previewSection.style.display = 'block';
+                    }
+                    reader.readAsDataURL(file);
+                }
+            }
+            
+            // Apply rotation
+            function rotateImage(degrees) {
+                if (!originalFile) {
+                    alert('Please select an image first.');
+                    return;
+                }
+                
+                currentTransform.rotate = (currentTransform.rotate + degrees) % 360;
+                if (currentTransform.rotate < 0) {
+                    currentTransform.rotate += 360;
+                }
+                
+                updatePreview();
+            }
+            
+            // Flip horizontally
+            function flipHorizontal() {
+                if (!originalFile) {
+                    alert('Please select an image first.');
+                    return;
+                }
+                
+                currentTransform.flipX = !currentTransform.flipX;
+                updatePreview();
+            }
+            
+            // Flip vertically
+            function flipVertical() {
+                if (!originalFile) {
+                    alert('Please select an image first.');
+                    return;
+                }
+                
+                currentTransform.flipY = !currentTransform.flipY;
+                updatePreview();
+            }
+            
+            // Reset to original
+            function resetImage() {
+                if (!originalFile) {
+                    alert('Please select an image first.');
+                    return;
+                }
+                
+                currentTransform = { rotate: 0, flipX: false, flipY: false };
+                modifiedPreview.src = originalImageUrl;
+            }
+            
+            // Update preview with current transform
+            function updatePreview() {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                const img = new Image();
+                
+                img.onload = function() {
+                    // Calculate dimensions based on rotation
+                    let width = img.width;
+                    let height = img.height;
+                    
+                    if (currentTransform.rotate % 180 !== 0) {
+                        // Swap dimensions for 90° and 270° rotations
+                        width = img.height;
+                        height = img.width;
+                    }
+                    
+                    canvas.width = width;
+                    canvas.height = height;
+                    
+                    // Apply transformations
+                    ctx.save();
+                    
+                    // Move to center of canvas
+                    ctx.translate(width / 2, height / 2);
+                    
+                    // Apply rotation
+                    ctx.rotate(currentTransform.rotate * Math.PI / 180);
+                    
+                    // Apply flips
+                    ctx.scale(
+                        currentTransform.flipX ? -1 : 1,
+                        currentTransform.flipY ? -1 : 1
+                    );
+                    
+                    // Draw image centered
+                    ctx.drawImage(
+                        img,
+                        -img.width / 2,
+                        -img.height / 2,
+                        img.width,
+                        img.height
+                    );
+                    
+                    ctx.restore();
+                    
+                    // Update preview
+                    modifiedPreview.src = canvas.toDataURL('image/jpeg', 0.92);
+                };
+                
+                img.src = originalImageUrl;
+            }
+            
+            // Download modified image
+            function downloadImage() {
+                if (!originalFile) {
+                    alert('Please select an image first.');
+                    return;
+                }
+                
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                const img = new Image();
+                
+                img.onload = function() {
+                    // Calculate dimensions based on rotation
+                    let width = img.width;
+                    let height = img.height;
+                    
+                    if (currentTransform.rotate % 180 !== 0) {
+                        width = img.height;
+                        height = img.width;
+                    }
+                    
+                    canvas.width = width;
+                    canvas.height = height;
+                    
+                    // Apply transformations
+                    ctx.save();
+                    ctx.translate(width / 2, height / 2);
+                    ctx.rotate(currentTransform.rotate * Math.PI / 180);
+                    ctx.scale(
+                        currentTransform.flipX ? -1 : 1,
+                        currentTransform.flipY ? -1 : 1
+                    );
+                    ctx.drawImage(img, -img.width / 2, -img.height / 2, img.width, img.height);
+                    ctx.restore();
+                    
+                    // Create download link
+                    canvas.toBlob(function(blob) {
+                        const url = URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = originalFile.name.replace(/\.[^/.]+$/, "") + "_modified.jpg";
+                        document.body.appendChild(a);
+                        a.click();
+                        document.body.removeChild(a);
+                        URL.revokeObjectURL(url);
+                    }, 'image/jpeg', 0.92);
+                };
+                
+                img.src = originalImageUrl;
+            }
+            
+            // Drag and drop functionality
+            uploadSection.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadSection.style.borderColor = '#1E90FF';
+                uploadSection.style.backgroundColor = '#d0e8ff';
+            });
+            
+            uploadSection.addEventListener('dragleave', () => {
+                uploadSection.style.borderColor = '#E3F2FD';
+                uploadSection.style.backgroundColor = '#E3F2FD';
+            });
+            
+            uploadSection.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadSection.style.borderColor = '#E3F2FD';
+                uploadSection.style.backgroundColor = '#E3F2FD';
+                
+                if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+                    const file = e.dataTransfer.files[0];
+                    
+                    // Check if it's an image file
+                    if (file.type.match('image.*')) {
+                        fileInput.files = e.dataTransfer.files;
+                        handleFileSelect({ target: fileInput });
+                    } else {
+                        alert('Please drop an image file.');
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
