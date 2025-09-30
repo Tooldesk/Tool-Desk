@@ -1,1 +1,769 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JPG to ICO Converter</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
 
+        :root {
+            --bright-yellow: #FFD700;
+            --vibrant-blue: #1E90FF;
+            --dark-blue: #0066CC;
+            --light-yellow: #FFF9C4;
+            --light-blue: #E3F2FD;
+            --dark-yellow: #FFA000;
+        }
+
+        body {
+            background: linear-gradient(135deg, #E3F2FD, #FFF9C4);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+        }
+
+        header {
+            background: var(--vibrant-blue);
+            color: white;
+            padding: 25px;
+            text-align: center;
+            position: relative;
+        }
+
+        header::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 100%;
+            height: 20px;
+            background: var(--bright-yellow);
+            clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 70%);
+        }
+
+        header h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        header p {
+            margin-top: 10px;
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+
+        .tool-container {
+            padding: 30px;
+        }
+
+        .upload-section {
+            text-align: center;
+            padding: 35px 25px;
+            border: 3px dashed var(--light-blue);
+            border-radius: 16px;
+            background-color: var(--light-blue);
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .upload-section:hover {
+            border-color: var(--vibrant-blue);
+            background-color: #f0f8ff;
+            transform: translateY(-3px);
+        }
+
+        .upload-icon {
+            font-size: 4rem;
+            color: var(--vibrant-blue);
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .upload-text {
+            margin: 15px 0;
+            color: var(--dark-blue);
+            font-weight: 700;
+            font-size: 1.3rem;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .upload-btn {
+            background: var(--bright-yellow);
+            color: #1a237e;
+            border: none;
+            padding: 14px 32px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+            margin-top: 10px;
+        }
+
+        .upload-btn:hover {
+            background: var(--dark-yellow);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .preview-section {
+            display: none;
+            margin-top: 25px;
+        }
+
+        .preview-title {
+            text-align: center;
+            margin-bottom: 20px;
+            color: var(--dark-blue);
+            font-weight: 700;
+            font-size: 1.4rem;
+        }
+
+        .image-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 25px;
+            justify-content: center;
+        }
+
+        .image-box {
+            flex: 1;
+            min-width: 250px;
+            text-align: center;
+        }
+
+        .image-label {
+            margin-bottom: 12px;
+            font-weight: 600;
+            color: var(--dark-blue);
+        }
+
+        .image-preview {
+            width: 100%;
+            max-height: 300px;
+            object-fit: contain;
+            border-radius: 12px;
+            border: 2px solid var(--light-blue);
+            background: #f8f9fa;
+        }
+
+        .convert-section {
+            margin: 30px 0;
+            text-align: center;
+        }
+
+        .size-selection {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-width: 500px;
+            margin: 20px auto 30px;
+            background: var(--light-yellow);
+            padding: 20px;
+            border-radius: 16px;
+            border: 2px solid var(--bright-yellow);
+        }
+
+        .size-title {
+            text-align: center;
+            margin-bottom: 15px;
+            color: #e65100;
+            font-weight: 700;
+            font-size: 1.3rem;
+        }
+
+        .size-options {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .size-btn {
+            padding: 10px 15px;
+            border: 2px solid var(--light-yellow);
+            border-radius: 8px;
+            background: white;
+            color: var(--dark-blue);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            min-width: 80px;
+        }
+
+        .size-btn:hover, .size-btn.active {
+            background: var(--light-yellow);
+            border-color: var(--bright-yellow);
+        }
+
+        .convert-btn {
+            display: inline-block;
+            padding: 16px 40px;
+            background: var(--vibrant-blue);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .convert-btn:hover {
+            background: var(--dark-blue);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .download-section {
+            display: none;
+            text-align: center;
+            margin-top: 30px;
+            padding: 30px;
+            background: linear-gradient(135deg, var(--bright-yellow), #FFB300);
+            border-radius: 16px;
+            box-shadow: 0 8px 20px rgba(255, 215, 0, 0.3);
+        }
+
+        .download-title {
+            margin-bottom: 20px;
+            color: #1a237e;
+            font-weight: 800;
+            font-size: 1.6rem;
+            text-shadow: 0 1px 2px rgba(255,255,255,0.5);
+        }
+
+        .download-btn {
+            background: var(--dark-blue);
+            color: white;
+            border: none;
+            padding: 16px 40px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .download-btn:hover {
+            background: #004c99;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.25);
+        }
+
+        .file-info {
+            margin-top: 20px;
+            background: rgba(255, 255, 255, 0.7);
+            padding: 15px;
+            border-radius: 12px;
+            display: inline-block;
+            font-weight: 600;
+            color: #1a237e;
+        }
+
+        .format-info {
+            text-align: center;
+            margin: 20px 0;
+            padding: 15px;
+            background: var(--light-blue);
+            border-radius: 12px;
+            border: 1px solid var(--vibrant-blue);
+            color: var(--dark-blue);
+            font-weight: 600;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .container {
+                border-radius: 16px;
+            }
+            
+            header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .tool-container {
+                padding: 20px;
+            }
+            
+            .upload-section {
+                padding: 25px 15px;
+            }
+            
+            .image-container {
+                gap: 15px;
+            }
+            
+            .image-box {
+                min-width: 200px;
+            }
+            
+            .convert-btn, .download-btn {
+                padding: 14px 30px;
+                font-size: 1.1rem;
+            }
+            
+            .size-selection {
+                padding: 15px;
+            }
+            
+            .size-btn {
+                padding: 8px 12px;
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            header h1 {
+                font-size: 1.5rem;
+            }
+            
+            header p {
+                font-size: 1rem;
+            }
+            
+            .upload-icon {
+                font-size: 3rem;
+            }
+            
+            .upload-text {
+                font-size: 1.1rem;
+            }
+            
+            .upload-btn {
+                padding: 12px 24px;
+                font-size: 1rem;
+            }
+            
+            .image-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .convert-btn, .download-btn {
+                width: 100%;
+                max-width: 300px;
+            }
+            
+            .size-options {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .size-btn {
+                width: 100%;
+                max-width: 150px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>JPG to ICO Converter</h1>
+            <p>Convert your JPG images to ICO format for favicons and icons</p>
+        </header>
+        
+        <div class="tool-container">
+            <div class="upload-section" id="uploadSection">
+                <div class="upload-icon">🖼️</div>
+                <p class="upload-text">Drag & drop your JPG image here</p>
+                <p>or</p>
+                <input type="file" id="fileInput" class="file-input" accept="image/jpeg, image/jpg">
+                <button class="upload-btn" id="uploadBtn">Choose JPG File</button>
+                <p style="margin-top: 15px; font-size: 0.9rem; color: #0066cc;">Only JPG/JPEG files supported (Max 10MB)</p>
+            </div>
+            
+            <div class="format-info">
+                <p>✅ Multiple icon sizes in one file</p>
+                <p>✅ Perfect for website favicons</p>
+                <p>✅ Windows application icons</p>
+            </div>
+            
+            <div class="preview-section" id="previewSection">
+                <h3 class="preview-title">Image Preview</h3>
+                <div class="image-container">
+                    <div class="image-box">
+                        <div class="image-label">Original JPG</div>
+                        <img id="originalPreview" class="image-preview" alt="Original Preview">
+                    </div>
+                    <div class="image-box">
+                        <div class="image-label">ICO Preview</div>
+                        <img id="convertedPreview" class="image-preview" alt="Converted Preview">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="size-selection">
+                <h3 class="size-title">Icon Sizes</h3>
+                <div class="size-options">
+                    <button class="size-btn active" data-sizes="16,32,48">Web (16,32,48)</button>
+                    <button class="size-btn" data-sizes="16,32,48,64">Standard (16-64)</button>
+                    <button class="size-btn" data-sizes="16,32,48,64,128,256">Full (16-256)</button>
+                    <button class="size-btn" data-sizes="custom">Custom</button>
+                </div>
+                <div id="customSizes" style="display: none; margin-top: 15px;">
+                    <input type="text" id="customInput" class="size-input" placeholder="Enter sizes (comma separated): 16,32,48" style="width: 100%; padding: 10px; border: 2px solid var(--light-yellow); border-radius: 8px;">
+                </div>
+            </div>
+            
+            <div class="convert-section">
+                <button class="convert-btn" id="convertBtn">Convert to ICO</button>
+            </div>
+            
+            <div class="download-section" id="downloadSection">
+                <h3 class="download-title">Your ICO File is Ready!</h3>
+                <button class="download-btn" id="downloadBtn">Download ICO File</button>
+                <div class="file-info" id="fileInfo"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ICO encoding functions
+        function createICO(images) {
+            // ICO header: 6 bytes
+            // Reserved (2), Type (2), Count (2)
+            const header = new ArrayBuffer(6 + images.length * 16);
+            const headerView = new DataView(header);
+            headerView.setUint16(0, 0, true); // Reserved
+            headerView.setUint16(2, 1, true); // Type (1 for icon)
+            headerView.setUint16(4, images.length, true); // Count
+            
+            // Image directory entries (16 bytes each)
+            let offset = 6 + images.length * 16;
+            const entries = [];
+            
+            for (let i = 0; i < images.length; i++) {
+                const img = images[i];
+                const size = Math.min(img.width, img.height);
+                
+                // Directory entry
+                const entry = new ArrayBuffer(16);
+                const entryView = new DataView(entry);
+                
+                // Width and height (0 means 256)
+                entryView.setUint8(0, size <= 255 ? size : 0);
+                entryView.setUint8(1, size <= 255 ? size : 0);
+                entryView.setUint8(2, 0); // Color palette (0 for true color)
+                entryView.setUint8(3, 0); // Reserved
+                
+                // Color planes and bits per pixel
+                entryView.setUint16(4, 1, true); // Color planes
+                entryView.setUint16(6, 32, true); // Bits per pixel
+                
+                // Image size and offset
+                const imageSize = calculateBMPSize(size);
+                entryView.setUint32(8, imageSize, true); // Image size
+                entryView.setUint32(12, offset, true); // Offset to image data
+                
+                entries.push(entry);
+                offset += imageSize;
+            }
+            
+            // Create BMP data for each image
+            const bmpData = [];
+            for (let i = 0; i < images.length; i++) {
+                const img = images[i];
+                const size = Math.min(img.width, img.height);
+                bmpData.push(createBMPForICO(img, size));
+            }
+            
+            // Combine all parts
+            const parts = [header, ...entries, ...bmpData];
+            return new Blob(parts, { type: 'image/x-icon' });
+        }
+        
+        function calculateBMPSize(size) {
+            // BMP header (40 bytes) + pixel data (size * size * 4) + mask (size * size / 8)
+            return 40 + (size * size * 4) + Math.ceil(size * size / 8);
+        }
+        
+        function createBMPForICO(img, size) {
+            const canvas = document.createElement('canvas');
+            canvas.width = size;
+            canvas.height = size;
+            
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = 'white';
+            ctx.fillRect(0, 0, size, size);
+            ctx.drawImage(img, 0, 0, size, size);
+            
+            const imageData = ctx.getImageData(0, 0, size, size);
+            const data = imageData.data;
+            
+            // Create BMP header (40 bytes)
+            const header = new ArrayBuffer(40);
+            const view = new DataView(header);
+            view.setUint32(0, 40, true); // Header size
+            view.setInt32(4, size, true); // Width
+            view.setInt32(8, size * 2, true); // Height (doubled for AND mask)
+            view.setUint16(12, 1, true); // Color planes
+            view.setUint16(14, 32, true); // Bits per pixel
+            view.setUint32(16, 0, true); // Compression (0 = none)
+            view.setUint32(20, 0, true); // Image size (0 for uncompressed)
+            view.setUint32(24, 2835, true); // Horizontal resolution (72 DPI)
+            view.setUint32(28, 2835, true); // Vertical resolution (72 DPI)
+            view.setUint32(32, 0, true); // Colors in palette
+            view.setUint32(36, 0, true); // Important colors
+            
+            // Create pixel data (BGRA format, bottom to top)
+            const pixelData = new Uint8Array(size * size * 4);
+            for (let y = 0; y < size; y++) {
+                for (let x = 0; x < size; x++) {
+                    const srcIndex = ((size - 1 - y) * size + x) * 4;
+                    const dstIndex = (y * size + x) * 4;
+                    
+                    pixelData[dstIndex] = data[srcIndex + 2];     // Blue
+                    pixelData[dstIndex + 1] = data[srcIndex + 1]; // Green
+                    pixelData[dstIndex + 2] = data[srcIndex];     // Red
+                    pixelData[dstIndex + 3] = data[srcIndex + 3]; // Alpha
+                }
+            }
+            
+            // Create AND mask (1 bit per pixel, 0 = opaque, 1 = transparent)
+            const maskBytes = Math.ceil(size / 8);
+            const maskData = new Uint8Array(size * maskBytes);
+            for (let y = 0; y < size; y++) {
+                for (let x = 0; x < size; x++) {
+                    const alpha = data[((size - 1 - y) * size + x) * 4 + 3];
+                    if (alpha < 128) {
+                        // Set bit to 1 (transparent)
+                        const byteIndex = y * maskBytes + Math.floor(x / 8);
+                        const bitIndex = 7 - (x % 8);
+                        maskData[byteIndex] |= (1 << bitIndex);
+                    }
+                }
+            }
+            
+            return new Blob([header, pixelData, maskData]);
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM Elements
+            const fileInput = document.getElementById('fileInput');
+            const uploadBtn = document.getElementById('uploadBtn');
+            const uploadSection = document.getElementById('uploadSection');
+            const previewSection = document.getElementById('previewSection');
+            const originalPreview = document.getElementById('originalPreview');
+            const convertedPreview = document.getElementById('convertedPreview');
+            const sizeBtns = document.querySelectorAll('.size-btn');
+            const customSizes = document.getElementById('customSizes');
+            const customInput = document.getElementById('customInput');
+            const convertBtn = document.getElementById('convertBtn');
+            const downloadSection = document.getElementById('downloadSection');
+            const downloadBtn = document.getElementById('downloadBtn');
+            const fileInfo = document.getElementById('fileInfo');
+            
+            let originalFile = null;
+            let convertedBlob = null;
+            let selectedSizes = [16, 32, 48];
+            
+            // Event Listeners
+            uploadBtn.addEventListener('click', () => fileInput.click());
+            fileInput.addEventListener('change', handleFileSelect);
+            convertBtn.addEventListener('click', convertToIco);
+            downloadBtn.addEventListener('click', downloadImage);
+            
+            // Size button selection
+            sizeBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    sizeBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    
+                    if (btn.dataset.sizes === 'custom') {
+                        customSizes.style.display = 'block';
+                    } else {
+                        customSizes.style.display = 'none';
+                        selectedSizes = btn.dataset.sizes.split(',').map(Number);
+                    }
+                });
+            });
+            
+            // Handle file selection
+            function handleFileSelect(e) {
+                if (e.target.files && e.target.files[0]) {
+                    const file = e.target.files[0];
+                    
+                    // Validate file type
+                    if (!file.type.match('image/jpeg') && !file.type.match('image/jpg')) {
+                        alert('Please select a valid JPG/JPEG file.');
+                        return;
+                    }
+                    
+                    // Validate file size
+                    if (file.size > 10 * 1024 * 1024) {
+                        alert('File size exceeds 10MB limit. Please choose a smaller file.');
+                        return;
+                    }
+                    
+                    originalFile = file;
+                    
+                    // Display original preview
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        originalPreview.src = e.target.result;
+                        convertedPreview.src = e.target.result; // Initially same as original
+                        previewSection.style.display = 'block';
+                    }
+                    reader.readAsDataURL(file);
+                }
+            }
+            
+            // Convert JPG to ICO
+            function convertToIco() {
+                if (!originalFile) {
+                    alert('Please select a JPG image first.');
+                    return;
+                }
+                
+                // Get selected sizes
+                if (document.querySelector('.size-btn.active').dataset.sizes === 'custom') {
+                    const customValue = customInput.value.trim();
+                    if (!customValue) {
+                        alert('Please enter custom sizes.');
+                        return;
+                    }
+                    
+                    const sizes = customValue.split(',').map(s => parseInt(s.trim())).filter(s => !isNaN(s) && s > 0 && s <= 256);
+                    if (sizes.length === 0) {
+                        alert('Please enter valid sizes (1-256).');
+                        return;
+                    }
+                    selectedSizes = sizes;
+                }
+                
+                const img = new Image();
+                img.onload = function() {
+                    try {
+                        // Create resized images for each size
+                        const images = [];
+                        for (const size of selectedSizes) {
+                            const canvas = document.createElement('canvas');
+                            canvas.width = size;
+                            canvas.height = size;
+                            
+                            const ctx = canvas.getContext('2d');
+                            ctx.fillStyle = 'white';
+                            ctx.fillRect(0, 0, size, size);
+                            ctx.drawImage(img, 0, 0, size, size);
+                            
+                            images.push(canvas);
+                        }
+                        
+                        // Create ICO blob
+                        convertedBlob = createICO(images);
+                        
+                        // Display converted preview (as PNG since browsers don't render ICO in img tags)
+                        const previewCanvas = document.createElement('canvas');
+                        previewCanvas.width = 64;
+                        previewCanvas.height = 64;
+                        const previewCtx = previewCanvas.getContext('2d');
+                        previewCtx.fillStyle = 'white';
+                        previewCtx.fillRect(0, 0, 64, 64);
+                        previewCtx.drawImage(img, 0, 0, 64, 64);
+                        
+                        previewCanvas.toBlob(function(pngBlob) {
+                            const convertedUrl = URL.createObjectURL(pngBlob);
+                            convertedPreview.src = convertedUrl;
+                            
+                            // Show download section
+                            downloadSection.style.display = 'block';
+                            
+                            // Display file info
+                            const originalSize = (originalFile.size / 1024).toFixed(2);
+                            const convertedSize = (convertedBlob.size / 1024).toFixed(2);
+                            const sizeChange = ((convertedBlob.size / originalFile.size) * 100).toFixed(0);
+                            
+                            fileInfo.innerHTML = `
+                                Original JPG: ${originalSize} KB | 
+                                Converted ICO: ${convertedSize} KB | 
+                                Sizes: ${selectedSizes.join(', ')}px | 
+                                Size change: ${sizeChange}% of original
+                            `;
+                        }, 'image/png');
+                    } catch (error) {
+                        console.error('ICO conversion error:', error);
+                        alert('Error converting to ICO. Please try with a smaller image.');
+                    }
+                };
+                
+                img.src = URL.createObjectURL(originalFile);
+            }
+            
+            // Download converted ICO
+            function downloadImage() {
+                if (!convertedBlob) {
+                    alert('No converted image available.');
+                    return;
+                }
+                
+                const url = URL.createObjectURL(convertedBlob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = originalFile.name.replace(/\.[^/.]+$/, "") + ".ico";
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }
+            
+            // Drag and drop functionality
+            uploadSection.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadSection.style.borderColor = '#1E90FF';
+                uploadSection.style.backgroundColor = '#d0e8ff';
+            });
+            
+            uploadSection.addEventListener('dragleave', () => {
+                uploadSection.style.borderColor = '#E3F2FD';
+                uploadSection.style.backgroundColor = '#E3F2FD';
+            });
+            
+            uploadSection.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadSection.style.borderColor = '#E3F2FD';
+                uploadSection.style.backgroundColor = '#E3F2FD';
+                
+                if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+                    const file = e.dataTransfer.files[0];
+                    
+                    // Check if it's a JPG file
+                    if (file.type.match('image/jpeg') || file.type.match('image/jpg')) {
+                        fileInput.files = e.dataTransfer.files;
+                        handleFileSelect({ target: fileInput });
+                    } else {
+                        alert('Please drop a JPG/JPEG file.');
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
