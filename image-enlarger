@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Image Enlarger — Multi Tools</title>
+  <style>
+    :root{
+      --blue:#0b74ff;
+      --yellow:#ffd400;
+      --bg:#ffffff;
+      --card:#f7fbff;
+      --radius:14px;
+      font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:linear-gradient(180deg,#fff 0%, #f7fbff 100%);color:#0b0b0b;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+    .container{width:100%;max-width:980px;background:var(--card);border-radius:18px;box-shadow:0 10px 30px rgba(11,116,255,0.08);padding:22px;display:grid;grid-template-columns:1fr 420px;gap:20px}
+    header{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between}
+    .brand{display:flex;gap:12px;align-items:center}
+    .logo{width:46px;height:46px;border-radius:10px;background:linear-gradient(135deg,var(--blue),#2aa1ff);display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px}
+    h1{font-size:18px;margin:0}
+    p.lead{margin:0;color:rgba(0,0,0,0.6);font-size:13px}
+
+    /* Left column: controls */
+    .controls{padding:16px;background:linear-gradient(180deg,#fff,rgba(255,212,0,0.04));border-radius:14px}
+    .row{display:flex;gap:8px;align-items:center;margin-bottom:12px}
+    label{font-size:13px;color:#042;min-width:110px}
+    input[type=file]{display:block}
+    input[type=number], input[type=range], select{width:100%;padding:8px;border-radius:8px;border:1px solid rgba(11,116,255,0.12);font-size:14px}
+    .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;background:var(--blue);color:white;border-radius:10px;border:0;cursor:pointer;font-weight:600}
+    .btn.secondary{background:transparent;color:var(--blue);border:1px solid rgba(11,116,255,0.12)}
+    .small{font-size:13px;padding:8px 10px}
+    .muted{color:rgba(0,0,0,0.55);font-size:13px}
+
+    /* Right column: preview */
+    .preview-card{padding:14px;background:linear-gradient(180deg,#fff,rgba(11,116,255,0.03));border-radius:14px;display:flex;flex-direction:column;gap:12px;align-items:center}
+    .preview-area{width:100%;height:420px;border-radius:12px;border:1px dashed rgba(11,116,255,0.08);display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg, rgba(255,212,0,0.02), rgba(11,116,255,0.01));overflow:hidden}
+    .preview-area img{max-width:100%;max-height:100%;display:block}
+    .meta{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+    .meta .chip{background:rgba(11,116,255,0.06);padding:6px 10px;border-radius:999px;font-size:13px}
+
+    footer{grid-column:1/-1;text-align:center;color:rgba(0,0,0,0.6);font-size:13px;margin-top:8px}
+
+    @media (max-width:900px){
+      .container{grid-template-columns:1fr;padding:16px}
+      .preview-area{height:300px}
+    }
+    @media (max-width:480px){
+      .preview-area{height:220px}
+      .logo{width:40px;height:40px;font-size:16px}
+      label{min-width:90px}
+    }
+  </style>
+</head>
+<body>
+  <div class="container" role="main">
+    <header>
+      <div class="brand">
+        <div class="logo">T</div>
+        <div>
+          <h1>Image Enlarger</h1>
+          <p class="lead">Increase image size with quality-preserving upscaling — yellow & blue theme</p>
+        </div>
+      </div>
+      <div class="muted">Part of: Multi Tools • Mobile responsive</div>
+    </header>
+
+    <section class="controls" aria-labelledby="controls-title">
+      <h2 id="controls-title" style="font-size:15px;margin:0 0 10px 0">Upload & settings</h2>
+
+      <div class="row">
+        <label for="file">Choose image</label>
+        <input id="file" type="file" accept="image/*" aria-label="Upload image" />
+      </div>
+
+      <div class="row">
+        <label for="scale">Scale (1× - 4×)</label>
+        <input id="scale" type="range" min="1" max="4" step="0.1" value="2" />
+      </div>
+
+      <div class="row">
+        <label for="width">Target width (px)</label>
+        <input id="width" type="number" min="1" placeholder="auto" />
+      </div>
+
+      <div class="row">
+        <label for="keepAspect">Keep aspect</label>
+        <select id="keepAspect" aria-label="Keep aspect ratio">
+          <option value="true" selected>Yes</option>
+          <option value="false">No</option>
+        </select>
+      </div>
+
+      <div class="row" style="justify-content:space-between;margin-top:8px">
+        <button id="enlargeBtn" class="btn">Enlarge Image</button>
+        <button id="clearBtn" class="btn secondary small">Clear</button>
+      </div>
+
+      <div id="status" class="muted" style="margin-top:10px">No image loaded.</div>
+
+      <hr style="border:none;border-top:1px solid rgba(11,116,255,0.06);margin:12px 0" />
+
+      <div style="font-size:13px;color:rgba(0,0,0,0.6)">
+        Tips: Use PNG or high-quality JPG. Larger scale values increase processing time. For best results on very large upscales consider using a dedicated AI upscaler service.
+      </div>
+    </section>
+
+    <aside class="preview-card">
+      <div class="preview-area" id="previewArea" aria-live="polite">
+        <span class="muted">Preview will appear here</span>
+      </div>
+
+      <div class="meta" style="width:100%;justify-content:space-between">
+        <div class="meta-left">
+          <span class="chip" id="origInfo">Original: —</span>
+          <span class="chip" id="outInfo">Output: —</span>
+        </div>
+        <div style="display:flex;gap:8px">
+          <a id="downloadLink" class="btn secondary small" style="display:none" download="enlarged.png">Download</a>
+          <button id="zoomBtn" class="btn small" style="display:none">Open in new tab</button>
+        </div>
+      </div>
+    </aside>
+
+    <footer>Built with canvas • imageSmoothingQuality = high</footer>
+  </div>
+
+  <script>
+    const fileInput = document.getElementById('file');
+    const previewArea = document.getElementById('previewArea');
+    const status = document.getElementById('status');
+    const scaleRange = document.getElementById('scale');
+    const enlargeBtn = document.getElementById('enlargeBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const widthInput = document.getElementById('width');
+    const keepAspect = document.getElementById('keepAspect');
+    const origInfo = document.getElementById('origInfo');
+    const outInfo = document.getElementById('outInfo');
+    const downloadLink = document.getElementById('downloadLink');
+    const zoomBtn = document.getElementById('zoomBtn');
+
+    let loadedImage = null; // HTMLImageElement
+    let outputBlobUrl = null;
+
+    function resetPreview(){
+      previewArea.innerHTML = '<span class="muted">Preview will appear here</span>';
+      status.textContent = 'No image loaded.';
+      origInfo.textContent = 'Original: —';
+      outInfo.textContent = 'Output: —';
+      downloadLink.style.display = 'none';
+      zoomBtn.style.display = 'none';
+      if(outputBlobUrl){ URL.revokeObjectURL(outputBlobUrl); outputBlobUrl = null }
+    }
+
+    clearBtn.addEventListener('click', () => {
+      fileInput.value = '';
+      widthInput.value = '';
+      scaleRange.value = 2;
+      resetPreview();
+      loadedImage = null;
+    });
+
+    fileInput.addEventListener('change', async (ev) => {
+      const file = ev.target.files && ev.target.files[0];
+      if(!file) return resetPreview();
+      if(!file.type.startsWith('image/')){ alert('Please upload an image file.'); return }
+
+      status.textContent = 'Loading image...';
+      const url = URL.createObjectURL(file);
+      const img = new Image();
+      img.onload = () => {
+        loadedImage = img;
+        showOriginalPreview(img);
+        status.textContent = 'Image loaded. Choose scale and press "Enlarge Image".';
+        URL.revokeObjectURL(url);
+      };
+      img.onerror = () => { alert('Error loading image.'); URL.revokeObjectURL(url); resetPreview(); };
+      img.src = url;
+    });
+
+    function showOriginalPreview(img){
+      previewArea.innerHTML = '';
+      img.style.maxWidth = '100%';
+      img.style.maxHeight = '100%';
+      previewArea.appendChild(img.cloneNode());
+      origInfo.textContent = `Original: ${img.naturalWidth}×${img.naturalHeight}px`;
+      outInfo.textContent = 'Output: —';
+    }
+
+    function makeCanvasAndResize(img, targetW, targetH){
+      const canvas = document.createElement('canvas');
+      canvas.width = targetW;
+      canvas.height = targetH;
+      const ctx = canvas.getContext('2d');
+      // enable high quality interpolation
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = 'high';
+      // draw using drawImage — browser will interpolate using chosen smoothingQuality
+      ctx.drawImage(img, 0, 0, img.naturalWidth, img.naturalHeight, 0, 0, targetW, targetH);
+      return canvas;
+    }
+
+    async function enlargeImage(){
+      if(!loadedImage){ alert('Please upload an image first.'); return }
+      const scale = parseFloat(scaleRange.value) || 1;
+      let targetW = null;
+      let targetH = null;
+
+      if(widthInput.value){
+        targetW = Math.max(1, Math.floor(Number(widthInput.value)));
+        if(keepAspect.value === 'true'){
+          const ratio = loadedImage.naturalHeight / loadedImage.naturalWidth;
+          targetH = Math.round(targetW * ratio);
+        }
+      } else {
+        targetW = Math.round(loadedImage.naturalWidth * scale);
+      }
+      if(!targetH) targetH = Math.round(loadedImage.naturalHeight * scale);
+
+      status.textContent = `Processing — output ${targetW}×${targetH}...`;
+
+      // Create an offscreen scaled canvas. For very large upscales, do progressive scaling for better quality.
+      // We'll do progressive doubling if scale > 2 to improve quality.
+      const origW = loadedImage.naturalWidth;
+      const origH = loadedImage.naturalHeight;
+      const totalScaleW = targetW / origW;
+      const totalScaleH = targetH / origH;
+      const steps = Math.ceil(Math.log2(Math.max(totalScaleW, totalScaleH))) ;
+
+      // progressive approach: iteratively scale by up to 2x each step
+      let currentImg = loadedImage;
+      let currentW = origW;
+      let currentH = origH;
+
+      // If target smaller or equal, just single draw
+      if(targetW <= origW && targetH <= origH){
+        const canvas = makeCanvasAndResize(loadedImage, targetW, targetH);
+        await sendCanvasToPreview(canvas);
+        return;
+      }
+
+      // progressive loop
+      while((currentW !== targetW || currentH !== targetH)){
+        const nextW = Math.min(targetW, Math.round(currentW * 2));
+        const nextH = Math.min(targetH, Math.round(currentH * 2));
+        const canvas = makeCanvasAndResize(currentImg, nextW, nextH);
+        // convert canvas to Image for next iteration to use browser interpolation on already-upscaled image
+        const blob = await new Promise(res => canvas.toBlob(res, 'image/png'));
+        currentImg = new Image();
+        const objUrl = URL.createObjectURL(blob);
+        await new Promise((res, rej) => { currentImg.onload = res; currentImg.onerror = rej; currentImg.src = objUrl; });
+        URL.revokeObjectURL(objUrl);
+        currentW = nextW; currentH = nextH;
+      }
+
+      // now currentImg holds the final upscaled image in memory -> draw to final canvas to present
+      const finalCanvas = makeCanvasAndResize(currentImg, targetW, targetH);
+      await sendCanvasToPreview(finalCanvas);
+    }
+
+    async function sendCanvasToPreview(canvas){
+      // show preview
+      previewArea.innerHTML = '';
+      const imgEl = new Image();
+      const blob = await new Promise(res => canvas.toBlob(res, 'image/png'));
+      if(outputBlobUrl) URL.revokeObjectURL(outputBlobUrl);
+      outputBlobUrl = URL.createObjectURL(blob);
+      imgEl.src = outputBlobUrl;
+      imgEl.style.maxWidth = '100%';
+      imgEl.style.maxHeight = '100%';
+      previewArea.appendChild(imgEl);
+
+      outInfo.textContent = `Output: ${canvas.width}×${canvas.height}px`;
+      status.textContent = 'Done — preview shown below.';
+
+      downloadLink.href = outputBlobUrl;
+      downloadLink.style.display = 'inline-flex';
+      // set filename
+      downloadLink.download = `enlarged-${canvas.width}x${canvas.height}.png`;
+
+      zoomBtn.style.display = 'inline-flex';
+      zoomBtn.onclick = () => { window.open(outputBlobUrl, '_blank'); };
+    }
+
+    enlargeBtn.addEventListener('click', async () => {
+      try{
+        enlargeBtn.disabled = true; enlargeBtn.textContent = 'Processing…';
+        await enlargeImage();
+      }catch(e){
+        console.error(e); alert('An error occurred while enlarging the image.');
+      }finally{
+        enlargeBtn.disabled = false; enlargeBtn.textContent = 'Enlarge Image';
+      }
+    });
+
+    // initialize
+    resetPreview();
+  </script>
+</body>
+</html>
+
+
