@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tool Desk - Simplifying Your Digital Life</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --primary-color: #e63946;
@@ -222,6 +223,115 @@
             padding-left: 5px;
         }
 
+        /* Tool Container */
+        .tool-container {
+            padding: 80px 0;
+            min-height: 60vh;
+        }
+
+        .tool-wrapper {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .tool-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .tool-title {
+            font-size: 1.8rem;
+            color: var(--primary-color);
+        }
+
+        .tool-description {
+            margin-bottom: 25px;
+            color: var(--text-color);
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .input-group input, 
+        .input-group select, 
+        .input-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .input-group input:focus, 
+        .input-group select:focus, 
+        .input-group textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(230, 57, 70, 0.2);
+        }
+
+        .btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .btn:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+        }
+
+        .btn-secondary:hover {
+            background-color: rgba(230, 57, 70, 0.1);
+        }
+
+        .result-container {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: var(--bg-color);
+            border-radius: 5px;
+            border: 1px solid var(--border-color);
+            display: none;
+        }
+
+        .result-container.active {
+            display: block;
+        }
+
+        .result-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+
         /* FAQ Section */
         .faq {
             padding: 80px 0;
@@ -331,6 +441,10 @@
             .hero p {
                 font-size: 1rem;
             }
+
+            .tool-wrapper {
+                padding: 20px;
+            }
         }
     </style>
 </head>
@@ -345,10 +459,11 @@
                 </div>
                 <ul class="nav-links">
                     <li><a href="index.html">Home</a></li>
-                    <li><a href="about.html">About Us</a></li>
-                    <li><a href="contact.html">Contact Us</a></li>
-                    <li><a href="privacy-policy.html">Privacy Policy</a></li>
-                    <li><a href="disclaimer.html">Disclaimer</a></li>
+                    <li><a href="#tools">Tools</a></li>
+                    <li><a href="#about">About Us</a></li>
+                    <li><a href="#contact">Contact Us</a></li>
+                    <li><a href="#privacy">Privacy Policy</a></li>
+                    <li><a href="#disclaimer">Disclaimer</a></li>
                     <li>
                         <button class="theme-toggle" id="themeToggle">
                             <i class="fas fa-moon"></i>
@@ -383,28 +498,28 @@
                         Image Tools & Design Tools
                     </h3>
                     <ul class="tool-list">
-                        <li><a href="#">Image Converter</a></li>
-                        <li><a href="#">Image Compressor</a></li>
-                        <li><a href="#">Image Resizer</a></li>
-                        <li><a href="#">Image Enlarger</a></li>
-                        <li><a href="#">JPG to PNG Converter</a></li>
-                        <li><a href="#">PNG to JPG Converter</a></li>
-                        <li><a href="#">PNG to GIF Converter</a></li>
-                        <li><a href="#">PNG to WebP Converter</a></li>
-                        <li><a href="#">Image to Base64 Converter</a></li>
-                        <li><a href="#">JPG Converter</a></li>
-                        <li><a href="#">JPG to WebP Converter</a></li>
-                        <li><a href="#">ASCII Art Generator</a></li>
-                        <li><a href="#">Favicon Generator</a></li>
-                        <li><a href="#">Image Cropper</a></li>
-                        <li><a href="#">Image to Text (OCR)</a></li>
-                        <li><a href="#">Image Rotator/Flipper</a></li>
-                        <li><a href="#">JPG to GIF Converter</a></li>
-                        <li><a href="#">WebP to PNG Converter</a></li>
-                        <li><a href="#">ICO to PNG Converter</a></li>
-                        <li><a href="#">WebP to JPG Converter</a></li>
-                        <li><a href="#">PNG to BMP Converter</a></li>
-                        <li><a href="#">JPG to ICO Converter</a></li>
+                        <li><a href="#image-converter">Image Converter</a></li>
+                        <li><a href="#image-compressor">Image Compressor</a></li>
+                        <li><a href="#image-resizer">Image Resizer</a></li>
+                        <li><a href="#image-enlarger">Image Enlarger</a></li>
+                        <li><a href="#jpg-to-png">JPG to PNG Converter</a></li>
+                        <li><a href="#png-to-jpg">PNG to JPG Converter</a></li>
+                        <li><a href="#png-to-gif">PNG to GIF Converter</a></li>
+                        <li><a href="#png-to-webp">PNG to WebP Converter</a></li>
+                        <li><a href="#image-to-base64">Image to Base64 Converter</a></li>
+                        <li><a href="#jpg-converter">JPG Converter</a></li>
+                        <li><a href="#jpg-to-webp">JPG to WebP Converter</a></li>
+                        <li><a href="#ascii-art">ASCII Art Generator</a></li>
+                        <li><a href="#favicon">Favicon Generator</a></li>
+                        <li><a href="#image-cropper">Image Cropper</a></li>
+                        <li><a href="#image-to-text">Image to Text (OCR)</a></li>
+                        <li><a href="#image-rotator">Image Rotator/Flipper</a></li>
+                        <li><a href="#jpg-to-gif">JPG to GIF Converter</a></li>
+                        <li><a href="#webp-to-png">WebP to PNG Converter</a></li>
+                        <li><a href="#ico-to-png">ICO to PNG Converter</a></li>
+                        <li><a href="#webp-to-jpg">WebP to JPG Converter</a></li>
+                        <li><a href="#png-to-bmp">PNG to BMP Converter</a></li>
+                        <li><a href="#jpg-to-ico">JPG to ICO Converter</a></li>
                     </ul>
                 </div>
 
@@ -415,21 +530,21 @@
                         Calculator Tools
                     </h3>
                     <ul class="tool-list">
-                        <li><a href="#">Scientific Calculator</a></li>
-                        <li><a href="#">Age Calculator</a></li>
-                        <li><a href="#">Percentage Calculator</a></li>
-                        <li><a href="#">Confidence Interval Calculator</a></li>
-                        <li><a href="#">Margin Calculator</a></li>
-                        <li><a href="#">Paypal Fee Calculator</a></li>
-                        <li><a href="#">CPM Calculator</a></li>
-                        <li><a href="#">Average Calculator</a></li>
-                        <li><a href="#">Sales Tax Calculator</a></li>
-                        <li><a href="#">Probability Calculator</a></li>
-                        <li><a href="#">Discount Calculator</a></li>
-                        <li><a href="#">BMI Calculator</a></li>
-                        <li><a href="#">Loan EMI Calculator</a></li>
-                        <li><a href="#">GST Calculator</a></li>
-                        <li><a href="#">Currency Converter</a></li>
+                        <li><a href="#scientific-calculator">Scientific Calculator</a></li>
+                        <li><a href="#age-calculator">Age Calculator</a></li>
+                        <li><a href="#percentage-calculator">Percentage Calculator</a></li>
+                        <li><a href="#confidence-interval">Confidence Interval Calculator</a></li>
+                        <li><a href="#margin-calculator">Margin Calculator</a></li>
+                        <li><a href="#paypal-fee">Paypal Fee Calculator</a></li>
+                        <li><a href="#cpm-calculator">CPM Calculator</a></li>
+                        <li><a href="#average-calculator">Average Calculator</a></li>
+                        <li><a href="#sales-tax">Sales Tax Calculator</a></li>
+                        <li><a href="#probability-calculator">Probability Calculator</a></li>
+                        <li><a href="#discount-calculator">Discount Calculator</a></li>
+                        <li><a href="#bmi-calculator">BMI Calculator</a></li>
+                        <li><a href="#loan-emi">Loan EMI Calculator</a></li>
+                        <li><a href="#gst-calculator">GST Calculator</a></li>
+                        <li><a href="#currency-converter">Currency Converter</a></li>
                     </ul>
                 </div>
 
@@ -440,25 +555,25 @@
                         Text Tools
                     </h3>
                     <ul class="tool-list">
-                        <li><a href="#">Text Case Converter</a></li>
-                        <li><a href="#">Word & Character Counter</a></li>
-                        <li><a href="#">Text Sorter</a></li>
-                        <li><a href="#">Text Reverser</a></li>
-                        <li><a href="#">Article Rewriter</a></li>
-                        <li><a href="#">Backwards Text Generator</a></li>
-                        <li><a href="#">Text Compare</a></li>
-                        <li><a href="#">Lorem Ipsum Generator</a></li>
-                        <li><a href="#">Remove Line Breaks</a></li>
-                        <li><a href="#">Text Repeater</a></li>
-                        <li><a href="#">Comma Separator</a></li>
-                        <li><a href="#">Word to Number Converter</a></li>
-                        <li><a href="#">Text to Hashtags Converter</a></li>
-                        <li><a href="#">Text to Slug Converter</a></li>
-                        <li><a href="#">Case Converter</a></li>
-                        <li><a href="#">Random Word Converter</a></li>
-                        <li><a href="#">Number to Word Converter</a></li>
-                        <li><a href="#">Text to Tags Converter</a></li>
-                        <li><a href="#">Text Encryptor/Decryptor</a></li>
+                        <li><a href="#text-case">Text Case Converter</a></li>
+                        <li><a href="#word-counter">Word & Character Counter</a></li>
+                        <li><a href="#text-sorter">Text Sorter</a></li>
+                        <li><a href="#text-reverser">Text Reverser</a></li>
+                        <li><a href="#article-rewriter">Article Rewriter</a></li>
+                        <li><a href="#backwards-text">Backwards Text Generator</a></li>
+                        <li><a href="#text-compare">Text Compare</a></li>
+                        <li><a href="#lorem-ipsum">Lorem Ipsum Generator</a></li>
+                        <li><a href="#remove-line-breaks">Remove Line Breaks</a></li>
+                        <li><a href="#text-repeater">Text Repeater</a></li>
+                        <li><a href="#comma-separator">Comma Separator</a></li>
+                        <li><a href="#word-to-number">Word to Number Converter</a></li>
+                        <li><a href="#text-to-hashtags">Text to Hashtags Converter</a></li>
+                        <li><a href="#text-to-slug">Text to Slug Converter</a></li>
+                        <li><a href="#case-converter">Case Converter</a></li>
+                        <li><a href="#random-word">Random Word Converter</a></li>
+                        <li><a href="#number-to-word">Number to Word Converter</a></li>
+                        <li><a href="#text-to-tags">Text to Tags Converter</a></li>
+                        <li><a href="#text-encryptor">Text Encryptor/Decryptor</a></li>
                     </ul>
                 </div>
 
@@ -469,29 +584,29 @@
                         Web/Developer Tools
                     </h3>
                     <ul class="tool-list">
-                        <li><a href="#">HTML Minifier</a></li>
-                        <li><a href="#">CSS Minifier</a></li>
-                        <li><a href="#">HTML Beautifier</a></li>
-                        <li><a href="#">JavaScript DeObfuscator</a></li>
-                        <li><a href="#">JSON to JSON Schema</a></li>
-                        <li><a href="#">JSON Editor</a></li>
-                        <li><a href="#">XML to JSON Converter</a></li>
-                        <li><a href="#">TSV to JSON Converter</a></li>
-                        <li><a href="#">JSON to CSV Converter</a></li>
-                        <li><a href="#">JSON to TSV Converter</a></li>
-                        <li><a href="#">HTML Encoder</a></li>
-                        <li><a href="#">JavaScript Minifier</a></li>
-                        <li><a href="#">JavaScript Viewer</a></li>
-                        <li><a href="#">JSON Validator</a></li>
-                        <li><a href="#">JSON Minify</a></li>
-                        <li><a href="#">CSV to JSON Converter</a></li>
-                        <li><a href="#">JSON to XML Converter</a></li>
-                        <li><a href="#">JSON to Text Converter</a></li>
-                        <li><a href="#">JSON Formatter & Validator</a></li>
-                        <li><a href="#">Base64 Encoder/Decoder</a></li>
-                        <li><a href="#">URL Encoder/Decoder</a></li>
-                        <li><a href="#">Color Picker & Converter</a></li>
-                        <li><a href="#">Regex Tester</a></li>
+                        <li><a href="#html-minifier">HTML Minifier</a></li>
+                        <li><a href="#css-minifier">CSS Minifier</a></li>
+                        <li><a href="#html-beautifier">HTML Beautifier</a></li>
+                        <li><a href="#js-deobfuscator">JavaScript DeObfuscator</a></li>
+                        <li><a href="#json-to-schema">JSON to JSON Schema</a></li>
+                        <li><a href="#json-editor">JSON Editor</a></li>
+                        <li><a href="#xml-to-json">XML to JSON Converter</a></li>
+                        <li><a href="#tsv-to-json">TSV to JSON Converter</a></li>
+                        <li><a href="#json-to-csv">JSON to CSV Converter</a></li>
+                        <li><a href="#json-to-tsv">JSON to TSV Converter</a></li>
+                        <li><a href="#html-encoder">HTML Encoder</a></li>
+                        <li><a href="#js-minifier">JavaScript Minifier</a></li>
+                        <li><a href="#js-viewer">JavaScript Viewer</a></li>
+                        <li><a href="#json-validator">JSON Validator</a></li>
+                        <li><a href="#json-minify">JSON Minify</a></li>
+                        <li><a href="#csv-to-json">CSV to JSON Converter</a></li>
+                        <li><a href="#json-to-xml">JSON to XML Converter</a></li>
+                        <li><a href="#json-to-text">JSON to Text Converter</a></li>
+                        <li><a href="#json-formatter">JSON Formatter & Validator</a></li>
+                        <li><a href="#base64-encoder">Base64 Encoder/Decoder</a></li>
+                        <li><a href="#url-encoder">URL Encoder/Decoder</a></li>
+                        <li><a href="#color-picker">Color Picker & Converter</a></li>
+                        <li><a href="#regex-tester">Regex Tester</a></li>
                     </ul>
                 </div>
 
@@ -502,19 +617,19 @@
                         SEO & Marketing Tools
                     </h3>
                     <ul class="tool-list">
-                        <li><a href="#">Keyword Density Checker</a></li>
-                        <li><a href="#">Meta Tag Generator</a></li>
-                        <li><a href="#">Hashtag Generator</a></li>
-                        <li><a href="#">Meta Tag Analyzer</a></li>
-                        <li><a href="#">Word Counter/Character counter</a></li>
-                        <li><a href="#">Website Ranking Checker</a></li>
-                        <li><a href="#">Google Index Checker</a></li>
-                        <li><a href="#">UTM Builder</a></li>
-                        <li><a href="#">Open Graph Generator</a></li>
-                        <li><a href="#">Keywords Suggestion</a></li>
-                        <li><a href="#">Open Graph Checker</a></li>
-                        <li><a href="#">Google Cache Checker</a></li>
-                        <li><a href="#">Twitter Card Generator</a></li>
+                        <li><a href="#keyword-density">Keyword Density Checker</a></li>
+                        <li><a href="#meta-tag-generator">Meta Tag Generator</a></li>
+                        <li><a href="#hashtag-generator">Hashtag Generator</a></li>
+                        <li><a href="#meta-tag-analyzer">Meta Tag Analyzer</a></li>
+                        <li><a href="#word-counter-seo">Word Counter/Character counter</a></li>
+                        <li><a href="#website-ranking">Website Ranking Checker</a></li>
+                        <li><a href="#google-index">Google Index Checker</a></li>
+                        <li><a href="#utm-builder">UTM Builder</a></li>
+                        <li><a href="#open-graph">Open Graph Generator</a></li>
+                        <li><a href="#keywords-suggestion">Keywords Suggestion</a></li>
+                        <li><a href="#open-graph-checker">Open Graph Checker</a></li>
+                        <li><a href="#google-cache">Google Cache Checker</a></li>
+                        <li><a href="#twitter-card">Twitter Card Generator</a></li>
                     </ul>
                 </div>
 
@@ -525,20 +640,130 @@
                         Utility Tools
                     </h3>
                     <ul class="tool-list">
-                        <li><a href="#">QR Code Generator & Scanner</a></li>
-                        <li><a href="#">Barcode Generator</a></li>
-                        <li><a href="#">UUID Generator</a></li>
-                        <li><a href="#">MD5 Generator</a></li>
-                        <li><a href="#">Base64 Encode</a></li>
-                        <li><a href="#">Base64 Decode</a></li>
-                        <li><a href="#">Convert SRT to VTT</a></li>
-                        <li><a href="#">RGB to HEX Converter</a></li>
-                        <li><a href="#">HEX to RGB converter</a></li>
-                        <li><a href="#">URL Opener</a></li>
-                        <li><a href="#">Unit Converter</a></li>
-                        <li><a href="#">Time Zone Converter</a></li>
-                        <li><a href="#">Random Number/Password Generator</a></li>
+                        <li><a href="#qr-code">QR Code Generator & Scanner</a></li>
+                        <li><a href="#barcode">Barcode Generator</a></li>
+                        <li><a href="#uuid">UUID Generator</a></li>
+                        <li><a href="#md5">MD5 Generator</a></li>
+                        <li><a href="#base64-encode">Base64 Encode</a></li>
+                        <li><a href="#base64-decode">Base64 Decode</a></li>
+                        <li><a href="#srt-to-vtt">Convert SRT to VTT</a></li>
+                        <li><a href="#rgb-to-hex">RGB to HEX Converter</a></li>
+                        <li><a href="#hex-to-rgb">HEX to RGB converter</a></li>
+                        <li><a href="#url-opener">URL Opener</a></li>
+                        <li><a href="#unit-converter">Unit Converter</a></li>
+                        <li><a href="#time-zone">Time Zone Converter</a></li>
+                        <li><a href="#random-generator">Random Number/Password Generator</a></li>
                     </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tool Examples Section -->
+    <section class="tool-container" id="tool-examples">
+        <div class="container">
+            <!-- Word Counter Tool -->
+            <div class="tool-wrapper" id="word-counter">
+                <div class="tool-header">
+                    <h2 class="tool-title">Word & Character Counter</h2>
+                    <button class="btn" id="copyResult">Copy Result</button>
+                </div>
+                <p class="tool-description">Count the number of words, characters, sentences, and paragraphs in your text.</p>
+                
+                <div class="input-group">
+                    <label for="textInput">Enter your text:</label>
+                    <textarea id="textInput" rows="8" placeholder="Type or paste your text here..."></textarea>
+                </div>
+                
+                <button class="btn" id="countBtn">Count Text</button>
+                <button class="btn btn-secondary" id="clearText">Clear Text</button>
+                
+                <div class="result-container" id="wordCounterResult">
+                    <h3 class="result-title">Text Analysis Results</h3>
+                    <div class="result-grid">
+                        <div class="result-item">
+                            <span class="result-label">Words:</span>
+                            <span class="result-value" id="wordCount">0</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">Characters:</span>
+                            <span class="result-value" id="charCount">0</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">Sentences:</span>
+                            <span class="result-value" id="sentenceCount">0</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">Paragraphs:</span>
+                            <span class="result-value" id="paragraphCount">0</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">Reading Time:</span>
+                            <span class="result-value" id="readingTime">0 min</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Base64 Encoder/Decoder Tool -->
+            <div class="tool-wrapper" id="base64-encoder" style="margin-top: 50px;">
+                <div class="tool-header">
+                    <h2 class="tool-title">Base64 Encoder/Decoder</h2>
+                    <button class="btn" id="copyBase64">Copy Result</button>
+                </div>
+                <p class="tool-description">Encode text to Base64 or decode Base64 back to text.</p>
+                
+                <div class="input-group">
+                    <label for="base64Input">Enter text or Base64 string:</label>
+                    <textarea id="base64Input" rows="5" placeholder="Enter text to encode or Base64 to decode..."></textarea>
+                </div>
+                
+                <div class="input-group">
+                    <label for="base64Action">Action:</label>
+                    <select id="base64Action">
+                        <option value="encode">Encode to Base64</option>
+                        <option value="decode">Decode from Base64</option>
+                    </select>
+                </div>
+                
+                <button class="btn" id="processBase64">Process</button>
+                <button class="btn btn-secondary" id="clearBase64">Clear</button>
+                
+                <div class="result-container" id="base64Result">
+                    <h3 class="result-title">Result</h3>
+                    <div id="base64Output"></div>
+                </div>
+            </div>
+
+            <!-- RGB to HEX Converter -->
+            <div class="tool-wrapper" id="rgb-to-hex" style="margin-top: 50px;">
+                <div class="tool-header">
+                    <h2 class="tool-title">RGB to HEX Converter</h2>
+                    <button class="btn" id="copyHex">Copy HEX</button>
+                </div>
+                <p class="tool-description">Convert RGB color values to HEX format.</p>
+                
+                <div class="input-group">
+                    <label for="redValue">Red (0-255):</label>
+                    <input type="number" id="redValue" min="0" max="255" value="120">
+                </div>
+                
+                <div class="input-group">
+                    <label for="greenValue">Green (0-255):</label>
+                    <input type="number" id="greenValue" min="0" max="255" value="80">
+                </div>
+                
+                <div class="input-group">
+                    <label for="blueValue">Blue (0-255):</label>
+                    <input type="number" id="blueValue" min="0" max="255" value="200">
+                </div>
+                
+                <button class="btn" id="convertToHex">Convert to HEX</button>
+                
+                <div class="result-container" id="hexResult">
+                    <h3 class="result-title">HEX Color</h3>
+                    <div id="hexOutput" style="font-size: 1.2rem; font-weight: bold;"></div>
+                    <div id="colorPreview" style="width: 100px; height: 100px; margin-top: 15px; border: 1px solid var(--border-color);"></div>
                 </div>
             </div>
         </div>
@@ -610,10 +835,17 @@
                     <h4>Quick Links</h4>
                     <ul>
                         <li><a href="index.html">Home</a></li>
-                        <li><a href="about.html">About Us</a></li>
-                        <li><a href="contact.html">Contact Us</a></li>
-                        <li><a href="privacy-policy.html">Privacy Policy</a></li>
-                        <li><a href="disclaimer.html">Disclaimer</a></li>
+                        <li><a href="#tools">Tools</a></li>
+                        <li><a href="#about">About Us</a></li>
+                        <li><a href="#contact">Contact Us</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a href="#privacy">Privacy Policy</a></li>
+                        <li><a href="#disclaimer">Disclaimer</a></li>
+                        <li><a href="#terms">Terms of Service</a></li>
                     </ul>
                 </div>
                 <div class="footer-links">
@@ -680,6 +912,179 @@
                 }
             });
         });
+
+        // Word Counter Tool
+        const countBtn = document.getElementById('countBtn');
+        const clearText = document.getElementById('clearText');
+        const textInput = document.getElementById('textInput');
+        const wordCounterResult = document.getElementById('wordCounterResult');
+        const copyResult = document.getElementById('copyResult');
+
+        countBtn.addEventListener('click', () => {
+            const text = textInput.value.trim();
+            
+            if (text === '') {
+                alert('Please enter some text to analyze.');
+                return;
+            }
+            
+            // Count words
+            const words = text.split(/\s+/).filter(word => word.length > 0);
+            const wordCount = words.length;
+            
+            // Count characters
+            const charCount = text.length;
+            
+            // Count sentences
+            const sentences = text.split(/[.!?]+/).filter(sentence => sentence.trim().length > 0);
+            const sentenceCount = sentences.length;
+            
+            // Count paragraphs
+            const paragraphs = text.split(/\n+/).filter(para => para.trim().length > 0);
+            const paragraphCount = paragraphs.length;
+            
+            // Calculate reading time (average reading speed: 200 words per minute)
+            const readingTime = Math.ceil(wordCount / 200);
+            
+            // Update results
+            document.getElementById('wordCount').textContent = wordCount;
+            document.getElementById('charCount').textContent = charCount;
+            document.getElementById('sentenceCount').textContent = sentenceCount;
+            document.getElementById('paragraphCount').textContent = paragraphCount;
+            document.getElementById('readingTime').textContent = `${readingTime} min`;
+            
+            // Show results
+            wordCounterResult.classList.add('active');
+        });
+
+        clearText.addEventListener('click', () => {
+            textInput.value = '';
+            wordCounterResult.classList.remove('active');
+        });
+
+        copyResult.addEventListener('click', () => {
+            const resultText = `Words: ${document.getElementById('wordCount').textContent}\nCharacters: ${document.getElementById('charCount').textContent}\nSentences: ${document.getElementById('sentenceCount').textContent}\nParagraphs: ${document.getElementById('paragraphCount').textContent}\nReading Time: ${document.getElementById('readingTime').textContent}`;
+            
+            navigator.clipboard.writeText(resultText)
+                .then(() => {
+                    const originalText = copyResult.textContent;
+                    copyResult.textContent = 'Copied!';
+                    setTimeout(() => {
+                        copyResult.textContent = originalText;
+                    }, 2000);
+                })
+                .catch(err => {
+                    console.error('Failed to copy text: ', err);
+                });
+        });
+
+        // Base64 Encoder/Decoder Tool
+        const processBase64 = document.getElementById('processBase64');
+        const clearBase64 = document.getElementById('clearBase64');
+        const base64Input = document.getElementById('base64Input');
+        const base64Action = document.getElementById('base64Action');
+        const base64Result = document.getElementById('base64Result');
+        const base64Output = document.getElementById('base64Output');
+        const copyBase64 = document.getElementById('copyBase64');
+
+        processBase64.addEventListener('click', () => {
+            const input = base64Input.value.trim();
+            
+            if (input === '') {
+                alert('Please enter text or Base64 string.');
+                return;
+            }
+            
+            try {
+                if (base64Action.value === 'encode') {
+                    // Encode to Base64
+                    const encoded = btoa(unescape(encodeURIComponent(input)));
+                    base64Output.textContent = encoded;
+                } else {
+                    // Decode from Base64
+                    const decoded = decodeURIComponent(escape(atob(input)));
+                    base64Output.textContent = decoded;
+                }
+                
+                base64Result.classList.add('active');
+            } catch (error) {
+                alert('Error processing Base64. Please check your input.');
+                console.error(error);
+            }
+        });
+
+        clearBase64.addEventListener('click', () => {
+            base64Input.value = '';
+            base64Result.classList.remove('active');
+        });
+
+        copyBase64.addEventListener('click', () => {
+            const resultText = base64Output.textContent;
+            
+            navigator.clipboard.writeText(resultText)
+                .then(() => {
+                    const originalText = copyBase64.textContent;
+                    copyBase64.textContent = 'Copied!';
+                    setTimeout(() => {
+                        copyBase64.textContent = originalText;
+                    }, 2000);
+                })
+                .catch(err => {
+                    console.error('Failed to copy text: ', err);
+                });
+        });
+
+        // RGB to HEX Converter
+        const convertToHex = document.getElementById('convertToHex');
+        const redValue = document.getElementById('redValue');
+        const greenValue = document.getElementById('greenValue');
+        const blueValue = document.getElementById('blueValue');
+        const hexResult = document.getElementById('hexResult');
+        const hexOutput = document.getElementById('hexOutput');
+        const colorPreview = document.getElementById('colorPreview');
+        const copyHex = document.getElementById('copyHex');
+
+        convertToHex.addEventListener('click', () => {
+            const r = parseInt(redValue.value) || 0;
+            const g = parseInt(greenValue.value) || 0;
+            const b = parseInt(blueValue.value) || 0;
+            
+            // Validate RGB values
+            if (r < 0 || r > 255 || g < 0 || g > 255 || b < 0 || b > 255) {
+                alert('Please enter valid RGB values (0-255).');
+                return;
+            }
+            
+            // Convert to HEX
+            const hex = '#' + 
+                (r < 16 ? '0' : '') + r.toString(16) +
+                (g < 16 ? '0' : '') + g.toString(16) +
+                (b < 16 ? '0' : '') + b.toString(16);
+            
+            hexOutput.textContent = hex.toUpperCase();
+            colorPreview.style.backgroundColor = hex;
+            
+            hexResult.classList.add('active');
+        });
+
+        copyHex.addEventListener('click', () => {
+            const hexValue = hexOutput.textContent;
+            
+            navigator.clipboard.writeText(hexValue)
+                .then(() => {
+                    const originalText = copyHex.textContent;
+                    copyHex.textContent = 'Copied!';
+                    setTimeout(() => {
+                        copyHex.textContent = originalText;
+                    }, 2000);
+                })
+                .catch(err => {
+                    console.error('Failed to copy text: ', err);
+                });
+        });
+
+        // Initialize the RGB to HEX converter
+        convertToHex.click();
     </script>
 </body>
 </html>
