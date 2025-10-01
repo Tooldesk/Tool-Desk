@@ -1,1 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Word to Number Converter</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
 
+        :root {
+            --bright-yellow: #FFD700;
+            --vibrant-blue: #1E90FF;
+            --dark-blue: #0066CC;
+            --light-yellow: #FFF9C4;
+            --light-blue: #E3F2FD;
+            --dark-yellow: #FFA000;
+        }
+
+        body {
+            background: linear-gradient(135deg, #E3F2FD, #FFF9C4);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 700px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+        }
+
+        header {
+            background: var(--vibrant-blue);
+            color: white;
+            padding: 25px;
+            text-align: center;
+            position: relative;
+        }
+
+        header::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 100%;
+            height: 20px;
+            background: var(--bright-yellow);
+            clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 70%);
+        }
+
+        header h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        header p {
+            margin-top: 10px;
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+
+        .tool-container {
+            padding: 30px;
+        }
+
+        .input-section {
+            margin-bottom: 30px;
+        }
+
+        .input-title {
+            text-align: center;
+            margin-bottom: 20px;
+            color: var(--dark-blue);
+            font-weight: 700;
+            font-size: 1.4rem;
+        }
+
+        .text-input {
+            width: 100%;
+            min-height: 150px;
+            padding: 15px;
+            border: 3px dashed var(--light-blue);
+            border-radius: 16px;
+            background-color: var(--light-blue);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 1.1rem;
+            line-height: 1.5;
+            resize: vertical;
+            transition: all 0.3s ease;
+        }
+
+        .text-input:focus {
+            outline: none;
+            border-color: var(--vibrant-blue);
+            background-color: #f0f8ff;
+            box-shadow: 0 0 0 3px rgba(30, 144, 255, 0.2);
+        }
+
+        .examples {
+            background: var(--light-yellow);
+            padding: 15px;
+            border-radius: 12px;
+            margin: 20px 0;
+            border: 1px solid var(--bright-yellow);
+            color: #e65100;
+            font-weight: 600;
+        }
+
+        .examples h4 {
+            margin-bottom: 8px;
+        }
+
+        .examples ul {
+            padding-left: 20px;
+            margin-top: 8px;
+        }
+
+        .examples li {
+            margin: 5px 0;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 25px 0;
+            flex-wrap: wrap;
+        }
+
+        .convert-btn, .clear-btn, .copy-btn {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .convert-btn {
+            background: var(--vibrant-blue);
+            color: white;
+        }
+
+        .convert-btn:hover {
+            background: var(--dark-blue);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .clear-btn {
+            background: #ffcdd2;
+            color: #c62828;
+        }
+
+        .clear-btn:hover {
+            background: #ef9a9a;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .copy-btn {
+            background: var(--dark-yellow);
+            color: #1a237e;
+        }
+
+        .copy-btn:hover {
+            background: #e69500;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .result-section {
+            margin-top: 30px;
+        }
+
+        .result-title {
+            text-align: center;
+            margin-bottom: 20px;
+            color: var(--dark-blue);
+            font-weight: 700;
+            font-size: 1.4rem;
+        }
+
+        .number-output {
+            width: 100%;
+            min-height: 120px;
+            padding: 20px;
+            border: 3px solid var(--light-blue);
+            border-radius: 16px;
+            background: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            text-align: center;
+            line-height: 1.5;
+            resize: vertical;
+            overflow: auto;
+        }
+
+        .error-message {
+            color: #d32f2f;
+            font-weight: 600;
+            margin-top: 10px;
+            display: none;
+            text-align: center;
+            padding: 10px;
+            background: #ffebee;
+            border-radius: 8px;
+        }
+
+        .format-info {
+            text-align: center;
+            margin: 20px 0;
+            padding: 15px;
+            background: var(--light-blue);
+            border-radius: 12px;
+            border: 1px solid var(--vibrant-blue);
+            color: var(--dark-blue);
+            font-weight: 600;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 700px) {
+            .container {
+                border-radius: 16px;
+            }
+            
+            header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .tool-container {
+                padding: 20px;
+            }
+            
+            .text-input {
+                min-height: 120px;
+                font-size: 1rem;
+            }
+            
+            .number-output {
+                font-size: 1.5rem;
+                min-height: 100px;
+            }
+            
+            .convert-btn, .clear-btn, .copy-btn {
+                padding: 12px 24px;
+                font-size: 1rem;
+            }
+            
+            .action-buttons {
+                gap: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            header h1 {
+                font-size: 1.5rem;
+            }
+            
+            header p {
+                font-size: 1rem;
+            }
+            
+            .convert-btn, .clear-btn, .copy-btn {
+                width: 100%;
+                max-width: 220px;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .number-output {
+                font-size: 1.3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Word to Number Converter</h1>
+            <p>Convert written numbers to digits instantly</p>
+        </header>
+        
+        <div class="tool-container">
+            <div class="format-info">
+                <p>✅ Converts words like "ten million" to 10000000</p>
+                <p>✅ Handles complex number formats</p>
+                <p>✅ Supports negative numbers and decimals</p>
+            </div>
+            
+            <div class="input-section">
+                <h3 class="input-title">Enter Number in Words</h3>
+                <textarea id="textInput" class="text-input" placeholder="Type or paste your number in words here...&#10;&#10;Examples:&#10;- two hundred fifty-six&#10;- ten million&#10;- negative forty-two point five"></textarea>
+                
+                <div class="examples">
+                    <h4>Supported Formats:</h4>
+                    <ul>
+                        <li>Basic numbers: <em>twenty-five</em></li>
+                        <li>Large numbers: <em>ten million</em></li>
+                        <li>Decimals: <em>thirty point five</em></li>
+                        <li>Negative numbers: <em>negative one hundred</em></li>
+                        <li>Compound numbers: <em>two hundred fifty-six</em></li>
+                    </ul>
+                </div>
+                
+                <div class="action-buttons">
+                    <button class="convert-btn" id="convertBtn">Convert to Number</button>
+                    <button class="clear-btn" id="clearBtn">Clear Text</button>
+                    <button class="copy-btn" id="copyBtn">Copy Result</button>
+                </div>
+                
+                <div class="error-message" id="errorMessage"></div>
+            </div>
+            
+            <div class="result-section">
+                <h3 class="result-title">Converted Number</h3>
+                <div id="numberOutput" class="number-output" contenteditable="false">0</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM Elements
+            const textInput = document.getElementById('textInput');
+            const numberOutput = document.getElementById('numberOutput');
+            const convertBtn = document.getElementById('convertBtn');
+            const clearBtn = document.getElementById('clearBtn');
+            const copyBtn = document.getElementById('copyBtn');
+            const errorMessage = document.getElementById('errorMessage');
+            
+            // Number mapping dictionaries
+            const smallNumbers = {
+                'zero': 0, 'one': 1, 'two': 2, 'three': 3, 'four': 4, 'five': 5,
+                'six': 6, 'seven': 7, 'eight': 8, 'nine': 9, 'ten': 10,
+                'eleven': 11, 'twelve': 12, 'thirteen': 13, 'fourteen': 14, 'fifteen': 15,
+                'sixteen': 16, 'seventeen': 17, 'eighteen': 18, 'nineteen': 19,
+                'twenty': 20, 'thirty': 30, 'forty': 40, 'fifty': 50,
+                'sixty': 60, 'seventy': 70, 'eighty': 80, 'ninety': 90
+            };
+            
+            const scaleNumbers = {
+                'hundred': 100,
+                'thousand': 1000,
+                'million': 1000000,
+                'billion': 1000000000,
+                'trillion': 1000000000000
+            };
+            
+            // Event Listeners
+            convertBtn.addEventListener('click', convertWordsToNumber);
+            clearBtn.addEventListener('click', clearText);
+            copyBtn.addEventListener('click', copyToClipboard);
+            
+            // Convert words to number function
+            function convertWordsToNumber() {
+                const inputText = textInput.value.trim();
+                errorMessage.style.display = 'none';
+                
+                if (!inputText) {
+                    numberOutput.textContent = '0';
+                    return;
+                }
+                
+                try {
+                    // Handle negative numbers
+                    let isNegative = false;
+                    let processedText = inputText.toLowerCase();
+                    
+                    if (processedText.startsWith('negative ')) {
+                        isNegative = true;
+                        processedText = processedText.substring(9);
+                    }
+                    
+                    // Handle decimal numbers
+                    let decimalPart = '';
+                    if (processedText.includes('point')) {
+                        const parts = processedText.split('point');
+                        processedText = parts[0].trim();
+                        decimalPart = parts[1].trim();
+                    }
+                    
+                    // Convert whole number part
+                    let wholeNumber = 0;
+                    if (processedText) {
+                        wholeNumber = parseNumberWords(processedText);
+                    }
+                    
+                    // Convert decimal part
+                    let finalNumber = wholeNumber;
+                    if (decimalPart) {
+                        const decimalValue = parseDecimalWords(decimalPart);
+                        finalNumber += decimalValue;
+                    }
+                    
+                    if (isNegative) {
+                        finalNumber = -finalNumber;
+                    }
+                    
+                    numberOutput.textContent = finalNumber.toLocaleString('en-US', {
+                        maximumFractionDigits: 20
+                    }).replace(/,/g, '');
+                } catch (error) {
+                    showError('Invalid number format. Please check your input and try again.');
+                    numberOutput.textContent = '0';
+                }
+            }
+            
+            // Parse number words function
+            function parseNumberWords(text) {
+                // Clean and split the text
+                const words = text.replace(/[^a-z\s-]/g, '').split(/\s+/).filter(w => w);
+                
+                if (words.length === 0) return 0;
+                
+                // Handle simple numbers
+                if (words.length === 1) {
+                    const word = words[0];
+                    if (smallNumbers[word] !== undefined) {
+                        return smallNumbers[word];
+                    } else if (scaleNumbers[word] !== undefined) {
+                        return scaleNumbers[word];
+                    } else {
+                        throw new Error('Unknown number word: ' + word);
+                    }
+                }
+                
+                let current = 0;
+                let result = 0;
+                
+                for (let i = 0; i < words.length; i++) {
+                    const word = words[i];
+                    
+                    if (smallNumbers[word] !== undefined) {
+                        current += smallNumbers[word];
+                    } else if (word === 'hundred') {
+                        current *= 100;
+                    } else if (scaleNumbers[word] !== undefined) {
+                        current *= scaleNumbers[word];
+                        result += current;
+                        current = 0;
+                    } else if (word === 'and') {
+                        // Ignore "and" in numbers like "one hundred and twenty"
+                        continue;
+                    } else {
+                        throw new Error('Unknown number word: ' + word);
+                    }
+                }
+                
+                return result + current;
+            }
+            
+            // Parse decimal words function
+            function parseDecimalWords(text) {
+                const words = text.replace(/[^a-z\s-]/g, '').split(/\s+/).filter(w => w);
+                let decimalStr = '';
+                
+                for (const word of words) {
+                    if (smallNumbers[word] !== undefined && smallNumbers[word] < 10) {
+                        decimalStr += smallNumbers[word];
+                    } else {
+                        throw new Error('Invalid decimal word: ' + word);
+                    }
+                }
+                
+                if (decimalStr === '') return 0;
+                return parseFloat('0.' + decimalStr);
+            }
+            
+            // Show error message
+            function showError(message) {
+                errorMessage.textContent = message;
+                errorMessage.style.display = 'block';
+            }
+            
+            // Clear text function
+            function clearText() {
+                textInput.value = '';
+                numberOutput.textContent = '0';
+                errorMessage.style.display = 'none';
+                textInput.focus();
+            }
+            
+            // Copy to clipboard function
+            function copyToClipboard() {
+                if (numberOutput.textContent === '0') {
+                    alert('No number to copy. Please convert a number first.');
+                    return;
+                }
+                
+                const tempInput = document.createElement('textarea');
+                tempInput.value = numberOutput.textContent;
+                document.body.appendChild(tempInput);
+                tempInput.select();
+                document.execCommand('copy');
+                document.body.removeChild(tempInput);
+                
+                // Show visual feedback
+                const originalText = copyBtn.textContent;
+                copyBtn.textContent = 'Copied!';
+                setTimeout(() => {
+                    copyBtn.textContent = originalText;
+                }, 2000);
+            }
+        });
+    </script>
+</body>
+</html>
