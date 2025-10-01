@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confidence Interval Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2980, #26d0ce);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(to right, #FFD700, #FFA500);
+            padding: 25px;
+            text-align: center;
+            color: #1a2980;
+        }
+        
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .calculator {
+            padding: 30px;
+        }
+        
+        .input-section {
+            margin-bottom: 25px;
+        }
+        
+        .section-title {
+            color: #1a2980;
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .section-title i {
+            background: #FFD700;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+        }
+        
+        .input-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .input-field {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #1a2980;
+            font-weight: 600;
+        }
+        
+        input {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: #FFD700;
+            box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.3);
+        }
+        
+        input.error {
+            border-color: #ff4757;
+        }
+        
+        .error-message {
+            color: #ff4757;
+            font-size: 0.85rem;
+            margin-top: 5px;
+            display: none;
+        }
+        
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            background: #f0f4ff;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .tab {
+            flex: 1;
+            text-align: center;
+            padding: 15px;
+            cursor: pointer;
+            font-weight: 600;
+            color: #6a7ae0;
+            transition: all 0.3s;
+        }
+        
+        .tab.active {
+            background: #1a2980;
+            color: white;
+        }
+        
+        .tab:hover:not(.active) {
+            background: #e0e6ff;
+        }
+        
+        .result-section {
+            background: #f9fbff;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 20px;
+            border: 2px solid #e0e6ff;
+        }
+        
+        .result-title {
+            color: #1a2980;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+        
+        .result-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #FFD700;
+            text-align: center;
+            margin: 15px 0;
+            padding: 15px;
+            background: #1a2980;
+            border-radius: 10px;
+            color: white;
+        }
+        
+        .steps {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px dashed #e0e6ff;
+        }
+        
+        .step {
+            margin-bottom: 15px;
+            padding-left: 20px;
+            position: relative;
+        }
+        
+        .step:before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #FFD700;
+            font-size: 1.5rem;
+            top: -5px;
+        }
+        
+        .formula {
+            background: #1a2980;
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            font-family: monospace;
+            margin: 10px 0;
+            overflow-x: auto;
+        }
+        
+        @media (max-width: 600px) {
+            .input-group {
+                flex-direction: column;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .result-value {
+                font-size: 1.4rem;
+            }
+        }
+        
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Confidence Interval Calculator</h1>
+            <p class="subtitle">Calculate confidence intervals for mean or standard deviation</p>
+        </header>
+        
+        <div class="calculator">
+            <div class="tabs">
+                <div class="tab active" data-tab="mean">Confidence Interval for Mean</div>
+                <div class="tab" data-tab="std">Confidence Interval for Standard Deviation</div>
+            </div>
+            
+            <!-- Mean Input Section -->
+            <div id="mean-input" class="input-section">
+                <div class="section-title">
+                    <i>1</i> Sample Data
+                </div>
+                <div class="input-group">
+                    <div class="input-field">
+                        <label for="sample-mean">Sample Mean (x̄)</label>
+                        <input type="number" id="sample-mean" placeholder="e.g., 75.5" step="any">
+                        <div class="error-message" id="mean-error">Please enter a valid number</div>
+                    </div>
+                    <div class="input-field">
+                        <label for="sample-size">Sample Size (n)</label>
+                        <input type="number" id="sample-size" placeholder="e.g., 30" min="2">
+                        <div class="error-message" id="size-error">Sample size must be ≥ 2</div>
+                    </div>
+                </div>
+                
+                <div class="section-title">
+                    <i>2</i> Population Parameters
+                </div>
+                <div class="input-group">
+                    <div class="input-field">
+                        <label for="std-dev">Standard Deviation (σ)</label>
+                        <input type="number" id="std-dev" placeholder="e.g., 10.2" step="any" min="0">
+                        <div class="error-message" id="std-error">Standard deviation must be ≥ 0</div>
+                    </div>
+                    <div class="input-field">
+                        <label for="confidence-level">Confidence Level (%)</label>
+                        <input type="number" id="confidence-level" placeholder="e.g., 95" min="50" max="99.9" step="0.1">
+                        <div class="error-message" id="conf-error">Confidence level must be between 50 and 99.9</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Standard Deviation Input Section -->
+            <div id="std-input" class="input-section hidden">
+                <div class="section-title">
+                    <i>1</i> Sample Data
+                </div>
+                <div class="input-group">
+                    <div class="input-field">
+                        <label for="sample-std">Sample Standard Deviation (s)</label>
+                        <input type="number" id="sample-std" placeholder="e.g., 8.4" step="any" min="0">
+                        <div class="error-message" id="sample-std-error">Standard deviation must be ≥ 0</div>
+                    </div>
+                    <div class="input-field">
+                        <label for="std-sample-size">Sample Size (n)</label>
+                        <input type="number" id="std-sample-size" placeholder="e.g., 25" min="2">
+                        <div class="error-message" id="std-size-error">Sample size must be ≥ 2</div>
+                    </div>
+                </div>
+                
+                <div class="section-title">
+                    <i>2</i> Confidence Level
+                </div>
+                <div class="input-group">
+                    <div class="input-field">
+                        <label for="std-confidence-level">Confidence Level (%)</label>
+                        <input type="number" id="std-confidence-level" placeholder="e.g., 95" min="50" max="99.9" step="0.1">
+                        <div class="error-message" id="std-conf-error">Confidence level must be between 50 and 99.9</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="result-section">
+                <h2 class="result-title">Confidence Interval Result</h2>
+                <div class="result-value" id="result">Enter values to calculate</div>
+                
+                <div class="steps" id="steps">
+                    <!-- Steps will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tab switching functionality
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                // Update active tab
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                
+                // Show/hide input sections
+                const tabType = tab.dataset.tab;
+                document.getElementById('mean-input').classList.toggle('hidden', tabType !== 'mean');
+                document.getElementById('std-input').classList.toggle('hidden', tabType !== 'std');
+                
+                // Clear results
+                document.getElementById('result').textContent = 'Enter values to calculate';
+                document.getElementById('steps').innerHTML = '';
+                
+                // Reset validation
+                resetValidation();
+            });
+        });
+        
+        // Input validation and real-time calculation
+        const inputs = document.querySelectorAll('input');
+        inputs.forEach(input => {
+            input.addEventListener('input', () => {
+                validateAndCalculate();
+            });
+        });
+        
+        // Reset validation state
+        function resetValidation() {
+            document.querySelectorAll('.error-message').forEach(el => {
+                el.style.display = 'none';
+            });
+            document.querySelectorAll('input').forEach(input => {
+                input.classList.remove('error');
+            });
+        }
+        
+        // Validate inputs and calculate
+        function validateAndCalculate() {
+            resetValidation();
+            
+            // Determine which calculator to use
+            const activeTab = document.querySelector('.tab.active').dataset.tab;
+            
+            if (activeTab === 'mean') {
+                validateAndCalculateMean();
+            } else {
+                validateAndCalculateStd();
+            }
+        }
+        
+        // Validate and calculate for mean
+        function validateAndCalculateMean() {
+            const meanInput = document.getElementById('sample-mean');
+            const sizeInput = document.getElementById('sample-size');
+            const stdInput = document.getElementById('std-dev');
+            const confInput = document.getElementById('confidence-level');
+            
+            let isValid = true;
+            
+            // Validate sample mean
+            const mean = parseFloat(meanInput.value);
+            if (isNaN(mean)) {
+                showError('mean-error', meanInput);
+                isValid = false;
+            }
+            
+            // Validate sample size
+            const size = parseInt(sizeInput.value);
+            if (isNaN(size) || size < 2) {
+                showError('size-error', sizeInput);
+                isValid = false;
+            }
+            
+            // Validate standard deviation
+            const stdDev = parseFloat(stdInput.value);
+            if (isNaN(stdDev) || stdDev < 0) {
+                showError('std-error', stdInput);
+                isValid = false;
+            }
+            
+            // Validate confidence level
+            const confLevel = parseFloat(confInput.value);
+            if (isNaN(confLevel) || confLevel < 50 || confLevel > 99.9) {
+                showError('conf-error', confInput);
+                isValid = false;
+            }
+            
+            if (isValid) {
+                calculateMeanCI(mean, size, stdDev, confLevel);
+            } else {
+                document.getElementById('result').textContent = 'Enter valid values to calculate';
+                document.getElementById('steps').innerHTML = '';
+            }
+        }
+        
+        // Validate and calculate for standard deviation
+        function validateAndCalculateStd() {
+            const stdInput = document.getElementById('sample-std');
+            const sizeInput = document.getElementById('std-sample-size');
+            const confInput = document.getElementById('std-confidence-level');
+            
+            let isValid = true;
+            
+            // Validate sample standard deviation
+            const sampleStd = parseFloat(stdInput.value);
+            if (isNaN(sampleStd) || sampleStd < 0) {
+                showError('sample-std-error', stdInput);
+                isValid = false;
+            }
+            
+            // Validate sample size
+            const size = parseInt(sizeInput.value);
+            if (isNaN(size) || size < 2) {
+                showError('std-size-error', sizeInput);
+                isValid = false;
+            }
+            
+            // Validate confidence level
+            const confLevel = parseFloat(confInput.value);
+            if (isNaN(confLevel) || confLevel < 50 || confLevel > 99.9) {
+                showError('std-conf-error', confInput);
+                isValid = false;
+            }
+            
+            if (isValid) {
+                calculateStdCI(sampleStd, size, confLevel);
+            } else {
+                document.getElementById('result').textContent = 'Enter valid values to calculate';
+                document.getElementById('steps').innerHTML = '';
+            }
+        }
+        
+        // Show error message
+        function showError(errorId, inputElement) {
+            document.getElementById(errorId).style.display = 'block';
+            inputElement.classList.add('error');
+        }
+        
+        // Calculate confidence interval for mean
+        function calculateMeanCI(mean, n, stdDev, confidence) {
+            // Convert confidence level to alpha
+            const alpha = 1 - confidence / 100;
+            
+            // Calculate z-score (using approximation for standard normal distribution)
+            const z = getZScore(1 - alpha/2);
+            
+            // Calculate margin of error
+            const marginOfError = z * (stdDev / Math.sqrt(n));
+            
+            // Calculate confidence interval
+            const lowerBound = mean - marginOfError;
+            const upperBound = mean + marginOfError;
+            
+            // Display result
+            document.getElementById('result').textContent = 
+                `${lowerBound.toFixed(4)} to ${upperBound.toFixed(4)}`;
+            
+            // Display calculation steps
+            const steps = document.getElementById('steps');
+            steps.innerHTML = `
+                <div class="step">Confidence level: ${confidence}% → α = ${alpha.toFixed(4)}</div>
+                <div class="step">Z-score for ${((1 - alpha/2) * 100).toFixed(2)}%: ${z.toFixed(4)}</div>
+                <div class="step">Standard Error = σ/√n = ${stdDev.toFixed(4)}/√${n} = ${(stdDev / Math.sqrt(n)).toFixed(4)}</div>
+                <div class="step">Margin of Error = Z × Standard Error = ${z.toFixed(4)} × ${(stdDev / Math.sqrt(n)).toFixed(4)} = ${marginOfError.toFixed(4)}</div>
+                <div class="step">Confidence Interval = x̄ ± Margin of Error = ${mean.toFixed(4)} ± ${marginOfError.toFixed(4)}</div>
+                <div class="formula">CI = [${lowerBound.toFixed(4)}, ${upperBound.toFixed(4)}]</div>
+            `;
+        }
+        
+        // Calculate confidence interval for standard deviation
+        function calculateStdCI(sampleStd, n, confidence) {
+            // Convert confidence level to alpha
+            const alpha = 1 - confidence / 100;
+            
+            // Degrees of freedom
+            const df = n - 1;
+            
+            // Chi-square critical values (using approximation)
+            const chiLower = getChiSquare(df, alpha/2);
+            const chiUpper = getChiSquare(df, 1 - alpha/2);
+            
+            // Calculate confidence interval
+            const lowerBound = Math.sqrt((df * sampleStd * sampleStd) / chiUpper);
+            const upperBound = Math.sqrt((df * sampleStd * sampleStd) / chiLower);
+            
+            // Display result
+            document.getElementById('result').textContent = 
+                `${lowerBound.toFixed(4)} to ${upperBound.toFixed(4)}`;
+            
+            // Display calculation steps
+            const steps = document.getElementById('steps');
+            steps.innerHTML = `
+                <div class="step">Confidence level: ${confidence}% → α = ${alpha.toFixed(4)}</div>
+                <div class="step">Degrees of freedom (df) = n - 1 = ${df}</div>
+                <div class="step">Chi-square critical values:</div>
+                <div style="padding-left: 40px;">χ²<sub>α/2</sub> = χ²<sub>${(alpha/2).toFixed(4)}</sub> = ${chiLower.toFixed(4)}</div>
+                <div style="padding-left: 40px;">χ²<sub>1-α/2</sub> = χ²<sub>${(1 - alpha/2).toFixed(4)}</sub> = ${chiUpper.toFixed(4)}</div>
+                <div class="step">Confidence Interval formula:</div>
+                <div class="formula">CI = [ √((df × s²) / χ²<sub>1-α/2</sub>), √((df × s²) / χ²<sub>α/2</sub>) ]</div>
+                <div class="step">Lower bound = √((${df} × ${sampleStd.toFixed(4)}²) / ${chiUpper.toFixed(4)}) = ${lowerBound.toFixed(4)}</div>
+                <div class="step">Upper bound = √((${df} × ${sampleStd.toFixed(4)}²) / ${chiLower.toFixed(4)}) = ${upperBound.toFixed(4)}</div>
+                <div class="formula">CI = [${lowerBound.toFixed(4)}, ${upperBound.toFixed(4)}]</div>
+            `;
+        }
+        
+        // Approximate Z-score for standard normal distribution
+        function getZScore(p) {
+            // Using approximation formula for standard normal quantile
+            if (p < 0.5) {
+                return -getZScore(1 - p);
+            }
+            
+            const t = Math.sqrt(-2 * Math.log(1 - p));
+            const z = t - (2.30753 + 0.27061 * t) / (1 + 0.99229 * t + 0.04481 * t * t);
+            return z;
+        }
+        
+        // Approximate Chi-square critical value
+        function getChiSquare(df, p) {
+            // Using Wilson-Hilferty transformation for approximation
+            const z = getZScore(p);
+            return df * Math.pow(1 - 2/(9*df) + z * Math.sqrt(2/(9*df)), 3);
+        }
+        
+        // Initialize with mean tab active
+        document.getElementById('mean-input').classList.remove('hidden');
+        document.getElementById('std-input').classList.add('hidden');
+    </script>
+</body>
+</html>
