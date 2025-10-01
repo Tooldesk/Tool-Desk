@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales Tax Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --bright-yellow: #FFD700;
+            --vibrant-blue: #1E90FF;
+            --dark-blue: #0066CC;
+            --light-yellow: #FFF9C4;
+            --light-blue: #E3F2FD;
+            --dark-yellow: #FFA000;
+        }
+
+        body {
+            background: linear-gradient(135deg, #E3F2FD, #FFF9C4);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 650px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+        }
+
+        header {
+            background: var(--vibrant-blue);
+            color: white;
+            padding: 25px;
+            text-align: center;
+            position: relative;
+        }
+
+        header::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 100%;
+            height: 20px;
+            background: var(--bright-yellow);
+            clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 70%);
+        }
+
+        header h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        header p {
+            margin-top: 10px;
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+
+        .tool-container {
+            padding: 30px;
+        }
+
+        .calculator-tabs {
+            display: flex;
+            background: var(--light-blue);
+            border-radius: 50px;
+            padding: 5px;
+            margin-bottom: 25px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .tab-btn.active {
+            background: var(--vibrant-blue);
+            color: white;
+        }
+
+        .calculator-section {
+            display: none;
+        }
+
+        .calculator-section.active {
+            display: block;
+        }
+
+        .input-section {
+            margin-bottom: 25px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--dark-blue);
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 14px;
+            border: 3px solid var(--light-blue);
+            border-radius: 16px;
+            font-size: 1.2rem;
+            background: var(--light-blue);
+            transition: all 0.3s ease;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: var(--vibrant-blue);
+            background: #f0f8ff;
+            box-shadow: 0 0 0 3px rgba(30, 144, 255, 0.2);
+        }
+
+        .tax-rate-section {
+            background: var(--light-yellow);
+            padding: 20px;
+            border-radius: 16px;
+            border: 2px solid var(--bright-yellow);
+            margin-bottom: 25px;
+        }
+
+        .tax-rate-title {
+            text-align: center;
+            margin-bottom: 15px;
+            color: #e65100;
+            font-weight: 700;
+            font-size: 1.3rem;
+        }
+
+        .state-select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--light-yellow);
+            border-radius: 8px;
+            font-size: 1rem;
+            background: white;
+            margin-top: 10px;
+        }
+
+        .custom-rate {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .custom-rate input {
+            flex: 1;
+        }
+
+        .calculate-btn {
+            display: block;
+            width: 100%;
+            padding: 16px;
+            background: var(--vibrant-blue);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+            margin-top: 10px;
+        }
+
+        .calculate-btn:hover {
+            background: var(--dark-blue);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .result-section {
+            display: none;
+            margin-top: 30px;
+            padding: 25px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, var(--bright-yellow), #FFB300);
+            box-shadow: 0 8px 20px rgba(255, 215, 0, 0.3);
+            text-align: center;
+        }
+
+        .result-title {
+            margin-bottom: 20px;
+            color: #1a237e;
+            font-weight: 800;
+            font-size: 1.6rem;
+            text-shadow: 0 1px 2px rgba(255,255,255,0.5);
+        }
+
+        .result-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .result-box {
+            background: rgba(255, 255, 255, 0.7);
+            padding: 20px;
+            border-radius: 16px;
+        }
+
+        .result-value {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #1a237e;
+        }
+
+        .result-label {
+            font-size: 1rem;
+            color: #1a237e;
+            font-weight: 600;
+            margin-top: 5px;
+        }
+
+        .explanation {
+            margin-top: 15px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 12px;
+            display: inline-block;
+            font-weight: 600;
+            color: #1a237e;
+        }
+
+        .error-message {
+            color: #d32f2f;
+            font-weight: 600;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .info-box {
+            background: var(--light-blue);
+            padding: 15px;
+            border-radius: 12px;
+            margin: 20px 0;
+            border: 1px solid var(--vibrant-blue);
+            color: var(--dark-blue);
+            font-weight: 600;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 650px) {
+            .container {
+                border-radius: 16px;
+            }
+            
+            header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .tool-container {
+                padding: 20px;
+            }
+            
+            .input-field, .state-select {
+                padding: 12px;
+                font-size: 1.1rem;
+            }
+            
+            .calculate-btn {
+                padding: 14px;
+                font-size: 1.1rem;
+            }
+            
+            .result-value {
+                font-size: 1.5rem;
+            }
+            
+            .result-box {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Sales Tax Calculator</h1>
+            <p>Calculate sales tax for any purchase in the United States</p>
+        </header>
+        
+        <div class="tool-container">
+            <div class="calculator-tabs">
+                <button class="tab-btn active" data-tab="forward">Forward Tax</button>
+                <button class="tab-btn" data-tab="reverse">Reverse Tax</button>
+            </div>
+            
+            <!-- Forward Tax Calculator -->
+            <div class="calculator-section active" id="forwardCalculator">
+                <div class="info-box">
+                    <p><strong>Forward Tax Calculator:</strong> Calculate the total price including tax based on the net price and tax rate.</p>
+                    <p>Formula: <em>Total = Net Price + (Net Price × Tax Rate)</em></p>
+                </div>
+                
+                <div class="input-section">
+                    <div class="input-group">
+                        <label class="input-label" for="netPrice">Net Price ($)</label>
+                        <input type="number" id="netPrice" class="input-field" placeholder="Enter net price" min="0" step="0.01">
+                    </div>
+                </div>
+                
+                <div class="tax-rate-section">
+                    <h3 class="tax-rate-title">Tax Rate</h3>
+                    <select class="state-select" id="stateSelect">
+                        <option value="">Select a state or enter custom rate</option>
+                        <option value="4.0">Alabama - 4.00%</option>
+                        <option value="0.0">Alaska - 0.00%</option>
+                        <option value="5.6">Arizona - 5.60%</option>
+                        <option value="6.5">Arkansas - 6.50%</option>
+                        <option value="7.25">California - 7.25%</option>
+                        <option value="2.9">Colorado - 2.90%</option>
+                        <option value="6.35">Connecticut - 6.35%</option>
+                        <option value="0.0">Delaware - 0.00%</option>
+                        <option value="6.0">Florida - 6.00%</option>
+                        <option value="4.0">Georgia - 4.00%</option>
+                        <option value="4.0">Hawaii - 4.00%</option>
+                        <option value="6.0">Idaho - 6.00%</option>
+                        <option value="6.25">Illinois - 6.25%</option>
+                        <option value="7.0">Indiana - 7.00%</option>
+                        <option value="6.0">Iowa - 6.00%</option>
+                        <option value="6.5">Kansas - 6.50%</option>
+                        <option value="6.0">Kentucky - 6.00%</option>
+                        <option value="4.45">Louisiana - 4.45%</option>
+                        <option value="5.5">Maine - 5.50%</option>
+                        <option value="6.0">Maryland - 6.00%</option>
+                        <option value="6.25">Massachusetts - 6.25%</option>
+                        <option value="6.0">Michigan - 6.00%</option>
+                        <option value="6.875">Minnesota - 6.875%</option>
+                        <option value="7.0">Mississippi - 7.00%</option>
+                        <option value="4.225">Missouri - 4.225%</option>
+                        <option value="0.0">Montana - 0.00%</option>
+                        <option value="5.5">Nebraska - 5.50%</option>
+                        <option value="6.85">Nevada - 6.85%</option>
+                        <option value="0.0">New Hampshire - 0.00%</option>
+                        <option value="6.625">New Jersey - 6.625%</option>
+                        <option value="5.125">New Mexico - 5.125%</option>
+                        <option value="4.0">New York - 4.00%</option>
+                        <option value="4.75">North Carolina - 4.75%</option>
+                        <option value="5.0">North Dakota - 5.00%</option>
+                        <option value="5.75">Ohio - 5.75%</option>
+                        <option value="4.5">Oklahoma - 4.50%</option>
+                        <option value="0.0">Oregon - 0.00%</option>
+                        <option value="6.0">Pennsylvania - 6.00%</option>
+                        <option value="7.0">Rhode Island - 7.00%</option>
+                        <option value="6.0">South Carolina - 6.00%</option>
+                        <option value="4.5">South Dakota - 4.50%</option>
+                        <option value="7.0">Tennessee - 7.00%</option>
+                        <option value="6.25">Texas - 6.25%</option>
+                        <option value="4.85">Utah - 4.85%</option>
+                        <option value="6.0">Vermont - 6.00%</option>
+                        <option value="5.3">Virginia - 5.30%</option>
+                        <option value="6.5">Washington - 6.50%</option>
+                        <option value="6.0">West Virginia - 6.00%</option>
+                        <option value="5.0">Wisconsin - 5.00%</option>
+                        <option value="4.0">Wyoming - 4.00%</option>
+                    </select>
+                    
+                    <div class="custom-rate">
+                        <label class="input-label" for="customRate">Or enter custom rate (%):</label>
+                        <input type="number" id="customRate" class="input-field" placeholder="Enter tax rate" min="0" max="100" step="0.01">
+                    </div>
+                </div>
+                
+                <div class="error-message" id="forwardError"></div>
+                
+                <button class="calculate-btn" id="forwardCalculateBtn">Calculate Total Price</button>
+            </div>
+            
+            <!-- Reverse Tax Calculator -->
+            <div class="calculator-section" id="reverseCalculator">
+                <div class="info-box">
+                    <p><strong>Reverse Tax Calculator:</strong> Calculate the net price and tax amount based on the total price and tax rate.</p>
+                    <p>Formula: <em>Net Price = Total Price / (1 + Tax Rate)</em></p>
+                </div>
+                
+                <div class="input-section">
+                    <div class="input-group">
+                        <label class="input-label" for="totalPrice">Total Price ($)</label>
+                        <input type="number" id="totalPrice" class="input-field" placeholder="Enter total price" min="0" step="0.01">
+                    </div>
+                </div>
+                
+                <div class="tax-rate-section">
+                    <h3 class="tax-rate-title">Tax Rate</h3>
+                    <select class="state-select" id="reverseStateSelect">
+                        <option value="">Select a state or enter custom rate</option>
+                        <option value="4.0">Alabama - 4.00%</option>
+                        <option value="0.0">Alaska - 0.00%</option>
+                        <option value="5.6">Arizona - 5.60%</option>
+                        <option value="6.5">Arkansas - 6.50%</option>
+                        <option value="7.25">California - 7.25%</option>
+                        <option value="2.9">Colorado - 2.90%</option>
+                        <option value="6.35">Connecticut - 6.35%</option>
+                        <option value="0.0">Delaware - 0.00%</option>
+                        <option value="6.0">Florida - 6.00%</option>
+                        <option value="4.0">Georgia - 4.00%</option>
+                        <option value="4.0">Hawaii - 4.00%</option>
+                        <option value="6.0">Idaho - 6.00%</option>
+                        <option value="6.25">Illinois - 6.25%</option>
+                        <option value="7.0">Indiana - 7.00%</option>
+                        <option value="6.0">Iowa - 6.00%</option>
+                        <option value="6.5">Kansas - 6.50%</option>
+                        <option value="6.0">Kentucky - 6.00%</option>
+                        <option value="4.45">Louisiana - 4.45%</option>
+                        <option value="5.5">Maine - 5.50%</option>
+                        <option value="6.0">Maryland - 6.00%</option>
+                        <option value="6.25">Massachusetts - 6.25%</option>
+                        <option value="6.0">Michigan - 6.00%</option>
+                        <option value="6.875">Minnesota - 6.875%</option>
+                        <option value="7.0">Mississippi - 7.00%</option>
+                        <option value="4.225">Missouri - 4.225%</option>
+                        <option value="0.0">Montana - 0.00%</option>
+                        <option value="5.5">Nebraska - 5.50%</option>
+                        <option value="6.85">Nevada - 6.85%</option>
+                        <option value="0.0">New Hampshire - 0.00%</option>
+                        <option value="6.625">New Jersey - 6.625%</option>
+                        <option value="5.125">New Mexico - 5.125%</option>
+                        <option value="4.0">New York - 4.00%</option>
+                        <option value="4.75">North Carolina - 4.75%</option>
+                        <option value="5.0">North Dakota - 5.00%</option>
+                        <option value="5.75">Ohio - 5.75%</option>
+                        <option value="4.5">Oklahoma - 4.50%</option>
+                        <option value="0.0">Oregon - 0.00%</option>
+                        <option value="6.0">Pennsylvania - 6.00%</option>
+                        <option value="7.0">Rhode Island - 7.00%</option>
+                        <option value="6.0">South Carolina - 6.00%</option>
+                        <option value="4.5">South Dakota - 4.50%</option>
+                        <option value="7.0">Tennessee - 7.00%</option>
+                        <option value="6.25">Texas - 6.25%</option>
+                        <option value="4.85">Utah - 4.85%</option>
+                        <option value="6.0">Vermont - 6.00%</option>
+                        <option value="5.3">Virginia - 5.30%</option>
+                        <option value="6.5">Washington - 6.50%</option>
+                        <option value="6.0">West Virginia - 6.00%</option>
+                        <option value="5.0">Wisconsin - 5.00%</option>
+                        <option value="4.0">Wyoming - 4.00%</option>
+                    </select>
+                    
+                    <div class="custom-rate">
+                        <label class="input-label" for="reverseCustomRate">Or enter custom rate (%):</label>
+                        <input type="number" id="reverseCustomRate" class="input-field" placeholder="Enter tax rate" min="0" max="100" step="0.01">
+                    </div>
+                </div>
+                
+                <div class="error-message" id="reverseError"></div>
+                
+                <button class="calculate-btn" id="reverseCalculateBtn">Calculate Net Price</button>
+            </div>
+            
+            <div class="result-section" id="resultSection">
+                <h3 class="result-title" id="resultTitle">Sales Tax Calculation</h3>
+                <div class="result-grid">
+                    <div class="result-box">
+                        <div class="result-value" id="netResult">$0.00</div>
+                        <div class="result-label">Net Price</div>
+                    </div>
+                    <div class="result-box">
+                        <div class="result-value" id="taxResult">$0.00</div>
+                        <div class="result-label">Tax Amount</div>
+                    </div>
+                    <div class="result-box">
+                        <div class="result-value" id="totalResult">$0.00</div>
+                        <div class="result-label">Total Price</div>
+                    </div>
+                </div>
+                <div class="explanation" id="resultExplanation"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM Elements
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            const calculatorSections = document.querySelectorAll('.calculator-section');
+            
+            const netPrice = document.getElementById('netPrice');
+            const stateSelect = document.getElementById('stateSelect');
+            const customRate = document.getElementById('customRate');
+            const forwardCalculateBtn = document.getElementById('forwardCalculateBtn');
+            const forwardError = document.getElementById('forwardError');
+            
+            const totalPrice = document.getElementById('totalPrice');
+            const reverseStateSelect = document.getElementById('reverseStateSelect');
+            const reverseCustomRate = document.getElementById('reverseCustomRate');
+            const reverseCalculateBtn = document.getElementById('reverseCalculateBtn');
+            const reverseError = document.getElementById('reverseError');
+            
+            const resultSection = document.getElementById('resultSection');
+            const resultTitle = document.getElementById('resultTitle');
+            const netResult = document.getElementById('netResult');
+            const taxResult = document.getElementById('taxResult');
+            const totalResult = document.getElementById('totalResult');
+            const resultExplanation = document.getElementById('resultExplanation');
+            
+            // Tab switching
+            tabButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    tabButtons.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    
+                    calculatorSections.forEach(section => section.classList.remove('active'));
+                    document.getElementById(btn.dataset.tab + 'Calculator').classList.add('active');
+                    
+                    // Reset results when switching tabs
+                    resultSection.style.display = 'none';
+                    forwardError.style.display = 'none';
+                    reverseError.style.display = 'none';
+                });
+            });
+            
+            // Forward calculator
+            forwardCalculateBtn.addEventListener('click', calculateForward);
+            
+            function calculateForward() {
+                forwardError.style.display = 'none';
+                const price = parseFloat(netPrice.value);
+                let taxRate = parseFloat(stateSelect.value);
+                
+                // Use custom rate if provided
+                if (customRate.value && !stateSelect.value) {
+                    taxRate = parseFloat(customRate.value);
+                }
+                
+                if (isNaN(price) || price < 0) {
+                    showError('Please enter a valid net price.', forwardError);
+                    return;
+                }
+                
+                if (isNaN(taxRate) || taxRate < 0) {
+                    showError('Please select a state or enter a valid tax rate.', forwardError);
+                    return;
+                }
+                
+                const rate = taxRate / 100;
+                const taxAmount = price * rate;
+                const total = price + taxAmount;
+                
+                displayResults(price, taxAmount, total, taxRate, 'Forward Sales Tax Calculation');
+            }
+            
+            // Reverse calculator
+            reverseCalculateBtn.addEventListener('click', calculateReverse);
+            
+            function calculateReverse() {
+                reverseError.style.display = 'none';
+                const total = parseFloat(totalPrice.value);
+                let taxRate = parseFloat(reverseStateSelect.value);
+                
+                // Use custom rate if provided
+                if (reverseCustomRate.value && !reverseStateSelect.value) {
+                    taxRate = parseFloat(reverseCustomRate.value);
+                }
+                
+                if (isNaN(total) || total < 0) {
+                    showError('Please enter a valid total price.', reverseError);
+                    return;
+                }
+                
+                if (isNaN(taxRate) || taxRate < 0) {
+                    showError('Please select a state or enter a valid tax rate.', reverseError);
+                    return;
+                }
+                
+                const rate = taxRate / 100;
+                const netPrice = total / (1 + rate);
+                const taxAmount = total - netPrice;
+                
+                displayResults(netPrice, taxAmount, total, taxRate, 'Reverse Sales Tax Calculation');
+            }
+            
+            // Display results
+            function displayResults(net, tax, total, rate, title) {
+                netResult.textContent = '$' + net.toFixed(2);
+                taxResult.textContent = '$' + tax.toFixed(2);
+                totalResult.textContent = '$' + total.toFixed(2);
+                resultExplanation.textContent = `With a ${rate}% sales tax rate, the net price is $${net.toFixed(2)}, tax amount is $${tax.toFixed(2)}, and total price is $${total.toFixed(2)}.`;
+                resultTitle.textContent = title;
+                
+                resultSection.style.display = 'block';
+                resultSection.style.opacity = '0';
+                resultSection.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    resultSection.style.transition = 'opacity 0.5s, transform 0.5s';
+                    resultSection.style.opacity = '1';
+                    resultSection.style.transform = 'translateY(0)';
+                }, 10);
+            }
+            
+            // Show error
+            function showError(message, errorElement) {
+                errorElement.textContent = message;
+                errorElement.style.display = 'block';
+            }
+            
+            // Sync state selects
+            stateSelect.addEventListener('change', function() {
+                if (this.value) {
+                    customRate.value = '';
+                }
+            });
+            
+            customRate.addEventListener('input', function() {
+                if (this.value) {
+                    stateSelect.value = '';
+                }
+            });
+            
+            reverseStateSelect.addEventListener('change', function() {
+                if (this.value) {
+                    reverseCustomRate.value = '';
+                }
+            });
+            
+            reverseCustomRate.addEventListener('input', function() {
+                if (this.value) {
+                    reverseStateSelect.value = '';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
