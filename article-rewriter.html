@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Article Rewriter | Multi-Tool Suite</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary-blue: #2563eb;
+            --primary-yellow: #fbbf24;
+            --light-blue: #dbeafe;
+            --light-yellow: #fef3c7;
+            --dark-blue: #1d4ed8;
+            --dark-yellow: #d97706;
+            --white: #ffffff;
+            --gray: #64748b;
+            --light-gray: #f1f5f9;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--light-blue) 0%, var(--light-yellow) 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .logo-icon {
+            background: var(--primary-blue);
+            color: var(--white);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: var(--dark-blue);
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: var(--gray);
+            font-size: 1.1rem;
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .tool-container {
+            background: var(--white);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .tool-header {
+            background: var(--primary-blue);
+            color: var(--white);
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .tool-header i {
+            font-size: 24px;
+        }
+
+        .tool-header h2 {
+            font-size: 1.8rem;
+        }
+
+        .tool-body {
+            padding: 30px;
+        }
+
+        .input-section, .output-section {
+            margin-bottom: 25px;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            color: var(--dark-blue);
+            font-size: 1.3rem;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 200px;
+            padding: 18px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 16px;
+            line-height: 1.6;
+            resize: vertical;
+            transition: border-color 0.3s;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+        }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin: 25px 0;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-primary {
+            background: var(--primary-blue);
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            background: var(--dark-blue);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--primary-yellow);
+            color: var(--dark-blue);
+        }
+
+        .btn-secondary:hover {
+            background: var(--dark-yellow);
+            color: var(--white);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(251, 191, 36, 0.3);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary-blue);
+            color: var(--primary-blue);
+        }
+
+        .btn-outline:hover {
+            background: var(--light-blue);
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 40px;
+        }
+
+        .feature-card {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            border-top: 4px solid var(--primary-blue);
+            transition: transform 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--light-blue);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            color: var(--primary-blue);
+            font-size: 24px;
+        }
+
+        .feature-card h3 {
+            color: var(--dark-blue);
+            margin-bottom: 12px;
+            font-size: 1.4rem;
+        }
+
+        .feature-card p {
+            color: var(--gray);
+            line-height: 1.6;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            color: var(--gray);
+            padding: 20px;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .tool-body {
+                padding: 20px;
+            }
+            
+            textarea {
+                min-height: 180px;
+            }
+            
+            .controls {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.7rem;
+            }
+            
+            .subtitle {
+                font-size: 1rem;
+            }
+            
+            .tool-header h2 {
+                font-size: 1.4rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <h1>AI Article Rewriter</h1>
+            </div>
+            <p class="subtitle">Our AI Article rewriter involves rewriting individual word meanings, replacing them with synonyms, and rearranging sentence structure. Our AI article rewriter tool creates new sentences by repurposing existing information. While manual rewriting is possible, using an automated online rewriter tool is more efficient and conducive to saving time.</p>
+        </header>
+
+        <div class="tool-container">
+            <div class="tool-header">
+                <i class="fas fa-sync-alt"></i>
+                <h2>Rewrite Your Content</h2>
+            </div>
+            <div class="tool-body">
+                <div class="input-section">
+                    <div class="section-title">
+                        <i class="fas fa-edit"></i>
+                        <h3>Original Text</h3>
+                    </div>
+                    <textarea id="inputText" placeholder="Paste your article here... Our AI text rewriter tools are available for writers to reduce the time and effort they spend composing new content pieces.">Our AI text rewriter tools are available for writers to reduce the time and effort they spend composing new content pieces. Our AI phrase rewriter tools save time on brainstorming, writing, copyediting, and resolving errors, making them a valuable resource for deadline-driven writing.</textarea>
+                </div>
+
+                <div class="controls">
+                    <button class="btn btn-primary" id="rewriteBtn">
+                        <i class="fas fa-magic"></i> Rewrite Article
+                    </button>
+                    <button class="btn btn-secondary" id="clearBtn">
+                        <i class="fas fa-trash"></i> Clear All
+                    </button>
+                    <button class="btn btn-outline" id="copyBtn">
+                        <i class="fas fa-copy"></i> Copy Result
+                    </button>
+                </div>
+
+                <div class="output-section">
+                    <div class="section-title">
+                        <i class="fas fa-file-alt"></i>
+                        <h3>Rewritten Content</h3>
+                    </div>
+                    <textarea id="outputText" placeholder="Your rewritten article will appear here..." readonly></textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="features">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-bolt"></i>
+                </div>
+                <h3>Time Efficiency</h3>
+                <p>Save hours of manual rewriting with our AI-powered tool that processes content in seconds.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-sync"></i>
+                </div>
+                <h3>Content Repurposing</h3>
+                <p>Transform existing content into fresh, unique articles while preserving the original meaning.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h3>Error Reduction</h3>
+                <p>Minimize grammatical errors and improve readability with our advanced rewriting algorithms.</p>
+            </div>
+        </div>
+
+        <footer>
+            
+        
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const inputText = document.getElementById('inputText');
+            const outputText = document.getElementById('outputText');
+            const rewriteBtn = document.getElementById('rewriteBtn');
+            const clearBtn = document.getElementById('clearBtn');
+            const copyBtn = document.getElementById('copyBtn');
+            
+            // Sample synonyms for demonstration
+            const synonyms = {
+                "AI": ["Artificial Intelligence", "machine intelligence", "cognitive computing"],
+                "rewriter": ["rephraser", "paraphraser", "content transformer"],
+                "tools": ["utilities", "applications", "software"],
+                "writers": ["authors", "content creators", "copywriters"],
+                "reduce": ["minimize", "decrease", "lessen"],
+                "time": ["hours", "effort", "duration"],
+                "effort": ["work", "energy", "labor"],
+                "composing": ["creating", "crafting", "producing"],
+                "content": ["material", "text", "information"],
+                "pieces": ["articles", "documents", "works"],
+                "save": ["conserve", "preserve", "retain"],
+                "brainstorming": ["ideation", "concept development", "creative thinking"],
+                "writing": ["drafting", "authoring", "composing"],
+                "copyediting": ["proofreading", "editing", "polishing"],
+                "resolving": ["fixing", "correcting", "addressing"],
+                "errors": ["mistakes", "issues", "problems"],
+                "valuable": ["essential", "crucial", "invaluable"],
+                "resource": ["tool", "asset", "solution"],
+                "deadline-driven": ["time-sensitive", "urgent", "pressing"]
+            };
+            
+            // Function to get a random synonym
+            function getRandomSynonym(word) {
+                const lowerWord = word.toLowerCase();
+                if (synonyms[lowerWord]) {
+                    const options = synonyms[lowerWord];
+                    return options[Math.floor(Math.random() * options.length)];
+                }
+                return word;
+            }
+            
+            // Simple sentence restructuring
+            function restructureSentence(sentence) {
+                // Split into words
+                const words = sentence.split(' ');
+                
+                // Rearrange words (simple approach for demo)
+                if (words.length > 5) {
+                    // Move first word to end
+                    const firstWord = words.shift();
+                    words.push(firstWord);
+                    
+                    // Add a transition word at the beginning
+                    const transitions = ["Moreover,", "Additionally,", "Furthermore,", "Importantly,"];
+                    if (Math.random() > 0.7) {
+                        words.unshift(transitions[Math.floor(Math.random() * transitions.length)]);
+                    }
+                }
+                
+                return words.join(' ');
+            }
+            
+            // Main rewrite function
+            function rewriteArticle(text) {
+                if (!text.trim()) {
+                    return "Please enter some text to rewrite.";
+                }
+                
+                // Split into sentences
+                const sentences = text.split(/[.!?]+/).filter(s => s.trim());
+                const rewrittenSentences = [];
+                
+                sentences.forEach(sentence => {
+                    let cleanSentence = sentence.trim();
+                    if (!cleanSentence) return;
+                    
+                    // Add punctuation back
+                    const punctuation = /[.!?]$/.test(sentence) ? sentence.slice(-1) : '.';
+                    
+                    // Process words
+                    const words = cleanSentence.split(' ');
+                    const processedWords = words.map(word => {
+                        // Preserve capitalization
+                        const isCapitalized = word[0] === word[0].toUpperCase();
+                        const processedWord = getRandomSynonym(word.replace(/[.,;:!?]/g, ''));
+                        
+                        // Reapply punctuation and capitalization
+                        let finalWord = processedWord;
+                        if (isCapitalized) {
+                            finalWord = processedWord.charAt(0).toUpperCase() + processedWord.slice(1);
+                        }
+                        
+                        // Add back any punctuation
+                        const originalPunct = word.match(/[.,;:!?]+$/);
+                        if (originalPunct) {
+                            finalWord += originalPunct[0];
+                        }
+                        
+                        return finalWord;
+                    });
+                    
+                    // Reconstruct sentence
+                    let newSentence = processedWords.join(' ');
+                    
+                    // Apply sentence restructuring
+                    if (Math.random() > 0.5) {
+                        newSentence = restructureSentence(newSentence);
+                    }
+                    
+                    // Ensure sentence ends with punctuation
+                    if (!/[.!?]$/.test(newSentence)) {
+                        newSentence += punctuation;
+                    }
+                    
+                    rewrittenSentences.push(newSentence);
+                });
+                
+                return rewrittenSentences.join(' ');
+            }
+            
+            // Event listeners
+            rewriteBtn.addEventListener('click', function() {
+                const originalText = inputText.value;
+                outputText.value = "Rewriting your content...";
+                
+                // Simulate processing time
+                setTimeout(() => {
+                    const rewritten = rewriteArticle(originalText);
+                    outputText.value = rewritten;
+                }, 1500);
+            });
+            
+            clearBtn.addEventListener('click', function() {
+                inputText.value = '';
+                outputText.value = '';
+            });
+            
+            copyBtn.addEventListener('click', function() {
+                if (outputText.value) {
+                    outputText.select();
+                    document.execCommand('copy');
+                    
+                    // Show feedback
+                    const originalText = copyBtn.innerHTML;
+                    copyBtn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                    setTimeout(() => {
+                        copyBtn.innerHTML = originalText;
+                    }, 2000);
+                }
+            });
+            
+            // Initialize with sample text
+            outputText.value = "Your rewritten article will appear here after clicking 'Rewrite Article'";
+        });
+    </script>
+</body>
+</html>
