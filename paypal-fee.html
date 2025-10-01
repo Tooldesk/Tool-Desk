@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PayPal Fee Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2980, #26d0ce);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(to right, #FFD700, #FFA500);
+            padding: 25px;
+            text-align: center;
+            color: #1a2980;
+        }
+        
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .calculator {
+            padding: 30px;
+        }
+        
+        .input-section {
+            margin-bottom: 25px;
+        }
+        
+        .section-title {
+            color: #1a2980;
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .section-title i {
+            background: #FFD700;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+        }
+        
+        .input-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .input-field {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #1a2980;
+            font-weight: 600;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: #FFD700;
+            box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.3);
+        }
+        
+        input.error {
+            border-color: #ff4757;
+        }
+        
+        .error-message {
+            color: #ff4757;
+            font-size: 0.85rem;
+            margin-top: 5px;
+            display: none;
+        }
+        
+        .result-section {
+            background: #f9fbff;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 20px;
+            border: 2px solid #e0e6ff;
+        }
+        
+        .result-title {
+            color: #1a2980;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+        
+        .result-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .result-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border: 2px solid #e0e6ff;
+        }
+        
+        .result-label {
+            font-size: 0.95rem;
+            color: #6a7ae0;
+            margin-bottom: 8px;
+        }
+        
+        .result-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #1a2980;
+        }
+        
+        .fee-amount {
+            color: #FF5722;
+        }
+        
+        .net-amount {
+            color: #4CAF50;
+        }
+        
+        .steps {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px dashed #e0e6ff;
+        }
+        
+        .step {
+            margin-bottom: 15px;
+            padding-left: 20px;
+            position: relative;
+        }
+        
+        .step:before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #FFD700;
+            font-size: 1.5rem;
+            top: -5px;
+        }
+        
+        .formula {
+            background: #1a2980;
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            font-family: monospace;
+            margin: 10px 0;
+            overflow-x: auto;
+        }
+        
+        .instructions {
+            background: #fff9e6;
+            border-left: 4px solid #FFD700;
+            padding: 15px;
+            margin-bottom: 25px;
+            border-radius: 0 10px 10px 0;
+        }
+        
+        .instructions h3 {
+            color: #1a2980;
+            margin-bottom: 10px;
+        }
+        
+        .instructions ul {
+            padding-left: 20px;
+        }
+        
+        .instructions li {
+            margin-bottom: 8px;
+            color: #333;
+        }
+        
+        .paypal-logo {
+            display: inline-block;
+            background: #003087;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+            margin: 0 3px;
+        }
+        
+        @media (max-width: 600px) {
+            .input-group, .result-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .result-value {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>PayPal Fee Calculator</h1>
+            <p class="subtitle">Find out exactly how much PayPal will charge you</p>
+        </header>
+        
+        <div class="calculator">
+            <div class="instructions">
+                <h3>How PayPal Fees Work:</h3>
+                <ul>
+                    <li>Standard fee: <strong>2.9% + $0.30</strong> per transaction (US)</li>
+                    <li>International transactions: Additional <strong>1.5%</strong> fee</li>
+                    <li>PayPal Here (in-person): <strong>2.29% + $0.09</strong></li>
+                    <li>Fees vary by country and transaction type</li>
+                </ul>
+            </div>
+            
+            <div class="input-section">
+                <div class="section-title">
+                    <i>1</i> Transaction Details
+                </div>
+                <div class="input-group">
+                    <div class="input-field">
+                        <label for="amount">Transaction Amount ($)</label>
+                        <input type="number" id="amount" placeholder="e.g., 100.00" step="any" min="0.01">
+                        <div class="error-message" id="amount-error">Please enter a valid amount ≥ $0.01</div>
+                    </div>
+                    <div class="input-field">
+                        <label for="country">Your Country</label>
+                        <select id="country">
+                            <option value="US">United States</option>
+                            <option value="CA">Canada</option>
+                            <option value="UK">United Kingdom</option>
+                            <option value="AU">Australia</option>
+                            <option value="EU">European Union</option>
+                            <option value="OTHER">Other</option>
+                        </select>
+                    </div>
+                    <div class="input-field">
+                        <label for="transaction-type">Transaction Type</label>
+                        <select id="transaction-type">
+                            <option value="online">Online Payment</option>
+                            <option value="in-person">In-Person (PayPal Here)</option>
+                            <option value="international">International Payment</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="result-section">
+                <h2 class="result-title">Fee Calculation</h2>
+                <div class="result-grid">
+                    <div class="result-card">
+                        <div class="result-label">Transaction Amount</div>
+                        <div class="result-value" id="transaction-amount">$0.00</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-label">PayPal Fee</div>
+                        <div class="result-value fee-amount" id="paypal-fee">$0.00</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-label">You Receive</div>
+                        <div class="result-value net-amount" id="net-amount">$0.00</div>
+                    </div>
+                </div>
+                
+                <div class="steps" id="steps">
+                    <!-- Steps will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Get input elements
+        const amountInput = document.getElementById('amount');
+        const countrySelect = document.getElementById('country');
+        const transactionTypeSelect = document.getElementById('transaction-type');
+        
+        // Get result elements
+        const transactionAmountEl = document.getElementById('transaction-amount');
+        const paypalFeeEl = document.getElementById('paypal-fee');
+        const netAmountEl = document.getElementById('net-amount');
+        const stepsContainer = document.getElementById('steps');
+        
+        // Add event listeners
+        amountInput.addEventListener('input', calculateFee);
+        countrySelect.addEventListener('change', calculateFee);
+        transactionTypeSelect.addEventListener('change', calculateFee);
+        
+        // Reset validation state
+        function resetValidation() {
+            document.getElementById('amount-error').style.display = 'none';
+            amountInput.classList.remove('error');
+        }
+        
+        // Validate and calculate
+        function calculateFee() {
+            resetValidation();
+            
+            // Get input values
+            const amount = parseFloat(amountInput.value);
+            const country = countrySelect.value;
+            const transactionType = transactionTypeSelect.value;
+            
+            // Validate amount
+            if (isNaN(amount) || amount < 0.01) {
+                showError('amount-error', amountInput);
+                resetResults();
+                return;
+            }
+            
+            // Calculate fee based on country and transaction type
+            let feePercentage, fixedFee, description;
+            
+            // Determine fee structure based on inputs
+            if (transactionType === 'in-person') {
+                // PayPal Here fees
+                feePercentage = 0.0229; // 2.29%
+                fixedFee = 0.09; // $0.09
+                description = "PayPal Here (in-person) fee";
+            } else if (transactionType === 'international') {
+                // International fees
+                feePercentage = 0.044; // 4.4% (2.9% + 1.5%)
+                fixedFee = 0.30; // $0.30
+                description = "International transaction fee";
+            } else {
+                // Standard online fees
+                if (country === 'US') {
+                    feePercentage = 0.029; // 2.9%
+                    fixedFee = 0.30; // $0.30
+                    description = "Standard US online fee";
+                } else if (country === 'CA') {
+                    feePercentage = 0.029; // 2.9%
+                    fixedFee = 0.30; // $0.30 CAD
+                    description = "Standard Canada online fee";
+                } else if (country === 'UK') {
+                    feePercentage = 0.029; // 2.9%
+                    fixedFee = 0.30; // £0.30
+                    description = "Standard UK online fee";
+                } else if (country === 'AU') {
+                    feePercentage = 0.026; // 2.6%
+                    fixedFee = 0.30; // $0.30 AUD
+                    description = "Standard Australia online fee";
+                } else if (country === 'EU') {
+                    feePercentage = 0.029; // 2.9%
+                    fixedFee = 0.35; // €0.35
+                    description = "Standard EU online fee";
+                } else {
+                    feePercentage = 0.035; // 3.5% (average for other countries)
+                    fixedFee = 0.30; // $0.30
+                    description = "Standard international online fee";
+                }
+            }
+            
+            // Calculate fee
+            const feeAmount = (amount * feePercentage) + fixedFee;
+            const netAmount = amount - feeAmount;
+            
+            // Update results
+            transactionAmountEl.textContent = `$${amount.toFixed(2)}`;
+            paypalFeeEl.textContent = `$${feeAmount.toFixed(2)}`;
+            netAmountEl.textContent = `$${netAmount.toFixed(2)}`;
+            
+            // Update calculation steps
+            stepsContainer.innerHTML = `
+                <div class="step">${description}</div>
+                <div class="step">Fee Percentage: ${(feePercentage * 100).toFixed(2)}%</div>
+                <div class="step">Fixed Fee: $${fixedFee.toFixed(2)}</div>
+                <div class="step">PayPal Fee = (Amount × ${feePercentage}) + $${fixedFee.toFixed(2)} = ($${amount.toFixed(2)} × ${feePercentage}) + $${fixedFee.toFixed(2)} = $${feeAmount.toFixed(2)}</div>
+                <div class="step">You Receive = Amount - Fee = $${amount.toFixed(2)} - $${feeAmount.toFixed(2)} = $${netAmount.toFixed(2)}</div>
+                <div class="formula">Fee = (Transaction Amount × ${feePercentage}) + $${fixedFee.toFixed(2)}</div>
+                <div class="formula">Net Amount = Transaction Amount - Fee</div>
+            `;
+        }
+        
+        // Show error message
+        function showError(errorId, inputElement) {
+            document.getElementById(errorId).style.display = 'block';
+            inputElement.classList.add('error');
+        }
+        
+        // Reset results
+        function resetResults() {
+            transactionAmountEl.textContent = '$0.00';
+            paypalFeeEl.textContent = '$0.00';
+            netAmountEl.textContent = '$0.00';
+            stepsContainer.innerHTML = '';
+        }
+        
+        // Initialize with default calculation
+        calculateFee();
+    </script>
+</body>
+</html>
