@@ -1,1 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text to Tags Converter</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
 
+        :root {
+            --bright-yellow: #FFD700;
+            --vibrant-blue: #1E90FF;
+            --dark-blue: #0066CC;
+            --light-yellow: #FFF9C4;
+            --light-blue: #E3F2FD;
+            --dark-yellow: #FFA000;
+        }
+
+        body {
+            background: linear-gradient(135deg, #E3F2FD, #FFF9C4);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+        }
+
+        header {
+            background: var(--vibrant-blue);
+            color: white;
+            padding: 25px;
+            text-align: center;
+            position: relative;
+        }
+
+        header::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 100%;
+            height: 20px;
+            background: var(--bright-yellow);
+            clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 70%);
+        }
+
+        header h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        header p {
+            margin-top: 10px;
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+
+        .tool-container {
+            padding: 30px;
+        }
+
+        .input-section {
+            margin-bottom: 30px;
+        }
+
+        .input-title {
+            text-align: center;
+            margin-bottom: 20px;
+            color: var(--dark-blue);
+            font-weight: 700;
+            font-size: 1.4rem;
+        }
+
+        .text-input {
+            width: 100%;
+            min-height: 180px;
+            padding: 15px;
+            border: 3px dashed var(--light-blue);
+            border-radius: 16px;
+            background-color: var(--light-blue);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 1.1rem;
+            line-height: 1.5;
+            resize: vertical;
+            transition: all 0.3s ease;
+        }
+
+        .text-input:focus {
+            outline: none;
+            border-color: var(--vibrant-blue);
+            background-color: #f0f8ff;
+            box-shadow: 0 0 0 3px rgba(30, 144, 255, 0.2);
+        }
+
+        .controls-section {
+            background: var(--light-yellow);
+            padding: 25px;
+            border-radius: 16px;
+            border: 2px solid var(--bright-yellow);
+            margin: 25px 0;
+        }
+
+        .controls-title {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #e65100;
+            font-weight: 700;
+            font-size: 1.4rem;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .option-item {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .option-label {
+            font-weight: 600;
+            color: #e65100;
+        }
+
+        .option-input {
+            padding: 10px;
+            border: 2px solid var(--light-yellow);
+            border-radius: 8px;
+            font-size: 1rem;
+            text-align: center;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .convert-btn, .clear-btn, .copy-btn {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .convert-btn {
+            background: var(--vibrant-blue);
+            color: white;
+        }
+
+        .convert-btn:hover {
+            background: var(--dark-blue);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .clear-btn {
+            background: #ffcdd2;
+            color: #c62828;
+        }
+
+        .clear-btn:hover {
+            background: #ef9a9a;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .copy-btn {
+            background: var(--dark-yellow);
+            color: #1a237e;
+        }
+
+        .copy-btn:hover {
+            background: #e69500;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .result-section {
+            margin-top: 30px;
+        }
+
+        .result-title {
+            text-align: center;
+            margin-bottom: 20px;
+            color: var(--dark-blue);
+            font-weight: 700;
+            font-size: 1.4rem;
+        }
+
+        .tags-output {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            min-height: 100px;
+            padding: 20px;
+            border: 3px solid var(--light-blue);
+            border-radius: 16px;
+            background: white;
+        }
+
+        .tag {
+            background: var(--light-blue);
+            color: var(--dark-blue);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tag:hover {
+            background: var(--vibrant-blue);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .tag.selected {
+            background: var(--bright-yellow);
+            color: #1a237e;
+            border: 2px solid var(--dark-yellow);
+        }
+
+        .empty-message {
+            color: #666;
+            font-style: italic;
+            align-self: center;
+        }
+
+        .stats-info {
+            margin-top: 15px;
+            text-align: center;
+            padding: 12px;
+            background: var(--light-blue);
+            border-radius: 12px;
+            font-weight: 600;
+            color: var(--dark-blue);
+        }
+
+        .format-info {
+            text-align: center;
+            margin: 20px 0;
+            padding: 15px;
+            background: var(--light-yellow);
+            border-radius: 12px;
+            border: 1px solid var(--bright-yellow);
+            color: #e65100;
+            font-weight: 600;
+        }
+
+        .uses-list {
+            text-align: left;
+            margin-top: 15px;
+            padding-left: 20px;
+        }
+
+        .uses-list li {
+            margin: 8px 0;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .container {
+                border-radius: 16px;
+            }
+            
+            header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .tool-container {
+                padding: 20px;
+            }
+            
+            .text-input {
+                min-height: 140px;
+                font-size: 1rem;
+            }
+            
+            .convert-btn, .clear-btn, .copy-btn {
+                padding: 12px 24px;
+                font-size: 1rem;
+            }
+            
+            .action-buttons {
+                gap: 10px;
+            }
+            
+            .options-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            header h1 {
+                font-size: 1.5rem;
+            }
+            
+            header p {
+                font-size: 1rem;
+            }
+            
+            .convert-btn, .clear-btn, .copy-btn {
+                width: 100%;
+                max-width: 220px;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .tag {
+                padding: 7px 14px;
+                font-size: 0.95rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Text to Tags Converter</h1>
+            <p>Generate relevant tags from your content for SEO and organization</p>
+        </header>
+        
+        <div class="tool-container">
+            <div class="format-info">
+                <p>✅ Analyzes text to extract relevant keywords</p>
+                <p>✅ Perfect for SEO and content management</p>
+                <p>✅ One-click copy or customize your tag list</p>
+                
+                <div class="uses-list">
+                    <p><strong>Common uses:</strong></p>
+                    <ul>
+                        <li>Blog post and article tagging</li>
+                        <li>SEO keyword research</li>
+                        <li>Content categorization</li>
+                        <li>Social media hashtag suggestions</li>
+                        <li>Document organization</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="input-section">
+                <h3 class="input-title">Enter Your Text</h3>
+                <textarea id="textInput" class="text-input" placeholder="Paste or type your content here..."></textarea>
+                
+                <div class="controls-section">
+                    <h3 class="controls-title">Tag Settings</h3>
+                    <div class="options-grid">
+                        <div class="option-item">
+                            <label class="option-label">Max Tags</label>
+                            <input type="number" id="maxTags" class="option-input" min="1" max="30" value="10">
+                        </div>
+                        <div class="option-item">
+                            <label class="option-label">Min Word Length</label>
+                            <input type="number" id="minWordLength" class="option-input" min="2" max="10" value="3">
+                        </div>
+                    </div>
+                    
+                    <div class="action-buttons">
+                        <button class="convert-btn" id="convertBtn">Generate Tags</button>
+                        <button class="clear-btn" id="clearBtn">Clear Text</button>
+                        <button class="copy-btn" id="copyBtn">Copy Selected Tags</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="result-section">
+                <h3 class="result-title">Generated Tags</h3>
+                <div id="tagsOutput" class="tags-output">
+                    <div class="empty-message">Enter text and click "Generate Tags" to see results</div>
+                </div>
+                <div class="stats-info" id="statsInfo">Tags: 0 | Selected: 0</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM Elements
+            const textInput = document.getElementById('textInput');
+            const tagsOutput = document.getElementById('tagsOutput');
+            const maxTags = document.getElementById('maxTags');
+            const minWordLength = document.getElementById('minWordLength');
+            const convertBtn = document.getElementById('convertBtn');
+            const clearBtn = document.getElementById('clearBtn');
+            const copyBtn = document.getElementById('copyBtn');
+            const statsInfo = document.getElementById('statsInfo');
+            
+            // Common words to exclude
+            const commonWords = new Set([
+                'the', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by', 
+                'from', 'up', 'about', 'into', 'through', 'during', 'before', 'after', 'above', 
+                'below', 'between', 'among', 'is', 'are', 'was', 'were', 'be', 'been', 'being', 
+                'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would', 'could', 'should', 
+                'may', 'might', 'must', 'can', 'this', 'that', 'these', 'those', 'i', 'you', 
+                'he', 'she', 'it', 'we', 'they', 'me', 'him', 'her', 'us', 'them', 'my', 'your', 
+                'his', 'its', 'our', 'their', 'a', 'an', 'as', 'if', 'so', 'such', 'no', 'not', 
+                'yes', 'very', 'just', 'even', 'still', 'ever', 'never', 'only', 'own', 'same', 
+                'both', 'each', 'every', 'another', 'any', 'either', 'neither', 'one', 'two', 
+                'first', 'second', 'last', 'next', 'new', 'old', 'good', 'bad', 'big', 'small'
+            ]);
+            
+            let selectedTags = [];
+            
+            // Event Listeners
+            convertBtn.addEventListener('click', generateTags);
+            clearBtn.addEventListener('click', clearText);
+            copyBtn.addEventListener('click', copySelectedTags);
+            
+            // Generate tags function
+            function generateTags() {
+                const inputText = textInput.value.trim();
+                if (!inputText) {
+                    tagsOutput.innerHTML = '<div class="empty-message">Enter text and click "Generate Tags" to see results</div>';
+                    updateStats(0, 0);
+                    return;
+                }
+                
+                const maxCount = parseInt(maxTags.value) || 10;
+                const minLength = parseInt(minWordLength.value) || 3;
+                
+                // Clean and split the text
+                let words = inputText.toLowerCase()
+                    .replace(/[^\w\s]/g, ' ')
+                    .split(/\s+/)
+                    .filter(word => word.length >= minLength && !commonWords.has(word));
+                
+                // Count word frequencies
+                const wordCount = {};
+                words.forEach(word => {
+                    wordCount[word] = (wordCount[word] || 0) + 1;
+                });
+                
+                // Sort by frequency and get top words
+                const sortedWords = Object.keys(wordCount)
+                    .sort((a, b) => wordCount[b] - wordCount[a])
+                    .slice(0, maxCount);
+                
+                // Create tags
+                if (sortedWords.length > 0) {
+                    tagsOutput.innerHTML = '';
+                    sortedWords.forEach(word => {
+                        const tagElement = document.createElement('div');
+                        tagElement.className = 'tag';
+                        tagElement.textContent = word;
+                        tagElement.addEventListener('click', () => toggleTagSelection(word, tagElement));
+                        tagsOutput.appendChild(tagElement);
+                    });
+                    selectedTags = [];
+                } else {
+                    tagsOutput.innerHTML = '<div class="empty-message">No valid tags found. Try different text or adjust settings.</div>';
+                }
+                
+                updateStats(sortedWords.length, 0);
+            }
+            
+            // Toggle tag selection
+            function toggleTagSelection(tag, element) {
+                const index = selectedTags.indexOf(tag);
+                if (index === -1) {
+                    selectedTags.push(tag);
+                    element.classList.add('selected');
+                } else {
+                    selectedTags.splice(index, 1);
+                    element.classList.remove('selected');
+                }
+                updateStats(document.querySelectorAll('.tag').length, selectedTags.length);
+            }
+            
+            // Update stats display
+            function updateStats(totalTags, selectedCount) {
+                statsInfo.textContent = `Tags: ${totalTags} | Selected: ${selectedCount}`;
+            }
+            
+            // Clear text function
+            function clearText() {
+                textInput.value = '';
+                tagsOutput.innerHTML = '<div class="empty-message">Enter text and click "Generate Tags" to see results</div>';
+                selectedTags = [];
+                updateStats(0, 0);
+                textInput.focus();
+            }
+            
+            // Copy selected tags function
+            function copySelectedTags() {
+                if (selectedTags.length === 0) {
+                    // If no tags are selected, copy all tags
+                    const allTags = Array.from(document.querySelectorAll('.tag')).map(tag => tag.textContent);
+                    if (allTags.length === 0) {
+                        alert('No tags to copy. Please generate tags first.');
+                        return;
+                    }
+                    selectedTags = allTags;
+                }
+                
+                const tagText = selectedTags.join(', ');
+                const tempInput = document.createElement('textarea');
+                tempInput.value = tagText;
+                document.body.appendChild(tempInput);
+                tempInput.select();
+                document.execCommand('copy');
+                document.body.removeChild(tempInput);
+                
+                // Show visual feedback
+                const originalText = copyBtn.textContent;
+                copyBtn.textContent = 'Copied!';
+                setTimeout(() => {
+                    copyBtn.textContent = originalText;
+                }, 2000);
+            }
+        });
+    </script>
+</body>
+</html>
