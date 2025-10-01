@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CPM Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2980, #26d0ce);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(to right, #FFD700, #FFA500);
+            padding: 25px;
+            text-align: center;
+            color: #1a2980;
+        }
+        
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .calculator {
+            padding: 30px;
+        }
+        
+        .input-section {
+            margin-bottom: 25px;
+        }
+        
+        .section-title {
+            color: #1a2980;
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .section-title i {
+            background: #FFD700;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+        }
+        
+        .input-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .input-field {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #1a2980;
+            font-weight: 600;
+        }
+        
+        input {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: #FFD700;
+            box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.3);
+        }
+        
+        input.error {
+            border-color: #ff4757;
+        }
+        
+        input.calculated {
+            background-color: #f0f8ff;
+            color: #1a2980;
+            font-weight: bold;
+        }
+        
+        .error-message {
+            color: #ff4757;
+            font-size: 0.85rem;
+            margin-top: 5px;
+            display: none;
+        }
+        
+        .result-section {
+            background: #f9fbff;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 20px;
+            border: 2px solid #e0e6ff;
+        }
+        
+        .result-title {
+            color: #1a2980;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+        
+        .result-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #FFD700;
+            text-align: center;
+            margin: 15px 0;
+            padding: 15px;
+            background: #1a2980;
+            border-radius: 10px;
+            color: white;
+        }
+        
+        .steps {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px dashed #e0e6ff;
+        }
+        
+        .step {
+            margin-bottom: 15px;
+            padding-left: 20px;
+            position: relative;
+        }
+        
+        .step:before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #FFD700;
+            font-size: 1.5rem;
+            top: -5px;
+        }
+        
+        .formula {
+            background: #1a2980;
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            font-family: monospace;
+            margin: 10px 0;
+            overflow-x: auto;
+        }
+        
+        .instructions {
+            background: #fff9e6;
+            border-left: 4px solid #FFD700;
+            padding: 15px;
+            margin-bottom: 25px;
+            border-radius: 0 10px 10px 0;
+        }
+        
+        .instructions h3 {
+            color: #1a2980;
+            margin-bottom: 10px;
+        }
+        
+        .instructions p {
+            margin-bottom: 10px;
+            color: #333;
+        }
+        
+        .instructions ul {
+            padding-left: 20px;
+        }
+        
+        .instructions li {
+            margin-bottom: 8px;
+            color: #333;
+        }
+        
+        .cpm-definition {
+            background: #e6f7ff;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 15px;
+            border-left: 4px solid #1a2980;
+        }
+        
+        @media (max-width: 600px) {
+            .input-group {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .result-value {
+                font-size: 1.4rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>CPM Calculator</h1>
+            <p class="subtitle">Calculate Cost Per Mille (Cost Per Thousand Impressions)</p>
+        </header>
+        
+        <div class="calculator">
+            <div class="instructions">
+                <h3>What is CPM?</h3>
+                <p>CPM (Cost Per Mille) is a marketing term used to denote the price of 1,000 advertisement impressions on a webpage or platform.</p>
+                
+                <div class="cpm-definition">
+                    <strong>Formula:</strong> CPM = (Total Cost / Total Impressions) × 1,000
+                </div>
+                
+                <p>Enter any <strong>two values</strong> to calculate the third:</p>
+                <ul>
+                    <li><strong>Total Cost ($)</strong> - Your advertising budget</li>
+                    <li><strong>CPM ($)</strong> - Cost per thousand impressions</li>
+                    <li><strong>Total Impressions</strong> - Number of ad views</li>
+                </ul>
+            </div>
+            
+            <div class="input-section">
+                <div class="section-title">
+                    <i>1</i> Advertising Metrics
+                </div>
+                <div class="input-group">
+                    <div class="input-field">
+                        <label for="total-cost">Total Cost ($)</label>
+                        <input type="number" id="total-cost" placeholder="e.g., 500.00" step="any" min="0">
+                        <div class="error-message" id="cost-error">Please enter a valid number ≥ 0</div>
+                    </div>
+                    <div class="input-field">
+                        <label for="cpm">CPM ($)</label>
+                        <input type="number" id="cpm" placeholder="e.g., 2.50" step="any" min="0">
+                        <div class="error-message" id="cpm-error">Please enter a valid number ≥ 0</div>
+                    </div>
+                    <div class="input-field">
+                        <label for="impressions">Total Impressions</label>
+                        <input type="number" id="impressions" placeholder="e.g., 200000" min="0">
+                        <div class="error-message" id="impressions-error">Please enter a valid number ≥ 0</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="result-section">
+                <h2 class="result-title">Calculation Result</h2>
+                <div class="result-value" id="result">Enter two values to calculate</div>
+                
+                <div class="steps" id="steps">
+                    <!-- Steps will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Get all input elements
+        const costInput = document.getElementById('total-cost');
+        const cpmInput = document.getElementById('cpm');
+        const impressionsInput = document.getElementById('impressions');
+        const inputs = [costInput, cpmInput, impressionsInput];
+        
+        // Add event listeners to all inputs
+        inputs.forEach(input => {
+            input.addEventListener('input', () => {
+                validateAndCalculate();
+            });
+            
+            // Clear calculated class when user starts typing
+            input.addEventListener('focus', () => {
+                input.classList.remove('calculated');
+            });
+        });
+        
+        // Reset validation state
+        function resetValidation() {
+            document.querySelectorAll('.error-message').forEach(el => {
+                el.style.display = 'none';
+            });
+            inputs.forEach(input => {
+                input.classList.remove('error');
+            });
+        }
+        
+        // Validate inputs and calculate
+        function validateAndCalculate() {
+            resetValidation();
+            
+            // Get input values
+            const cost = parseFloat(costInput.value);
+            const cpm = parseFloat(cpmInput.value);
+            const impressions = parseFloat(impressionsInput.value);
+            
+            // Count non-empty inputs
+            const nonEmptyInputs = [costInput.value, cpmInput.value, impressionsInput.value]
+                .filter(val => val !== '').length;
+            
+            // If less than 2 inputs, show message and return
+            if (nonEmptyInputs < 2) {
+                document.getElementById('result').textContent = 'Enter any two values to calculate';
+                document.getElementById('steps').innerHTML = '';
+                return;
+            }
+            
+            // Validate inputs
+            let isValid = true;
+            
+            // Validate cost
+            if (costInput.value !== '' && (isNaN(cost) || cost < 0)) {
+                showError('cost-error', costInput);
+                isValid = false;
+            }
+            
+            // Validate CPM
+            if (cpmInput.value !== '' && (isNaN(cpm) || cpm < 0)) {
+                showError('cpm-error', cpmInput);
+                isValid = false;
+            }
+            
+            // Validate impressions
+            if (impressionsInput.value !== '' && (isNaN(impressions) || impressions < 0)) {
+                showError('impressions-error', impressionsInput);
+                isValid = false;
+            }
+            
+            if (!isValid) {
+                document.getElementById('result').textContent = 'Please fix input errors';
+                document.getElementById('steps').innerHTML = '';
+                return;
+            }
+            
+            // Calculate based on which inputs are provided
+            calculateCPM(cost, cpm, impressions);
+        }
+        
+        // Show error message
+        function showError(errorId, inputElement) {
+            document.getElementById(errorId).style.display = 'block';
+            inputElement.classList.add('error');
+        }
+        
+        // Calculate CPM based on provided values
+        function calculateCPM(cost, cpm, impressions) {
+            // Clear all calculated classes
+            inputs.forEach(input => input.classList.remove('calculated'));
+            
+            // Determine which values we have
+            const hasCost = !isNaN(cost);
+            const hasCPM = !isNaN(cpm);
+            const hasImpressions = !isNaN(impressions);
+            
+            let calculatedCost, calculatedCPM, calculatedImpressions;
+            let calculationSteps = [];
+            
+            try {
+                // Case 1: Cost and Impressions provided → Calculate CPM
+                if (hasCost && hasImpressions) {
+                    if (impressions === 0) {
+                        throw new Error("Impressions cannot be zero");
+                    }
+                    calculatedCPM = (cost / impressions) * 1000;
+                    
+                    calculationSteps = [
+                        `CPM = (Total Cost / Total Impressions) × 1,000`,
+                        `CPM = ($${cost.toFixed(2)} / ${impressions.toLocaleString()}) × 1,000`,
+                        `CPM = ${calculatedCPM.toFixed(2)}`
+                    ];
+                    
+                    cpmInput.value = calculatedCPM.toFixed(2);
+                    cpmInput.classList.add('calculated');
+                }
+                // Case 2: Cost and CPM provided → Calculate Impressions
+                else if (hasCost && hasCPM) {
+                    if (cpm === 0) {
+                        throw new Error("CPM cannot be zero");
+                    }
+                    calculatedImpressions = (cost / cpm) * 1000;
+                    
+                    calculationSteps = [
+                        `Total Impressions = (Total Cost / CPM) × 1,000`,
+                        `Total Impressions = ($${cost.toFixed(2)} / $${cpm.toFixed(2)}) × 1,000`,
+                        `Total Impressions = ${calculatedImpressions.toLocaleString()}`
+                    ];
+                    
+                    impressionsInput.value = Math.round(calculatedImpressions);
+                    impressionsInput.classList.add('calculated');
+                }
+                // Case 3: CPM and Impressions provided → Calculate Cost
+                else if (hasCPM && hasImpressions) {
+                    calculatedCost = (cpm * impressions) / 1000;
+                    
+                    calculationSteps = [
+                        `Total Cost = (CPM × Total Impressions) / 1,000`,
+                        `Total Cost = ($${cpm.toFixed(2)} × ${impressions.toLocaleString()}) / 1,000`,
+                        `Total Cost = $${calculatedCost.toFixed(2)}`
+                    ];
+                    
+                    costInput.value = calculatedCost.toFixed(2);
+                    costInput.classList.add('calculated');
+                }
+                // Invalid combination
+                else {
+                    document.getElementById('result').textContent = 'Please enter exactly two valid values';
+                    document.getElementById('steps').innerHTML = '';
+                    return;
+                }
+                
+                // Display result
+                if (hasCost && hasImpressions) {
+                    document.getElementById('result').textContent = `CPM: $${calculatedCPM.toFixed(2)}`;
+                } else if (hasCost && hasCPM) {
+                    document.getElementById('result').textContent = `Impressions: ${Math.round(calculatedImpressions).toLocaleString()}`;
+                } else if (hasCPM && hasImpressions) {
+                    document.getElementById('result').textContent = `Total Cost: $${calculatedCost.toFixed(2)}`;
+                }
+                
+                // Display calculation steps
+                const stepsContainer = document.getElementById('steps');
+                stepsContainer.innerHTML = calculationSteps.map(step => 
+                    `<div class="step">${step}</div>`
+                ).join('');
+                
+                // Add formula
+                stepsContainer.innerHTML += `
+                    <div class="formula">CPM = (Total Cost / Total Impressions) × 1,000</div>
+                    <div class="formula">Total Cost = (CPM × Total Impressions) / 1,000</div>
+                    <div class="formula">Total Impressions = (Total Cost / CPM) × 1,000</div>
+                `;
+            } catch (error) {
+                document.getElementById('result').textContent = 'Calculation error. Please check your inputs.';
+                document.getElementById('steps').innerHTML = '';
+            }
+        }
+        
+        // Initialize with empty result
+        document.getElementById('result').textContent = 'Enter any two values to calculate';
+    </script>
+</body>
+</html>
