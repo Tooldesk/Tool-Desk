@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lorem Ipsum Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --bright-yellow: #FFD700;
+            --vibrant-blue: #1E90FF;
+            --dark-blue: #0066CC;
+            --light-yellow: #FFF9C4;
+            --light-blue: #E3F2FD;
+            --dark-yellow: #FFA000;
+        }
+
+        body {
+            background: linear-gradient(135deg, #E3F2FD, #FFF9C4);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 700px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+        }
+
+        header {
+            background: var(--vibrant-blue);
+            color: white;
+            padding: 25px;
+            text-align: center;
+            position: relative;
+        }
+
+        header::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 100%;
+            height: 20px;
+            background: var(--bright-yellow);
+            clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 70%);
+        }
+
+        header h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        header p {
+            margin-top: 10px;
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+
+        .tool-container {
+            padding: 30px;
+        }
+
+        .controls-section {
+            background: var(--light-yellow);
+            padding: 25px;
+            border-radius: 16px;
+            border: 2px solid var(--bright-yellow);
+            margin-bottom: 30px;
+        }
+
+        .controls-title {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #e65100;
+            font-weight: 700;
+            font-size: 1.4rem;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .option-item {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .option-label {
+            font-weight: 600;
+            color: #e65100;
+        }
+
+        .option-input {
+            padding: 12px;
+            border: 2px solid var(--light-yellow);
+            border-radius: 8px;
+            font-size: 1rem;
+            text-align: center;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .generate-btn, .copy-btn {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .generate-btn {
+            background: var(--vibrant-blue);
+            color: white;
+        }
+
+        .generate-btn:hover {
+            background: var(--dark-blue);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .copy-btn {
+            background: var(--dark-yellow);
+            color: #1a237e;
+        }
+
+        .copy-btn:hover {
+            background: #e69500;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .result-section {
+            margin-top: 30px;
+        }
+
+        .result-title {
+            text-align: center;
+            margin-bottom: 20px;
+            color: var(--dark-blue);
+            font-weight: 700;
+            font-size: 1.4rem;
+        }
+
+        .lorem-output {
+            width: 100%;
+            min-height: 250px;
+            padding: 20px;
+            border: 3px solid var(--light-blue);
+            border-radius: 16px;
+            background: white;
+            font-family: 'Georgia', serif;
+            font-size: 1.2rem;
+            line-height: 1.6;
+            resize: vertical;
+            overflow: auto;
+        }
+
+        .format-info {
+            text-align: center;
+            margin: 20px 0;
+            padding: 15px;
+            background: var(--light-blue);
+            border-radius: 12px;
+            border: 1px solid var(--vibrant-blue);
+            color: var(--dark-blue);
+            font-weight: 600;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 700px) {
+            .container {
+                border-radius: 16px;
+            }
+            
+            header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .tool-container {
+                padding: 20px;
+            }
+            
+            .lorem-output {
+                min-height: 200px;
+                font-size: 1.1rem;
+            }
+            
+            .generate-btn, .copy-btn {
+                padding: 12px 24px;
+                font-size: 1rem;
+            }
+            
+            .action-buttons {
+                gap: 10px;
+            }
+            
+            .options-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            header h1 {
+                font-size: 1.5rem;
+            }
+            
+            header p {
+                font-size: 1rem;
+            }
+            
+            .generate-btn, .copy-btn {
+                width: 100%;
+                max-width: 220px;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Lorem Ipsum Generator</h1>
+            <p>Create placeholder text for your design projects</p>
+        </header>
+        
+        <div class="tool-container">
+            <div class="format-info">
+                <p>✅ Customizable paragraphs, sentences, and words</p>
+                <p>✅ Classic Lorem Ipsum text</p>
+                <p>✅ One-click copy to clipboard</p>
+            </div>
+            
+            <div class="controls-section">
+                <h3 class="controls-title">Generator Settings</h3>
+                <div class="options-grid">
+                    <div class="option-item">
+                        <label class="option-label">Paragraphs</label>
+                        <input type="number" id="paragraphs" class="option-input" min="1" max="20" value="3">
+                    </div>
+                    <div class="option-item">
+                        <label class="option-label">Sentences</label>
+                        <input type="number" id="sentences" class="option-input" min="1" max="20" value="5">
+                    </div>
+                    <div class="option-item">
+                        <label class="option-label">Words</label>
+                        <input type="number" id="words" class="option-input" min="1" max="50" value="25">
+                    </div>
+                </div>
+                
+                <div class="action-buttons">
+                    <button class="generate-btn" id="generateBtn">Generate Lorem Ipsum</button>
+                    <button class="copy-btn" id="copyBtn">Copy to Clipboard</button>
+                </div>
+            </div>
+            
+            <div class="result-section">
+                <h3 class="result-title">Generated Lorem Ipsum</h3>
+                <div id="loremOutput" class="lorem-output" contenteditable="true">
+                    <!-- Generated Lorem Ipsum will appear here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM Elements
+            const paragraphsInput = document.getElementById('paragraphs');
+            const sentencesInput = document.getElementById('sentences');
+            const wordsInput = document.getElementById('words');
+            const generateBtn = document.getElementById('generateBtn');
+            const copyBtn = document.getElementById('copyBtn');
+            const loremOutput = document.getElementById('loremOutput');
+            
+            // Lorem Ipsum base text
+            const loremWords = [
+                "lorem", "ipsum", "dolor", "sit", "amet", "consectetur", "adipiscing", "elit", 
+                "sed", "do", "eiusmod", "tempor", "incididunt", "ut", "labore", "et", "dolore", 
+                "magna", "aliqua", "ut", "enim", "ad", "minim", "veniam", "quis", "nostrud", 
+                "exercitation", "ullamco", "laboris", "nisi", "ut", "aliquip", "ex", "ea", 
+                "commodo", "consequat", "duis", "aute", "irure", "dolor", "in", "reprehenderit", 
+                "in", "voluptate", "velit", "esse", "cillum", "dolore", "eu", "fugiat", "nulla", 
+                "pariatur", "excepteur", "sint", "occaecat", "cupidatat", "non", "proident", 
+                "sunt", "in", "culpa", "qui", "officia", "deserunt", "mollit", "anim", "id", 
+                "est", "laborum"
+            ];
+            
+            // Event Listeners
+            generateBtn.addEventListener('click', generateLoremIpsum);
+            copyBtn.addEventListener('click', copyToClipboard);
+            
+            // Generate Lorem Ipsum function
+            function generateLoremIpsum() {
+                const paragraphs = parseInt(paragraphsInput.value) || 3;
+                const sentences = parseInt(sentencesInput.value) || 5;
+                const words = parseInt(wordsInput.value) || 25;
+                
+                // Validate inputs
+                if (paragraphs < 1 || paragraphs > 20 || 
+                    sentences < 1 || sentences > 20 || 
+                    words < 1 || words > 50) {
+                    alert('Please enter valid values within the specified ranges.');
+                    return;
+                }
+                
+                let loremText = '';
+                
+                for (let p = 0; p < paragraphs; p++) {
+                    let paragraph = '';
+                    
+                    for (let s = 0; s < sentences; s++) {
+                        let sentence = '';
+                        const sentenceWords = Math.max(3, Math.min(words, Math.floor(Math.random() * words) + 3));
+                        
+                        for (let w = 0; w < sentenceWords; w++) {
+                            const randomWord = loremWords[Math.floor(Math.random() * loremWords.length)];
+                            sentence += randomWord + ' ';
+                        }
+                        
+                        // Capitalize first letter and add period
+                        sentence = sentence.trim();
+                        sentence = sentence.charAt(0).toUpperCase() + sentence.slice(1) + '.';
+                        paragraph += sentence + ' ';
+                    }
+                    
+                    loremText += paragraph.trim() + '\n\n';
+                }
+                
+                loremOutput.textContent = loremText.trim();
+            }
+            
+            // Copy to clipboard function
+            function copyToClipboard() {
+                if (!loremOutput.textContent.trim()) {
+                    alert('No text to copy. Please generate Lorem Ipsum first.');
+                    return;
+                }
+                
+                const range = document.createRange();
+                range.selectNode(loremOutput);
+                window.getSelection().removeAllRanges();
+                window.getSelection().addRange(range);
+                
+                try {
+                    document.execCommand('copy');
+                    // Show visual feedback
+                    const originalText = copyBtn.textContent;
+                    copyBtn.textContent = 'Copied!';
+                    setTimeout(() => {
+                        copyBtn.textContent = originalText;
+                    }, 2000);
+                } catch (err) {
+                    alert('Failed to copy to clipboard. Please try manually.');
+                }
+                
+                window.getSelection().removeAllRanges();
+            }
+            
+            // Generate initial Lorem Ipsum on page load
+            generateLoremIpsum();
+        });
+    </script>
+</body>
+</html>
