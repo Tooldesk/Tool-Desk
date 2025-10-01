@@ -1,1 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Reverser</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2980, #26d0ce);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(to right, #FFD700, #FFA500);
+            padding: 25px;
+            text-align: center;
+            color: #1a2980;
+        }
+        
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .calculator {
+            padding: 30px;
+        }
+        
+        .input-section {
+            margin-bottom: 25px;
+        }
+        
+        .section-title {
+            color: #1a2980;
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .section-title i {
+            background: #FFD700;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+        }
+        
+        .text-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .text-input {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #1a2980;
+            font-weight: 600;
+        }
+        
+        textarea {
+            width: 100%;
+            padding: 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            min-height: 150px;
+            resize: vertical;
+            transition: border-color 0.3s;
+            font-family: inherit;
+            line-height: 1.6;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: #FFD700;
+            box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.3);
+        }
+        
+        .mode-selector {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin: 15px 0;
+        }
+        
+        .mode-option {
+            flex: 1;
+            min-width: 150px;
+        }
+        
+        .mode-option label {
+            display: block;
+            margin-bottom: 8px;
+            color: #1a2980;
+            font-weight: 600;
+        }
+        
+        select {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        
+        select:focus {
+            outline: none;
+            border-color: #FFD700;
+            box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.3);
+        }
+        
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(to right, #1a2980, #26d0ce);
+            color: white;
+            flex: 1;
+            min-width: 150px;
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(to right, #152266, #1fa8a3);
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background: #e0e0e0;
+            color: #1a2980;
+            flex: 1;
+            min-width: 120px;
+        }
+        
+        .btn-secondary:hover {
+            background: #d0d0d0;
+            transform: translateY(-2px);
+        }
+        
+        .btn-copy {
+            background: #4CAF50;
+            color: white;
+            flex: 1;
+            min-width: 120px;
+        }
+        
+        .btn-copy:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+        }
+        
+        .result-section {
+            background: #f9fbff;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 20px;
+            border: 2px solid #e0e6ff;
+        }
+        
+        .result-title {
+            color: #1a2980;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+        
+        .reversed-text {
+            width: 100%;
+            padding: 16px;
+            border: 2px solid #e0e6ff;
+            border-radius: 10px;
+            background: white;
+            min-height: 100px;
+            font-size: 1rem;
+            resize: vertical;
+            font-family: inherit;
+            line-height: 1.6;
+        }
+        
+        .instructions {
+            background: #fff9e6;
+            border-left: 4px solid #FFD700;
+            padding: 15px;
+            margin-bottom: 25px;
+            border-radius: 0 10px 10px 0;
+        }
+        
+        .instructions h3 {
+            color: #1a2980;
+            margin-bottom: 10px;
+        }
+        
+        .instructions p {
+            margin-bottom: 10px;
+            color: #333;
+        }
+        
+        .instructions ul {
+            padding-left: 20px;
+            margin-bottom: 10px;
+        }
+        
+        .instructions li {
+            margin-bottom: 8px;
+            color: #333;
+        }
+        
+        .success-message {
+            color: #4CAF50;
+            font-weight: 600;
+            margin-top: 10px;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .success-message.show {
+            opacity: 1;
+        }
+        
+        @media (max-width: 600px) {
+            .mode-selector {
+                flex-direction: column;
+            }
+            
+            .controls {
+                flex-direction: column;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .btn {
+                min-width: auto;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Text Reverser</h1>
+            <p class="subtitle">Reverse text in multiple ways instantly</p>
+        </header>
+        
+        <div class="calculator">
+            <div class="instructions">
+                <h3>How to Use:</h3>
+                <p>Paste or type your text below and choose a reversal mode:</p>
+                <ul>
+                    <li><strong>Full Text</strong> - Reverses the entire text character by character</li>
+                    <li><strong>Words Only</strong> - Reverses each word but keeps word order</li>
+                    <li><strong>Lines Only</strong> - Reverses each line but keeps line order</li>
+                    <li><strong>Words & Lines</strong> - Reverses words in each line and line order</li>
+                </ul>
+            </div>
+            
+            <div class="input-section">
+                <div class="section-title">
+                    <i>1</i> Your Text
+                </div>
+                <div class="text-container">
+                    <div class="text-input">
+                        <label for="input-text">Enter or paste your text here</label>
+                        <textarea id="input-text" placeholder="Paste your text here..."></textarea>
+                    </div>
+                    
+                    <div class="mode-selector">
+                        <div class="mode-option">
+                            <label for="reverse-mode">Reversal Mode</label>
+                            <select id="reverse-mode">
+                                <option value="full">Full Text</option>
+                                <option value="words">Words Only</option>
+                                <option value="lines">Lines Only</option>
+                                <option value="words-lines">Words & Lines</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="controls">
+                        <button class="btn btn-primary" id="reverse-btn">
+                            <span>🔄</span> Reverse Text
+                        </button>
+                        <button class="btn btn-secondary" id="clear-btn">
+                            <span>🗑️</span> Clear All
+                        </button>
+                        <button class="btn btn-copy" id="copy-btn">
+                            <span>📋</span> Copy Result
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="result-section">
+                <h2 class="result-title">Reversed Text</h2>
+                <div class="reversed-text" id="output-text" contenteditable="false">
+                    Your reversed text will appear here...
+                </div>
+                <div class="success-message" id="success-message">Copied to clipboard!</div>
+            </div>
+        </div>
+    </div>
 
+    <script>
+        // DOM elements
+        const inputText = document.getElementById('input-text');
+        const outputText = document.getElementById('output-text');
+        const reverseMode = document.getElementById('reverse-mode');
+        const reverseBtn = document.getElementById('reverse-btn');
+        const clearBtn = document.getElementById('clear-btn');
+        const copyBtn = document.getElementById('copy-btn');
+        const successMessage = document.getElementById('success-message');
+        
+        // Event listeners
+        reverseBtn.addEventListener('click', reverseText);
+        clearBtn.addEventListener('click', clearAll);
+        copyBtn.addEventListener('click', copyResult);
+        
+        // Reverse text function
+        function reverseText() {
+            const text = inputText.value;
+            const mode = reverseMode.value;
+            
+            if (!text.trim()) {
+                outputText.textContent = "Please enter some text to reverse.";
+                return;
+            }
+            
+            let result;
+            
+            switch(mode) {
+                case 'full':
+                    result = reverseFullText(text);
+                    break;
+                case 'words':
+                    result = reverseWordsOnly(text);
+                    break;
+                case 'lines':
+                    result = reverseLinesOnly(text);
+                    break;
+                case 'words-lines':
+                    result = reverseWordsAndLines(text);
+                    break;
+                default:
+                    result = reverseFullText(text);
+            }
+            
+            outputText.textContent = result;
+        }
+        
+        // Reverse full text (character by character)
+        function reverseFullText(text) {
+            return text.split('').reverse().join('');
+        }
+        
+        // Reverse each word but keep word order
+        function reverseWordsOnly(text) {
+            return text.split(' ').map(word => 
+                word.split('').reverse().join('')
+            ).join(' ');
+        }
+        
+        // Reverse each line but keep line order
+        function reverseLinesOnly(text) {
+            return text.split('\n').map(line => 
+                line.split('').reverse().join('')
+            ).join('\n');
+        }
+        
+        // Reverse words in each line and line order
+        function reverseWordsAndLines(text) {
+            // First reverse the lines
+            const reversedLines = text.split('\n').reverse();
+            
+            // Then reverse each word in each line
+            return reversedLines.map(line => 
+                line.split(' ').map(word => 
+                    word.split('').reverse().join('')
+                ).join(' ')
+            ).join('\n');
+        }
+        
+        // Clear all text
+        function clearAll() {
+            inputText.value = '';
+            outputText.textContent = 'Your reversed text will appear here...';
+        }
+        
+        // Copy result to clipboard
+        function copyResult() {
+            if (outputText.textContent === 'Your reversed text will appear here...' || 
+                outputText.textContent === 'Please enter some text to reverse.') {
+                return;
+            }
+            
+            const textToCopy = outputText.textContent;
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                // Show success message
+                successMessage.classList.add('show');
+                setTimeout(() => {
+                    successMessage.classList.remove('show');
+                }, 2000);
+            });
+        }
+        
+        // Initialize
+        outputText.textContent = 'Your reversed text will appear here...';
+    </script>
+</body>
+</html>
