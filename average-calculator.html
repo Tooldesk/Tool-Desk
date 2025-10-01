@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Average Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2980, #26d0ce);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(to right, #FFD700, #FFA500);
+            padding: 25px;
+            text-align: center;
+            color: #1a2980;
+        }
+        
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .calculator {
+            padding: 30px;
+        }
+        
+        .input-section {
+            margin-bottom: 25px;
+        }
+        
+        .section-title {
+            color: #1a2980;
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .section-title i {
+            background: #FFD700;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+        }
+        
+        .input-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .input-field {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #1a2980;
+            font-weight: 600;
+        }
+        
+        input {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: #FFD700;
+            box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.3);
+        }
+        
+        .numbers-container {
+            background: #f9fbff;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 25px;
+            border: 2px solid #e0e6ff;
+            min-height: 100px;
+        }
+        
+        .numbers-title {
+            color: #1a2980;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .counter {
+            background: #1a2980;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+        
+        .numbers-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .number-tag {
+            background: #e6f7ff;
+            border: 1px solid #1a2980;
+            border-radius: 20px;
+            padding: 6px 12px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .remove-btn {
+            background: none;
+            border: none;
+            color: #ff4757;
+            cursor: pointer;
+            font-weight: bold;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50%;
+            transition: background 0.2s;
+        }
+        
+        .remove-btn:hover {
+            background: rgba(255, 71, 87, 0.1);
+        }
+        
+        .buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            flex: 1;
+            min-width: 120px;
+        }
+        
+        .btn-add {
+            background: linear-gradient(to right, #1a2980, #26d0ce);
+            color: white;
+        }
+        
+        .btn-add:hover {
+            background: linear-gradient(to right, #152266, #1fa8a3);
+            transform: translateY(-2px);
+        }
+        
+        .btn-clear {
+            background: #ff4757;
+            color: white;
+        }
+        
+        .btn-clear:hover {
+            background: #ff2e43;
+            transform: translateY(-2px);
+        }
+        
+        .result-section {
+            background: #f9fbff;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 20px;
+            border: 2px solid #e0e6ff;
+            text-align: center;
+        }
+        
+        .result-title {
+            color: #1a2980;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+        
+        .result-value {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #FFD700;
+            padding: 15px;
+            background: #1a2980;
+            border-radius: 10px;
+            color: white;
+            margin: 15px 0;
+        }
+        
+        .instructions {
+            background: #fff9e6;
+            border-left: 4px solid #FFD700;
+            padding: 15px;
+            margin-bottom: 25px;
+            border-radius: 0 10px 10px 0;
+        }
+        
+        .instructions h3 {
+            color: #1a2980;
+            margin-bottom: 10px;
+        }
+        
+        .instructions p {
+            margin-bottom: 10px;
+            color: #333;
+        }
+        
+        .formula {
+            background: #1a2980;
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            font-family: monospace;
+            margin: 10px 0;
+            display: inline-block;
+        }
+        
+        .error-message {
+            color: #ff4757;
+            font-size: 0.85rem;
+            margin-top: 5px;
+            display: none;
+        }
+        
+        @media (max-width: 600px) {
+            .input-container {
+                flex-direction: column;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .result-value {
+                font-size: 1.8rem;
+            }
+            
+            .btn {
+                min-width: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Average Calculator</h1>
+            <p class="subtitle">Calculate the mean of up to 50 numbers</p>
+        </header>
+        
+        <div class="calculator">
+            <div class="instructions">
+                <h3>How to Calculate Average:</h3>
+                <p>The average (mean) is calculated by adding all numbers together and then dividing by the count of numbers.</p>
+                <div class="formula">Average = (Sum of all numbers) / (Total count of numbers)</div>
+                <p>Example: Average of [4, 8, 6] = (4 + 8 + 6) / 3 = 18 / 3 = 6</p>
+            </div>
+            
+            <div class="input-section">
+                <div class="section-title">
+                    <i>1</i> Enter Numbers
+                </div>
+                <div class="input-container">
+                    <div class="input-field">
+                        <label for="number-input">Add a Number</label>
+                        <input type="number" id="number-input" placeholder="e.g., 10.5" step="any">
+                        <div class="error-message" id="number-error">Please enter a valid number</div>
+                    </div>
+                </div>
+                
+                <div class="buttons">
+                    <button class="btn btn-add" id="add-btn">Add Number</button>
+                    <button class="btn btn-clear" id="clear-btn">Clear All</button>
+                </div>
+            </div>
+            
+            <div class="numbers-container">
+                <div class="numbers-title">
+                    <span>Added Numbers</span>
+                    <div class="counter">0 / 50</div>
+                </div>
+                <div class="numbers-list" id="numbers-list">
+                    <!-- Numbers will be added here -->
+                </div>
+                <div id="empty-message">No numbers added yet. Add numbers to calculate the average.</div>
+            </div>
+            
+            <div class="result-section">
+                <h2 class="result-title">Average Result</h2>
+                <div class="result-value" id="result">0.00</div>
+                <p id="count-info">Add numbers to see the average</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DOM elements
+        const numberInput = document.getElementById('number-input');
+        const addBtn = document.getElementById('add-btn');
+        const clearBtn = document.getElementById('clear-btn');
+        const numbersList = document.getElementById('numbers-list');
+        const resultEl = document.getElementById('result');
+        const countInfo = document.getElementById('count-info');
+        const counterEl = document.querySelector('.counter');
+        const emptyMessage = document.getElementById('empty-message');
+        const numberError = document.getElementById('number-error');
+        
+        // Numbers array
+        let numbers = [];
+        const MAX_NUMBERS = 50;
+        
+        // Add event listeners
+        addBtn.addEventListener('click', addNumber);
+        clearBtn.addEventListener('click', clearAll);
+        numberInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                addNumber();
+            }
+        });
+        
+        // Add number function
+        function addNumber() {
+            // Reset error
+            numberError.style.display = 'none';
+            numberInput.classList.remove('error');
+            
+            // Get input value
+            const value = numberInput.value.trim();
+            
+            // Validate input
+            if (value === '') {
+                showError('Please enter a number');
+                return;
+            }
+            
+            const num = parseFloat(value);
+            if (isNaN(num)) {
+                showError('Please enter a valid number');
+                return;
+            }
+            
+            // Check if we've reached max numbers
+            if (numbers.length >= MAX_NUMBERS) {
+                showError(`Maximum ${MAX_NUMBERS} numbers allowed`);
+                return;
+            }
+            
+            // Add number to array
+            numbers.push(num);
+            
+            // Update UI
+            updateNumbersList();
+            calculateAverage();
+            
+            // Clear input
+            numberInput.value = '';
+            numberInput.focus();
+        }
+        
+        // Show error message
+        function showError(message) {
+            numberError.textContent = message;
+            numberError.style.display = 'block';
+            numberInput.classList.add('error');
+            numberInput.focus();
+        }
+        
+        // Update numbers list display
+        function updateNumbersList() {
+            // Update counter
+            counterEl.textContent = `${numbers.length} / ${MAX_NUMBERS}`;
+            
+            // Clear list
+            numbersList.innerHTML = '';
+            
+            // Show/hide empty message
+            if (numbers.length === 0) {
+                emptyMessage.style.display = 'block';
+            } else {
+                emptyMessage.style.display = 'none';
+                
+                // Add numbers to list
+                numbers.forEach((num, index) => {
+                    const numberTag = document.createElement('div');
+                    numberTag.className = 'number-tag';
+                    numberTag.innerHTML = `
+                        ${num}
+                        <button class="remove-btn" data-index="${index}">×</button>
+                    `;
+                    numbersList.appendChild(numberTag);
+                });
+                
+                // Add event listeners to remove buttons
+                document.querySelectorAll('.remove-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const index = parseInt(e.target.dataset.index);
+                        removeNumber(index);
+                    });
+                });
+            }
+        }
+        
+        // Remove number from list
+        function removeNumber(index) {
+            numbers.splice(index, 1);
+            updateNumbersList();
+            calculateAverage();
+        }
+        
+        // Clear all numbers
+        function clearAll() {
+            numbers = [];
+            updateNumbersList();
+            calculateAverage();
+            numberInput.value = '';
+            numberInput.focus();
+        }
+        
+        // Calculate and display average
+        function calculateAverage() {
+            if (numbers.length === 0) {
+                resultEl.textContent = '0.00';
+                countInfo.textContent = 'Add numbers to see the average';
+                return;
+            }
+            
+            // Calculate sum
+            const sum = numbers.reduce((acc, num) => acc + num, 0);
+            
+            // Calculate average
+            const average = sum / numbers.length;
+            
+            // Display result
+            resultEl.textContent = average.toFixed(2);
+            countInfo.textContent = `Average of ${numbers.length} number${numbers.length > 1 ? 's' : ''}`;
+        }
+        
+        // Initialize
+        updateNumbersList();
+        calculateAverage();
+    </script>
+</body>
+</html>
