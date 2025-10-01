@@ -1,1 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Favicon Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
 
+        :root {
+            --bright-yellow: #FFD700;
+            --vibrant-blue: #1E90FF;
+            --dark-blue: #0066CC;
+            --light-yellow: #FFF9C4;
+            --light-blue: #E3F2FD;
+            --dark-yellow: #FFA000;
+        }
+
+        body {
+            background: linear-gradient(135deg, #E3F2FD, #FFF9C4);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+        }
+
+        header {
+            background: var(--vibrant-blue);
+            color: white;
+            padding: 25px;
+            text-align: center;
+            position: relative;
+        }
+
+        header::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 100%;
+            height: 20px;
+            background: var(--bright-yellow);
+            clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 70%);
+        }
+
+        header h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        header p {
+            margin-top: 10px;
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+
+        .tool-container {
+            padding: 30px;
+        }
+
+        .upload-section {
+            text-align: center;
+            padding: 35px 25px;
+            border: 3px dashed var(--light-blue);
+            border-radius: 16px;
+            background-color: var(--light-blue);
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .upload-section:hover {
+            border-color: var(--vibrant-blue);
+            background-color: #f0f8ff;
+            transform: translateY(-3px);
+        }
+
+        .upload-icon {
+            font-size: 4rem;
+            color: var(--vibrant-blue);
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .upload-text {
+            margin: 15px 0;
+            color: var(--dark-blue);
+            font-weight: 700;
+            font-size: 1.3rem;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .upload-btn {
+            background: var(--bright-yellow);
+            color: #1a237e;
+            border: none;
+            padding: 14px 32px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+            margin-top: 10px;
+        }
+
+        .upload-btn:hover {
+            background: var(--dark-yellow);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .preview-section {
+            display: none;
+            margin-top: 25px;
+        }
+
+        .preview-title {
+            text-align: center;
+            margin-bottom: 20px;
+            color: var(--dark-blue);
+            font-weight: 700;
+            font-size: 1.4rem;
+        }
+
+        .image-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 25px;
+            justify-content: center;
+        }
+
+        .image-box {
+            flex: 1;
+            min-width: 200px;
+            text-align: center;
+        }
+
+        .image-label {
+            margin-bottom: 12px;
+            font-weight: 600;
+            color: var(--dark-blue);
+        }
+
+        .image-preview {
+            width: 100%;
+            max-height: 200px;
+            object-fit: contain;
+            border-radius: 12px;
+            border: 2px solid var(--light-blue);
+            background: #f8f9fa;
+        }
+
+        .favicon-preview {
+            width: 64px;
+            height: 64px;
+            object-fit: contain;
+            border-radius: 8px;
+            border: 2px solid var(--vibrant-blue);
+            background: white;
+            margin: 0 auto;
+            display: block;
+        }
+
+        .controls-section {
+            margin: 30px 0;
+            background: var(--light-yellow);
+            padding: 25px;
+            border-radius: 16px;
+            border: 2px solid var(--bright-yellow);
+        }
+
+        .controls-title {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #e65100;
+            font-weight: 700;
+            font-size: 1.4rem;
+        }
+
+        .size-options {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 25px;
+        }
+
+        .size-btn {
+            padding: 10px 20px;
+            border: 2px solid var(--light-yellow);
+            border-radius: 12px;
+            background: white;
+            color: var(--dark-blue);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            min-width: 100px;
+        }
+
+        .size-btn:hover, .size-btn.active {
+            background: var(--light-yellow);
+            border-color: var(--bright-yellow);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .generate-btn, .download-btn {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .generate-btn {
+            background: var(--vibrant-blue);
+            color: white;
+        }
+
+        .generate-btn:hover {
+            background: var(--dark-blue);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .download-btn {
+            background: var(--dark-yellow);
+            color: #1a237e;
+        }
+
+        .download-btn:hover {
+            background: #e69500;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .format-info {
+            text-align: center;
+            margin: 20px 0;
+            padding: 15px;
+            background: var(--light-blue);
+            border-radius: 12px;
+            border: 1px solid var(--vibrant-blue);
+            color: var(--dark-blue);
+            font-weight: 600;
+        }
+
+        .info-box {
+            background: var(--light-yellow);
+            padding: 15px;
+            border-radius: 12px;
+            margin: 20px 0;
+            border: 1px solid var(--bright-yellow);
+            color: #e65100;
+            font-weight: 600;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .container {
+                border-radius: 16px;
+            }
+            
+            header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .tool-container {
+                padding: 20px;
+            }
+            
+            .upload-section {
+                padding: 25px 15px;
+            }
+            
+            .image-container {
+                gap: 15px;
+            }
+            
+            .image-box {
+                min-width: 150px;
+            }
+            
+            .generate-btn, .download-btn {
+                padding: 12px 24px;
+                font-size: 1rem;
+            }
+            
+            .action-buttons {
+                gap: 10px;
+            }
+            
+            .size-btn {
+                padding: 8px 16px;
+                font-size: 0.9rem;
+                min-width: 80px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            header h1 {
+                font-size: 1.5rem;
+            }
+            
+            header p {
+                font-size: 1rem;
+            }
+            
+            .upload-icon {
+                font-size: 3rem;
+            }
+            
+            .upload-text {
+                font-size: 1.1rem;
+            }
+            
+            .upload-btn {
+                padding: 12px 24px;
+                font-size: 1rem;
+            }
+            
+            .image-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .generate-btn, .download-btn {
+                width: 100%;
+                max-width: 250px;
+            }
+            
+            .size-options {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .size-btn {
+                width: 100%;
+                max-width: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Favicon Generator</h1>
+            <p>Create professional favicons for your website</p>
+        </header>
+        
+        <div class="tool-container">
+            <div class="format-info">
+                <p>✅ Convert PNG, JPG, and other images to favicon format</p>
+                <p>✅ Standard sizes: 16x16px and 32x32px</p>
+                <p>✅ One-click download as ICO file</p>
+            </div>
+            
+            <div class="info-box">
+                <p><strong>What is a favicon?</strong> A favicon (favorite icon) is a small icon that appears in browser tabs, bookmarks, and address bars. It helps users quickly identify your website.</p>
+            </div>
+            
+            <div class="upload-section" id="uploadSection">
+                <div class="upload-icon">🖼️</div>
+                <p class="upload-text">Drag & drop your image here</p>
+                <p>or</p>
+                <input type="file" id="fileInput" class="file-input" accept="image/*">
+                <button class="upload-btn" id="uploadBtn">Choose Image</button>
+                <p style="margin-top: 15px; font-size: 0.9rem; color: #0066cc;">Supports PNG, JPG, GIF, WebP (Max 10MB)</p>
+            </div>
+            
+            <div class="preview-section" id="previewSection">
+                <h3 class="preview-title">Image Preview</h3>
+                <div class="image-container">
+                    <div class="image-box">
+                        <div class="image-label">Original Image</div>
+                        <img id="originalPreview" class="image-preview" alt="Original Preview">
+                    </div>
+                    <div class="image-box">
+                        <div class="image-label">Favicon Preview</div>
+                        <img id="faviconPreview" class="favicon-preview" alt="Favicon Preview">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="controls-section">
+                <h3 class="controls-title">Favicon Settings</h3>
+                <div class="size-options">
+                    <button class="size-btn active" data-size="32">32x32 px</button>
+                    <button class="size-btn" data-size="16">16x16 px</button>
+                </div>
+                
+                <div class="action-buttons">
+                    <button class="generate-btn" id="generateBtn">Generate Favicon</button>
+                    <button class="download-btn" id="downloadBtn">Download ICO</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ICO encoding functions
+        function createICO(images) {
+            // ICO header: 6 bytes
+            // Reserved (2), Type (2), Count (2)
+            const header = new ArrayBuffer(6 + images.length * 16);
+            const headerView = new DataView(header);
+            headerView.setUint16(0, 0, true); // Reserved
+            headerView.setUint16(2, 1, true); // Type (1 for icon)
+            headerView.setUint16(4, images.length, true); // Count
+            
+            // Image directory entries (16 bytes each)
+            let offset = 6 + images.length * 16;
+            const entries = [];
+            
+            for (let i = 0; i < images.length; i++) {
+                const img = images[i];
+                const size = Math.min(img.width, img.height);
+                
+                // Directory entry
+                const entry = new ArrayBuffer(16);
+                const entryView = new DataView(entry);
+                
+                // Width and height (0 means 256)
+                entryView.setUint8(0, size <= 255 ? size : 0);
+                entryView.setUint8(1, size <= 255 ? size : 0);
+                entryView.setUint8(2, 0); // Color palette (0 for true color)
+                entryView.setUint8(3, 0); // Reserved
+                
+                // Color planes and bits per pixel
+                entryView.setUint16(4, 1, true); // Color planes
+                entryView.setUint16(6, 32, true); // Bits per pixel
+                
+                // Image size and offset
+                const imageSize = calculateBMPSize(size);
+                entryView.setUint32(8, imageSize, true); // Image size
+                entryView.setUint32(12, offset, true); // Offset to image data
+                
+                entries.push(entry);
+                offset += imageSize;
+            }
+            
+            // Create BMP data for each image
+            const bmpData = [];
+            for (let i = 0; i < images.length; i++) {
+                const img = images[i];
+                const size = Math.min(img.width, img.height);
+                bmpData.push(createBMPForICO(img, size));
+            }
+            
+            // Combine all parts
+            const parts = [header, ...entries, ...bmpData];
+            return new Blob(parts, { type: 'image/x-icon' });
+        }
+        
+        function calculateBMPSize(size) {
+            // BMP header (40 bytes) + pixel data (size * size * 4) + mask (size * size / 8)
+            return 40 + (size * size * 4) + Math.ceil(size * size / 8);
+        }
+        
+        function createBMPForICO(img, size) {
+            const canvas = document.createElement('canvas');
+            canvas.width = size;
+            canvas.height = size;
+            
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = 'white';
+            ctx.fillRect(0, 0, size, size);
+            ctx.drawImage(img, 0, 0, size, size);
+            
+            const imageData = ctx.getImageData(0, 0, size, size);
+            const data = imageData.data;
+            
+            // Create BMP header (40 bytes)
+            const header = new ArrayBuffer(40);
+            const view = new DataView(header);
+            view.setUint32(0, 40, true); // Header size
+            view.setInt32(4, size, true); // Width
+            view.setInt32(8, size * 2, true); // Height (doubled for AND mask)
+            view.setUint16(12, 1, true); // Color planes
+            view.setUint16(14, 32, true); // Bits per pixel
+            view.setUint32(16, 0, true); // Compression (0 = none)
+            view.setUint32(20, 0, true); // Image size (0 for uncompressed)
+            view.setUint32(24, 2835, true); // Horizontal resolution (72 DPI)
+            view.setUint32(28, 2835, true); // Vertical resolution (72 DPI)
+            view.setUint32(32, 0, true); // Colors in palette
+            view.setUint32(36, 0, true); // Important colors
+            
+            // Create pixel data (BGRA format, bottom to top)
+            const pixelData = new Uint8Array(size * size * 4);
+            for (let y = 0; y < size; y++) {
+                for (let x = 0; x < size; x++) {
+                    const srcIndex = ((size - 1 - y) * size + x) * 4;
+                    const dstIndex = (y * size + x) * 4;
+                    
+                    pixelData[dstIndex] = data[srcIndex + 2];     // Blue
+                    pixelData[dstIndex + 1] = data[srcIndex + 1]; // Green
+                    pixelData[dstIndex + 2] = data[srcIndex];     // Red
+                    pixelData[dstIndex + 3] = data[srcIndex + 3]; // Alpha
+                }
+            }
+            
+            // Create AND mask (1 bit per pixel, 0 = opaque, 1 = transparent)
+            const maskBytes = Math.ceil(size / 8);
+            const maskData = new Uint8Array(size * maskBytes);
+            for (let y = 0; y < size; y++) {
+                for (let x = 0; x < size; x++) {
+                    const alpha = data[((size - 1 - y) * size + x) * 4 + 3];
+                    if (alpha < 128) {
+                        // Set bit to 1 (transparent)
+                        const byteIndex = y * maskBytes + Math.floor(x / 8);
+                        const bitIndex = 7 - (x % 8);
+                        maskData[byteIndex] |= (1 << bitIndex);
+                    }
+                }
+            }
+            
+            return new Blob([header, pixelData, maskData]);
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM Elements
+            const fileInput = document.getElementById('fileInput');
+            const uploadBtn = document.getElementById('uploadBtn');
+            const uploadSection = document.getElementById('uploadSection');
+            const previewSection = document.getElementById('previewSection');
+            const originalPreview = document.getElementById('originalPreview');
+            const faviconPreview = document.getElementById('faviconPreview');
+            const sizeBtns = document.querySelectorAll('.size-btn');
+            const generateBtn = document.getElementById('generateBtn');
+            const downloadBtn = document.getElementById('downloadBtn');
+            
+            let originalFile = null;
+            let generatedBlob = null;
+            let currentSize = 32;
+            
+            // Event Listeners
+            uploadBtn.addEventListener('click', () => fileInput.click());
+            fileInput.addEventListener('change', handleFileSelect);
+            generateBtn.addEventListener('click', generateFavicon);
+            downloadBtn.addEventListener('click', downloadFavicon);
+            
+            // Size button selection
+            sizeBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    sizeBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentSize = parseInt(btn.dataset.size);
+                });
+            });
+            
+            // Handle file selection
+            function handleFileSelect(e) {
+                if (e.target.files && e.target.files[0]) {
+                    const file = e.target.files[0];
+                    
+                    // Validate file type
+                    if (!file.type.match('image.*')) {
+                        alert('Please select a valid image file.');
+                        return;
+                    }
+                    
+                    // Validate file size
+                    if (file.size > 10 * 1024 * 1024) {
+                        alert('File size exceeds 10MB limit. Please choose a smaller file.');
+                        return;
+                    }
+                    
+                    originalFile = file;
+                    
+                    // Display original preview
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        originalPreview.src = e.target.result;
+                        faviconPreview.src = e.target.result;
+                        previewSection.style.display = 'block';
+                    }
+                    reader.readAsDataURL(file);
+                }
+            }
+            
+            // Generate favicon
+            function generateFavicon() {
+                if (!originalFile) {
+                    alert('Please select an image first.');
+                    return;
+                }
+                
+                const img = new Image();
+                img.onload = function() {
+                    try {
+                        // Create resized image for favicon
+                        const canvas = document.createElement('canvas');
+                        canvas.width = currentSize;
+                        canvas.height = currentSize;
+                        
+                        const ctx = canvas.getContext('2d');
+                        ctx.fillStyle = 'white';
+                        ctx.fillRect(0, 0, currentSize, currentSize);
+                        ctx.drawImage(img, 0, 0, currentSize, currentSize);
+                        
+                        // Display favicon preview
+                        faviconPreview.src = canvas.toDataURL();
+                        
+                        // Create ICO blob
+                        generatedBlob = createICO([canvas]);
+                        
+                        // Enable download button
+                        downloadBtn.disabled = false;
+                    } catch (error) {
+                        console.error('Favicon generation error:', error);
+                        alert('Error generating favicon. Please try with a different image.');
+                    }
+                };
+                
+                img.src = URL.createObjectURL(originalFile);
+            }
+            
+            // Download favicon
+            function downloadFavicon() {
+                if (!generatedBlob) {
+                    alert('Please generate a favicon first.');
+                    return;
+                }
+                
+                const url = URL.createObjectURL(generatedBlob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'favicon.ico';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }
+            
+            // Drag and drop functionality
+            uploadSection.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadSection.style.borderColor = '#1E90FF';
+                uploadSection.style.backgroundColor = '#d0e8ff';
+            });
+            
+            uploadSection.addEventListener('dragleave', () => {
+                uploadSection.style.borderColor = '#E3F2FD';
+                uploadSection.style.backgroundColor = '#E3F2FD';
+            });
+            
+            uploadSection.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadSection.style.borderColor = '#E3F2FD';
+                uploadSection.style.backgroundColor = '#E3F2FD';
+                
+                if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+                    const file = e.dataTransfer.files[0];
+                    
+                    // Check if it's an image file
+                    if (file.type.match('image.*')) {
+                        fileInput.files = e.dataTransfer.files;
+                        handleFileSelect({ target: fileInput });
+                    } else {
+                        alert('Please drop an image file.');
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
