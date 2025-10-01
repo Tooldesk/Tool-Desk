@@ -1,1 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML Beautifier</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
 
+        :root {
+            --bright-yellow: #FFD700;
+            --vibrant-blue: #1E90FF;
+            --dark-blue: #0066CC;
+            --light-yellow: #FFF9C4;
+            --light-blue: #E3F2FD;
+            --dark-yellow: #FFA000;
+        }
+
+        body {
+            background: linear-gradient(135deg, #E3F2FD, #FFF9C4);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1000px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+        }
+
+        header {
+            background: var(--vibrant-blue);
+            color: white;
+            padding: 25px;
+            text-align: center;
+            position: relative;
+        }
+
+        header::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 100%;
+            height: 20px;
+            background: var(--bright-yellow);
+            clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 70%);
+        }
+
+        header h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        header p {
+            margin-top: 10px;
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+
+        .tool-container {
+            padding: 30px;
+        }
+
+        .format-info {
+            text-align: center;
+            margin: 20px 0;
+            padding: 15px;
+            background: var(--light-blue);
+            border-radius: 12px;
+            border: 1px solid var(--vibrant-blue);
+            color: var(--dark-blue);
+            font-weight: 600;
+        }
+
+        .editor-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .editor-section {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+        }
+
+        .editor-box {
+            background: var(--light-blue);
+            border-radius: 16px;
+            padding: 20px;
+            border: 2px solid var(--vibrant-blue);
+        }
+
+        .editor-title {
+            text-align: center;
+            margin-bottom: 15px;
+            color: var(--dark-blue);
+            font-weight: 700;
+            font-size: 1.3rem;
+        }
+
+        .code-input, .code-output {
+            width: 100%;
+            min-height: 250px;
+            padding: 15px;
+            border: none;
+            border-radius: 12px;
+            background: white;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.4;
+            resize: vertical;
+            overflow: auto;
+        }
+
+        .code-output {
+            background: var(--light-yellow);
+            border: 2px solid var(--bright-yellow);
+        }
+
+        .controls-section {
+            background: var(--light-yellow);
+            padding: 25px;
+            border-radius: 16px;
+            border: 2px solid var(--bright-yellow);
+            margin: 25px 0;
+        }
+
+        .controls-title {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #e65100;
+            font-weight: 700;
+            font-size: 1.4rem;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .option-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .option-input {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--vibrant-blue);
+        }
+
+        .option-label {
+            font-weight: 600;
+            color: #e65100;
+        }
+
+        .indent-options {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .indent-input {
+            width: 60px;
+            padding: 8px;
+            border: 2px solid var(--light-yellow);
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .beautify-btn, .clear-btn, .copy-btn {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .beautify-btn {
+            background: var(--vibrant-blue);
+            color: white;
+        }
+
+        .beautify-btn:hover {
+            background: var(--dark-blue);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .clear-btn {
+            background: #ffcdd2;
+            color: #c62828;
+        }
+
+        .clear-btn:hover {
+            background: #ef9a9a;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .copy-btn {
+            background: var(--dark-yellow);
+            color: #1a237e;
+        }
+
+        .copy-btn:hover {
+            background: #e69500;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .stats-info {
+            margin-top: 20px;
+            text-align: center;
+            padding: 12px;
+            background: var(--light-blue);
+            border-radius: 12px;
+            font-weight: 600;
+            color: var(--dark-blue);
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .container {
+                border-radius: 16px;
+            }
+            
+            header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .tool-container {
+                padding: 20px;
+            }
+            
+            .code-input, .code-output {
+                min-height: 200px;
+                font-size: 13px;
+            }
+            
+            .beautify-btn, .clear-btn, .copy-btn {
+                padding: 12px 24px;
+                font-size: 1rem;
+            }
+            
+            .action-buttons {
+                gap: 10px;
+            }
+            
+            .options-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .indent-options {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+
+        @media (max-width: 480px) {
+            header h1 {
+                font-size: 1.5rem;
+            }
+            
+            header p {
+                font-size: 1rem;
+            }
+            
+            .beautify-btn, .clear-btn, .copy-btn {
+                width: 100%;
+                max-width: 220px;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>HTML Beautifier</h1>
+            <p>Transform minified HTML into human-readable format</p>
+        </header>
+        
+        <div class="tool-container">
+            <div class="format-info">
+                <p>✅ Adds proper indentation and line breaks</p>
+                <p>✅ Makes code easier to read and debug</p>
+                <p>✅ Preserves all HTML functionality</p>
+            </div>
+            
+            <div class="editor-section">
+                <div class="editor-box">
+                    <h3 class="editor-title">Minified HTML</h3>
+                    <textarea id="htmlInput" class="code-input" placeholder="Paste your minified HTML code here..."></textarea>
+                </div>
+                
+                <div class="editor-box">
+                    <h3 class="editor-title">Beautified HTML</h3>
+                    <textarea id="htmlOutput" class="code-output" placeholder="Beautified HTML will appear here..." readonly></textarea>
+                </div>
+            </div>
+            
+            <div class="controls-section">
+                <h3 class="controls-title">Beautification Options</h3>
+                <div class="options-grid">
+                    <div class="option-item">
+                        <input type="checkbox" id="formatComments" class="option-input" checked>
+                        <label for="formatComments" class="option-label">Format comments</label>
+                    </div>
+                    <div class="option-item">
+                        <input type="checkbox" id="preserveNewlines" class="option-input">
+                        <label for="preserveNewlines" class="option-label">Preserve newlines</label>
+                    </div>
+                    <div class="option-item indent-options">
+                        <label for="indentSize" class="option-label">Indent size:</label>
+                        <input type="number" id="indentSize" class="indent-input" min="1" max="8" value="2">
+                    </div>
+                </div>
+                
+                <div class="action-buttons">
+                    <button class="beautify-btn" id="beautifyBtn">Beautify HTML</button>
+                    <button class="clear-btn" id="clearBtn">Clear All</button>
+                    <button class="copy-btn" id="copyBtn">Copy Beautified</button>
+                </div>
+            </div>
+            
+            <div class="stats-info" id="statsInfo">Original: 0 lines | Beautified: 0 lines</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM Elements
+            const htmlInput = document.getElementById('htmlInput');
+            const htmlOutput = document.getElementById('htmlOutput');
+            const formatComments = document.getElementById('formatComments');
+            const preserveNewlines = document.getElementById('preserveNewlines');
+            const indentSize = document.getElementById('indentSize');
+            const beautifyBtn = document.getElementById('beautifyBtn');
+            const clearBtn = document.getElementById('clearBtn');
+            const copyBtn = document.getElementById('copyBtn');
+            const statsInfo = document.getElementById('statsInfo');
+            
+            // Event Listeners
+            beautifyBtn.addEventListener('click', beautifyHTML);
+            clearBtn.addEventListener('click', clearAll);
+            copyBtn.addEventListener('click', copyBeautified);
+            
+            // Beautify HTML function
+            function beautifyHTML() {
+                const inputHTML = htmlInput.value;
+                if (!inputHTML.trim()) {
+                    htmlOutput.value = '';
+                    updateStats(0, 0);
+                    return;
+                }
+                
+                const indent = ' '.repeat(parseInt(indentSize.value) || 2);
+                let beautified = '';
+                let indentLevel = 0;
+                let i = 0;
+                
+                while (i < inputHTML.length) {
+                    const char = inputHTML[i];
+                    
+                    // Handle comments
+                    if (char === '<' && inputHTML.substring(i, i + 4) === '<!--') {
+                        const commentEnd = inputHTML.indexOf('-->', i);
+                        if (commentEnd !== -1) {
+                            const comment = inputHTML.substring(i, commentEnd + 3);
+                            if (formatComments.checked) {
+                                beautified += '\n' + indent.repeat(indentLevel) + comment;
+                            } else {
+                                beautified += comment;
+                            }
+                            i = commentEnd + 3;
+                            continue;
+                        }
+                    }
+                    
+                    // Handle opening tags
+                    if (char === '<' && inputHTML[i + 1] !== '/') {
+                        // Find the end of the tag
+                        const tagEnd = inputHTML.indexOf('>', i);
+                        if (tagEnd !== -1) {
+                            const tag = inputHTML.substring(i, tagEnd + 1);
+                            
+                            // Check if it's a self-closing tag
+                            const isSelfClosing = tag.endsWith('/>') || 
+                                tag.match(/^<(area|base|br|col|embed|hr|img|input|link|meta|param|source|track|wbr)\b/i);
+                            
+                            // Add newline and indentation before opening tag (except for the first tag)
+                            if (beautified && !beautified.endsWith('\n')) {
+                                beautified += '\n';
+                            }
+                            beautified += indent.repeat(indentLevel) + tag;
+                            
+                            // Increase indent level for non-self-closing tags
+                            if (!isSelfClosing) {
+                                indentLevel++;
+                            }
+                            
+                            i = tagEnd + 1;
+                            continue;
+                        }
+                    }
+                    
+                    // Handle closing tags
+                    if (char === '<' && inputHTML[i + 1] === '/') {
+                        const tagEnd = inputHTML.indexOf('>', i);
+                        if (tagEnd !== -1) {
+                            // Decrease indent level before closing tag
+                            indentLevel = Math.max(0, indentLevel - 1);
+                            
+                            // Add newline and indentation before closing tag
+                            beautified += '\n' + indent.repeat(indentLevel) + inputHTML.substring(i, tagEnd + 1);
+                            i = tagEnd + 1;
+                            continue;
+                        }
+                    }
+                    
+                    // Handle text content
+                    if (char !== '<') {
+                        // Find the next tag or end of string
+                        const nextTag = inputHTML.indexOf('<', i);
+                        const textEnd = nextTag !== -1 ? nextTag : inputHTML.length;
+                        const text = inputHTML.substring(i, textEnd).trim();
+                        
+                        if (text) {
+                            // Add text content with proper indentation
+                            if (!beautified.endsWith('\n')) {
+                                beautified += '\n';
+                            }
+                            beautified += indent.repeat(indentLevel) + text;
+                        }
+                        
+                        i = textEnd;
+                        continue;
+                    }
+                    
+                    // Handle any other characters
+                    beautified += char;
+                    i++;
+                }
+                
+                // Clean up extra newlines
+                beautified = beautified.trim();
+                beautified = beautified.replace(/\n\s*\n/g, '\n\n');
+                
+                htmlOutput.value = beautified;
+                updateStats(inputHTML.split('\n').length, beautified.split('\n').length);
+            }
+            
+            // Update stats display
+            function updateStats(originalLines, beautifiedLines) {
+                statsInfo.textContent = 
+                    `Original: ${originalLines} lines | ` +
+                    `Beautified: ${beautifiedLines} lines`;
+            }
+            
+            // Clear all function
+            function clearAll() {
+                htmlInput.value = '';
+                htmlOutput.value = '';
+                updateStats(0, 0);
+                htmlInput.focus();
+            }
+            
+            // Copy beautified function
+            function copyBeautified() {
+                if (!htmlOutput.value.trim()) {
+                    alert('No beautified HTML to copy.');
+                    return;
+                }
+                
+                htmlOutput.select();
+                htmlOutput.setSelectionRange(0, 99999); // For mobile devices
+                
+                try {
+                    document.execCommand('copy');
+                    // Show visual feedback
+                    const originalText = copyBtn.textContent;
+                    copyBtn.textContent = 'Copied!';
+                    setTimeout(() => {
+                        copyBtn.textContent = originalText;
+                    }, 2000);
+                } catch (err) {
+                    alert('Failed to copy to clipboard. Please try manually.');
+                }
+            }
+            
+            // Sample minified HTML for demonstration
+            const sampleMinifiedHTML = '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Sample</title></head><body><h1>Welcome</h1><p>This is a paragraph.</p><ul><li>Item 1</li><li>Item 2</li></ul></body></html>';
+            
+            htmlInput.value = sampleMinifiedHTML;
+        });
+    </script>
+</body>
+</html>
