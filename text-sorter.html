@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Shortener</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2980, #26d0ce);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(to right, #FFD700, #FFA500);
+            padding: 25px;
+            text-align: center;
+            color: #1a2980;
+        }
+        
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .calculator {
+            padding: 30px;
+        }
+        
+        .input-section {
+            margin-bottom: 25px;
+        }
+        
+        .section-title {
+            color: #1a2980;
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .section-title i {
+            background: #FFD700;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+        }
+        
+        .text-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .text-input {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #1a2980;
+            font-weight: 600;
+        }
+        
+        textarea {
+            width: 100%;
+            padding: 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            min-height: 150px;
+            resize: vertical;
+            transition: border-color 0.3s;
+            font-family: inherit;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: #FFD700;
+            box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.3);
+        }
+        
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(to right, #1a2980, #26d0ce);
+            color: white;
+            flex: 1;
+            min-width: 180px;
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(to right, #152266, #1fa8a3);
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background: #e0e0e0;
+            color: #1a2980;
+            flex: 1;
+            min-width: 120px;
+        }
+        
+        .btn-secondary:hover {
+            background: #d0d0d0;
+            transform: translateY(-2px);
+        }
+        
+        .btn-copy {
+            background: #4CAF50;
+            color: white;
+            flex: 1;
+            min-width: 120px;
+        }
+        
+        .btn-copy:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+        }
+        
+        .result-section {
+            background: #f9fbff;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 20px;
+            border: 2px solid #e0e6ff;
+        }
+        
+        .result-title {
+            color: #1a2980;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .stats {
+            background: #e6f7ff;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            color: #1a2980;
+        }
+        
+        .shortened-text {
+            width: 100%;
+            padding: 16px;
+            border: 2px solid #e0e6ff;
+            border-radius: 10px;
+            background: white;
+            min-height: 100px;
+            font-size: 1rem;
+            resize: vertical;
+            font-family: inherit;
+            line-height: 1.6;
+        }
+        
+        .instructions {
+            background: #fff9e6;
+            border-left: 4px solid #FFD700;
+            padding: 15px;
+            margin-bottom: 25px;
+            border-radius: 0 10px 10px 0;
+        }
+        
+        .instructions h3 {
+            color: #1a2980;
+            margin-bottom: 10px;
+        }
+        
+        .instructions p {
+            margin-bottom: 10px;
+            color: #333;
+        }
+        
+        .instructions ul {
+            padding-left: 20px;
+            margin-bottom: 10px;
+        }
+        
+        .instructions li {
+            margin-bottom: 8px;
+            color: #333;
+        }
+        
+        .success-message {
+            color: #4CAF50;
+            font-weight: 600;
+            margin-top: 10px;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .success-message.show {
+            opacity: 1;
+        }
+        
+        @media (max-width: 600px) {
+            .controls {
+                flex-direction: column;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .btn {
+                min-width: auto;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Text Shortener</h1>
+            <p class="subtitle">Condense long text while preserving core meaning</p>
+        </header>
+        
+        <div class="calculator">
+            <div class="instructions">
+                <h3>How to Use:</h3>
+                <p>Paste or type your text below and click "Shorten Text" to create a concise version.</p>
+                <ul>
+                    <li>Ideal for social media posts, summaries, and previews</li>
+                    <li>Preserves key information while reducing word count</li>
+                    <li>Perfect for character-limited platforms</li>
+                </ul>
+            </div>
+            
+            <div class="input-section">
+                <div class="section-title">
+                    <i>1</i> Your Text
+                </div>
+                <div class="text-container">
+                    <div class="text-input">
+                        <label for="input-text">Enter or paste your text here</label>
+                        <textarea id="input-text" placeholder="Paste your long text here..."></textarea>
+                    </div>
+                    
+                    <div class="controls">
+                        <button class="btn btn-primary" id="shorten-btn">
+                            <span>✂️</span> Shorten Text
+                        </button>
+                        <button class="btn btn-secondary" id="clear-btn">
+                            <span>🗑️</span> Clear All
+                        </button>
+                        <button class="btn btn-copy" id="copy-btn">
+                            <span>📋</span> Copy Result
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="result-section">
+                <div class="result-title">
+                    <span>Shortened Text</span>
+                    <div class="stats" id="stats">0 words → 0 words</div>
+                </div>
+                <div class="shortened-text" id="output-text" contenteditable="false">
+                    Your shortened text will appear here...
+                </div>
+                <div class="success-message" id="success-message">Copied to clipboard!</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DOM elements
+        const inputText = document.getElementById('input-text');
+        const outputText = document.getElementById('output-text');
+        const shortenBtn = document.getElementById('shorten-btn');
+        const clearBtn = document.getElementById('clear-btn');
+        const copyBtn = document.getElementById('copy-btn');
+        const statsEl = document.getElementById('stats');
+        const successMessage = document.getElementById('success-message');
+        
+        // Event listeners
+        shortenBtn.addEventListener('click', shortenText);
+        clearBtn.addEventListener('click', clearAll);
+        copyBtn.addEventListener('click', copyResult);
+        
+        // Shorten text function
+        function shortenText() {
+            const text = inputText.value.trim();
+            
+            if (!text) {
+                outputText.textContent = "Please enter some text to shorten.";
+                updateStats(0, 0);
+                return;
+            }
+            
+            // Get word count of original text
+            const originalWords = text.split(/\s+/).filter(word => word.length > 0).length;
+            
+            // Shorten the text (simplified algorithm for demo)
+            const shortened = createShortenedText(text);
+            
+            // Get word count of shortened text
+            const shortenedWords = shortened.split(/\s+/).filter(word => word.length > 0).length;
+            
+            // Display result
+            outputText.textContent = shortened;
+            updateStats(originalWords, shortenedWords);
+        }
+        
+        // Create shortened text (simplified algorithm)
+        function createShortenedText(text) {
+            // Split into sentences
+            const sentences = text.match(/[^\.!\?]+[\.!\?]+/g) || [text];
+            
+            if (sentences.length <= 3) {
+                // If already short, return as is
+                return text;
+            }
+            
+            // Keep first and last sentence, and one important middle sentence
+            const first = sentences[0];
+            const last = sentences[sentences.length - 1];
+            
+            // Find the longest middle sentence (assumed to be most important)
+            let longestIndex = 1;
+            let maxLength = 0;
+            
+            for (let i = 1; i < sentences.length - 1; i++) {
+                if (sentences[i].length > maxLength) {
+                    maxLength = sentences[i].length;
+                    longestIndex = i;
+                }
+            }
+            
+            const middle = sentences[longestIndex];
+            
+            // Combine sentences
+            let result = `${first} ${middle} ${last}`;
+            
+            // Clean up extra spaces
+            result = result.replace(/\s+/g, ' ').trim();
+            
+            // If result is still too long, truncate to 200 words
+            const words = result.split(/\s+/);
+            if (words.length > 200) {
+                result = words.slice(0, 200).join(' ') + '...';
+            }
+            
+            return result;
+        }
+        
+        // Update statistics display
+        function updateStats(original, shortened) {
+            statsEl.textContent = `${original} words → ${shortened} words`;
+        }
+        
+        // Clear all text
+        function clearAll() {
+            inputText.value = '';
+            outputText.textContent = 'Your shortened text will appear here...';
+            updateStats(0, 0);
+        }
+        
+        // Copy result to clipboard
+        function copyResult() {
+            if (outputText.textContent === 'Your shortened text will appear here...' || 
+                outputText.textContent === 'Please enter some text to shorten.') {
+                return;
+            }
+            
+            const textToCopy = outputText.textContent;
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                // Show success message
+                successMessage.classList.add('show');
+                setTimeout(() => {
+                    successMessage.classList.remove('show');
+                }, 2000);
+            });
+        }
+        
+        // Initialize
+        updateStats(0, 0);
+    </script>
+</body>
+</html>
