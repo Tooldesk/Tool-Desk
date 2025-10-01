@@ -1,1 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discount Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2980, #26d0ce);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(to right, #FFD700, #FFA500);
+            padding: 25px;
+            text-align: center;
+            color: #1a2980;
+        }
+        
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .calculator {
+            padding: 30px;
+        }
+        
+        .input-section {
+            margin-bottom: 25px;
+        }
+        
+        .section-title {
+            color: #1a2980;
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .section-title i {
+            background: #FFD700;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+        }
+        
+        .input-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .input-field {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #1a2980;
+            font-weight: 600;
+        }
+        
+        input {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: #FFD700;
+            box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.3);
+        }
+        
+        input.error {
+            border-color: #ff4757;
+        }
+        
+        input.calculated {
+            background-color: #f0f8ff;
+            color: #1a2980;
+            font-weight: bold;
+        }
+        
+        .error-message {
+            color: #ff4757;
+            font-size: 0.85rem;
+            margin-top: 5px;
+            display: none;
+        }
+        
+        .result-section {
+            background: #f9fbff;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 20px;
+            border: 2px solid #e0e6ff;
+        }
+        
+        .result-title {
+            color: #1a2980;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+        
+        .result-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .result-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border: 2px solid #e0e6ff;
+        }
+        
+        .result-label {
+            font-size: 0.95rem;
+            color: #6a7ae0;
+            margin-bottom: 8px;
+        }
+        
+        .result-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #1a2980;
+        }
+        
+        .discount-amount {
+            color: #FF5722;
+        }
+        
+        .final-price {
+            color: #4CAF50;
+        }
+        
+        .steps {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px dashed #e0e6ff;
+        }
+        
+        .step {
+            margin-bottom: 15px;
+            padding-left: 20px;
+            position: relative;
+        }
+        
+        .step:before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #FFD700;
+            font-size: 1.5rem;
+            top: -5px;
+        }
+        
+        .formula {
+            background: #1a2980;
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            font-family: monospace;
+            margin: 10px 0;
+            overflow-x: auto;
+        }
+        
+        .instructions {
+            background: #fff9e6;
+            border-left: 4px solid #FFD700;
+            padding: 15px;
+            margin-bottom: 25px;
+            border-radius: 0 10px 10px 0;
+        }
+        
+        .instructions h3 {
+            color: #1a2980;
+            margin-bottom: 10px;
+        }
+        
+        .instructions p {
+            margin-bottom: 10px;
+            color: #333;
+        }
+        
+        .instructions ul {
+            padding-left: 20px;
+        }
+        
+        .instructions li {
+            margin-bottom: 8px;
+            color: #333;
+        }
+        
+        .examples {
+            background: #e6f7ff;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 15px;
+            border-left: 4px solid #1a2980;
+        }
+        
+        @media (max-width: 600px) {
+            .input-group, .result-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .result-value {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Discount Calculator</h1>
+            <p class="subtitle">Find sale prices, discounts, and savings</p>
+        </header>
+        
+        <div class="calculator">
+            <div class="instructions">
+                <h3>How to Use This Calculator:</h3>
+                <p>Enter any <strong>two values</strong> to calculate the other two:</p>
+                <ul>
+                    <li><strong>Original Price</strong> - The price before discount</li>
+                    <li><strong>Discount (%)</strong> - The percentage discount</li>
+                    <li><strong>Discount Amount ($)</strong> - The money saved</li>
+                    <li><strong>Final Price</strong> - The price after discount</li>
+                </ul>
+                
+                <div class="examples">
+                    <strong>Examples:</strong>
+                    <ul>
+                        <li>Got a 15% coupon? Enter original price and discount %</li>
+                        <li>Haggling? Enter original price and final price to see your discount</li>
+                        <li>Know your savings? Enter original price and discount amount</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="input-section">
+                <div class="section-title">
+                    <i>1</i> Price Details
+                </div>
+                <div class="input-group">
+                    <div class="input-field">
+                        <label for="original-price">Original Price ($)</label>
+                        <input type="number" id="original-price" placeholder="e.g., 100.00" step="any" min="0">
+                        <div class="error-message" id="original-error">Please enter a valid number ≥ 0</div>
+                    </div>
+                    <div class="input-field">
+                        <label for="discount-percent">Discount (%)</label>
+                        <input type="number" id="discount-percent" placeholder="e.g., 15.0" step="any" min="0" max="100">
+                        <div class="error-message" id="percent-error">Please enter a valid percentage (0-100)</div>
+                    </div>
+                    <div class="input-field">
+                        <label for="discount-amount">Discount Amount ($)</label>
+                        <input type="number" id="discount-amount" placeholder="e.g., 15.00" step="any" min="0">
+                        <div class="error-message" id="amount-error">Please enter a valid number ≥ 0</div>
+                    </div>
+                    <div class="input-field">
+                        <label for="final-price">Final Price ($)</label>
+                        <input type="number" id="final-price" placeholder="e.g., 85.00" step="any" min="0">
+                        <div class="error-message" id="final-error">Please enter a valid number ≥ 0</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="result-section">
+                <h2 class="result-title">Discount Calculation</h2>
+                <div class="result-grid">
+                    <div class="result-card">
+                        <div class="result-label">Money Saved</div>
+                        <div class="result-value discount-amount" id="saved-amount">$0.00</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-label">Final Price</div>
+                        <div class="result-value final-price" id="price-after">$0.00</div>
+                    </div>
+                </div>
+                
+                <div class="steps" id="steps">
+                    <!-- Steps will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
 
+    <script>
+        // Get all input elements
+        const originalPriceInput = document.getElementById('original-price');
+        const discountPercentInput = document.getElementById('discount-percent');
+        const discountAmountInput = document.getElementById('discount-amount');
+        const finalPriceInput = document.getElementById('final-price');
+        const inputs = [originalPriceInput, discountPercentInput, discountAmountInput, finalPriceInput];
+        
+        // Get result elements
+        const savedAmountEl = document.getElementById('saved-amount');
+        const priceAfterEl = document.getElementById('price-after');
+        const stepsContainer = document.getElementById('steps');
+        
+        // Add event listeners to all inputs
+        inputs.forEach(input => {
+            input.addEventListener('input', () => {
+                validateAndCalculate();
+            });
+            
+            // Clear calculated class when user starts typing
+            input.addEventListener('focus', () => {
+                input.classList.remove('calculated');
+            });
+        });
+        
+        // Reset validation state
+        function resetValidation() {
+            document.querySelectorAll('.error-message').forEach(el => {
+                el.style.display = 'none';
+            });
+            inputs.forEach(input => {
+                input.classList.remove('error');
+            });
+        }
+        
+        // Validate inputs and calculate
+        function validateAndCalculate() {
+            resetValidation();
+            
+            // Get input values
+            const originalPrice = parseFloat(originalPriceInput.value);
+            const discountPercent = parseFloat(discountPercentInput.value);
+            const discountAmount = parseFloat(discountAmountInput.value);
+            const finalPrice = parseFloat(finalPriceInput.value);
+            
+            // Count non-empty inputs
+            const nonEmptyInputs = [
+                originalPriceInput.value, 
+                discountPercentInput.value, 
+                discountAmountInput.value, 
+                finalPriceInput.value
+            ].filter(val => val !== '').length;
+            
+            // If less than 2 inputs, show message and return
+            if (nonEmptyInputs < 2) {
+                resetResults();
+                return;
+            }
+            
+            // Validate inputs
+            let isValid = true;
+            
+            // Validate original price
+            if (originalPriceInput.value !== '' && (isNaN(originalPrice) || originalPrice < 0)) {
+                showError('original-error', originalPriceInput);
+                isValid = false;
+            }
+            
+            // Validate discount percent
+            if (discountPercentInput.value !== '' && (isNaN(discountPercent) || discountPercent < 0 || discountPercent > 100)) {
+                showError('percent-error', discountPercentInput);
+                isValid = false;
+            }
+            
+            // Validate discount amount
+            if (discountAmountInput.value !== '' && (isNaN(discountAmount) || discountAmount < 0)) {
+                showError('amount-error', discountAmountInput);
+                isValid = false;
+            }
+            
+            // Validate final price
+            if (finalPriceInput.value !== '' && (isNaN(finalPrice) || finalPrice < 0)) {
+                showError('final-error', finalPriceInput);
+                isValid = false;
+            }
+            
+            if (!isValid) {
+                resetResults();
+                return;
+            }
+            
+            // Calculate based on which inputs are provided
+            calculateDiscount(originalPrice, discountPercent, discountAmount, finalPrice);
+        }
+        
+        // Show error message
+        function showError(errorId, inputElement) {
+            document.getElementById(errorId).style.display = 'block';
+            inputElement.classList.add('error');
+        }
+        
+        // Reset results
+        function resetResults() {
+            savedAmountEl.textContent = '$0.00';
+            priceAfterEl.textContent = '$0.00';
+            stepsContainer.innerHTML = '';
+        }
+        
+        // Calculate discount based on provided values
+        function calculateDiscount(originalPrice, discountPercent, discountAmount, finalPrice) {
+            // Clear all calculated classes
+            inputs.forEach(input => input.classList.remove('calculated'));
+            
+            // Determine which values we have
+            const hasOriginal = !isNaN(originalPrice);
+            const hasPercent = !isNaN(discountPercent);
+            const hasAmount = !isNaN(discountAmount);
+            const hasFinal = !isNaN(finalPrice);
+            
+            let calculatedOriginal, calculatedPercent, calculatedAmount, calculatedFinal;
+            let calculationSteps = [];
+            
+            try {
+                // Case 1: Original Price and Discount Percent provided
+                if (hasOriginal && hasPercent) {
+                    calculatedAmount = originalPrice * (discountPercent / 100);
+                    calculatedFinal = originalPrice - calculatedAmount;
+                    
+                    calculationSteps = [
+                        `Discount Amount = Original Price × (Discount % / 100)`,
+                        `Discount Amount = $${originalPrice.toFixed(2)} × (${discountPercent} / 100) = $${calculatedAmount.toFixed(2)}`,
+                        `Final Price = Original Price - Discount Amount`,
+                        `Final Price = $${originalPrice.toFixed(2)} - $${calculatedAmount.toFixed(2)} = $${calculatedFinal.toFixed(2)}`
+                    ];
+                    
+                    discountAmountInput.value = calculatedAmount.toFixed(2);
+                    finalPriceInput.value = calculatedFinal.toFixed(2);
+                    discountAmountInput.classList.add('calculated');
+                    finalPriceInput.classList.add('calculated');
+                }
+                // Case 2: Original Price and Discount Amount provided
+                else if (hasOriginal && hasAmount) {
+                    if (originalPrice === 0) {
+                        throw new Error("Original price cannot be zero");
+                    }
+                    calculatedPercent = (discountAmount / originalPrice) * 100;
+                    calculatedFinal = originalPrice - discountAmount;
+                    
+                    calculationSteps = [
+                        `Discount % = (Discount Amount / Original Price) × 100`,
+                        `Discount % = ($${discountAmount.toFixed(2)} / $${originalPrice.toFixed(2)}) × 100 = ${calculatedPercent.toFixed(2)}%`,
+                        `Final Price = Original Price - Discount Amount`,
+                        `Final Price = $${originalPrice.toFixed(2)} - $${discountAmount.toFixed(2)} = $${calculatedFinal.toFixed(2)}`
+                    ];
+                    
+                    discountPercentInput.value = calculatedPercent.toFixed(2);
+                    finalPriceInput.value = calculatedFinal.toFixed(2);
+                    discountPercentInput.classList.add('calculated');
+                    finalPriceInput.classList.add('calculated');
+                }
+                // Case 3: Original Price and Final Price provided
+                else if (hasOriginal && hasFinal) {
+                    if (originalPrice === 0) {
+                        throw new Error("Original price cannot be zero");
+                    }
+                    calculatedAmount = originalPrice - finalPrice;
+                    calculatedPercent = (calculatedAmount / originalPrice) * 100;
+                    
+                    calculationSteps = [
+                        `Discount Amount = Original Price - Final Price`,
+                        `Discount Amount = $${originalPrice.toFixed(2)} - $${finalPrice.toFixed(2)} = $${calculatedAmount.toFixed(2)}`,
+                        `Discount % = (Discount Amount / Original Price) × 100`,
+                        `Discount % = ($${calculatedAmount.toFixed(2)} / $${originalPrice.toFixed(2)}) × 100 = ${calculatedPercent.toFixed(2)}%`
+                    ];
+                    
+                    discountAmountInput.value = calculatedAmount.toFixed(2);
+                    discountPercentInput.value = calculatedPercent.toFixed(2);
+                    discountAmountInput.classList.add('calculated');
+                    discountPercentInput.classList.add('calculated');
+                }
+                // Case 4: Discount Percent and Discount Amount provided
+                else if (hasPercent && hasAmount) {
+                    if (discountPercent === 0) {
+                        throw new Error("Discount percent cannot be zero");
+                    }
+                    calculatedOriginal = discountAmount / (discountPercent / 100);
+                    calculatedFinal = calculatedOriginal - discountAmount;
+                    
+                    calculationSteps = [
+                        `Original Price = Discount Amount / (Discount % / 100)`,
+                        `Original Price = $${discountAmount.toFixed(2)} / (${discountPercent} / 100) = $${calculatedOriginal.toFixed(2)}`,
+                        `Final Price = Original Price - Discount Amount`,
+                        `Final Price = $${calculatedOriginal.toFixed(2)} - $${discountAmount.toFixed(2)} = $${calculatedFinal.toFixed(2)}`
+                    ];
+                    
+                    originalPriceInput.value = calculatedOriginal.toFixed(2);
+                    finalPriceInput.value = calculatedFinal.toFixed(2);
+                    originalPriceInput.classList.add('calculated');
+                    finalPriceInput.classList.add('calculated');
+                }
+                // Case 5: Discount Percent and Final Price provided
+                else if (hasPercent && hasFinal) {
+                    calculatedOriginal = finalPrice / (1 - discountPercent / 100);
+                    calculatedAmount = calculatedOriginal - finalPrice;
+                    
+                    calculationSteps = [
+                        `Original Price = Final Price / (1 - Discount % / 100)`,
+                        `Original Price = $${finalPrice.toFixed(2)} / (1 - ${discountPercent / 100}) = $${calculatedOriginal.toFixed(2)}`,
+                        `Discount Amount = Original Price - Final Price`,
+                        `Discount Amount = $${calculatedOriginal.toFixed(2)} - $${finalPrice.toFixed(2)} = $${calculatedAmount.toFixed(2)}`
+                    ];
+                    
+                    originalPriceInput.value = calculatedOriginal.toFixed(2);
+                    discountAmountInput.value = calculatedAmount.toFixed(2);
+                    originalPriceInput.classList.add('calculated');
+                    discountAmountInput.classList.add('calculated');
+                }
+                // Case 6: Discount Amount and Final Price provided
+                else if (hasAmount && hasFinal) {
+                    calculatedOriginal = finalPrice + discountAmount;
+                    calculatedPercent = (discountAmount / calculatedOriginal) * 100;
+                    
+                    calculationSteps = [
+                        `Original Price = Final Price + Discount Amount`,
+                        `Original Price = $${finalPrice.toFixed(2)} + $${discountAmount.toFixed(2)} = $${calculatedOriginal.toFixed(2)}`,
+                        `Discount % = (Discount Amount / Original Price) × 100`,
+                        `Discount % = ($${discountAmount.toFixed(2)} / $${calculatedOriginal.toFixed(2)}) × 100 = ${calculatedPercent.toFixed(2)}%`
+                    ];
+                    
+                    originalPriceInput.value = calculatedOriginal.toFixed(2);
+                    discountPercentInput.value = calculatedPercent.toFixed(2);
+                    originalPriceInput.classList.add('calculated');
+                    discountPercentInput.classList.add('calculated');
+                }
+                // Invalid combination
+                else {
+                    resetResults();
+                    return;
+                }
+                
+                // Update results
+                savedAmountEl.textContent = `$${calculatedAmount.toFixed(2)}`;
+                priceAfterEl.textContent = `$${calculatedFinal.toFixed(2)}`;
+                
+                // Display calculation steps
+                stepsContainer.innerHTML = calculationSteps.map(step => 
+                    `<div class="step">${step}</div>`
+                ).join('');
+                
+                // Add formulas
+                stepsContainer.innerHTML += `
+                    <div class="formula">Discount Amount = Original Price × (Discount % / 100)</div>
+                    <div class="formula">Final Price = Original Price - Discount Amount</div>
+                    <div class="formula">Discount % = (Discount Amount / Original Price) × 100</div>
+                `;
+            } catch (error) {
+                resetResults();
+            }
+        }
+        
+        // Initialize with empty results
+        resetResults();
+    </script>
+</body>
+</html>
