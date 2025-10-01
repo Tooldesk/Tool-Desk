@@ -1,1 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Percentage Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
 
+        :root {
+            --bright-yellow: #FFD700;
+            --vibrant-blue: #1E90FF;
+            --dark-blue: #0066CC;
+            --light-yellow: #FFF9C4;
+            --light-blue: #E3F2FD;
+            --dark-yellow: #FFA000;
+        }
+
+        body {
+            background: linear-gradient(135deg, #E3F2FD, #FFF9C4);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+        }
+
+        header {
+            background: var(--vibrant-blue);
+            color: white;
+            padding: 25px;
+            text-align: center;
+            position: relative;
+        }
+
+        header::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 100%;
+            height: 20px;
+            background: var(--bright-yellow);
+            clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 70%);
+        }
+
+        header h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        header p {
+            margin-top: 10px;
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+
+        .tool-container {
+            padding: 30px;
+        }
+
+        .calculator-tabs {
+            display: flex;
+            background: var(--light-blue);
+            border-radius: 50px;
+            padding: 5px;
+            margin-bottom: 25px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .tab-btn.active {
+            background: var(--vibrant-blue);
+            color: white;
+        }
+
+        .calculator-section {
+            display: none;
+        }
+
+        .calculator-section.active {
+            display: block;
+        }
+
+        .input-section {
+            margin-bottom: 25px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--dark-blue);
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 14px;
+            border: 3px solid var(--light-blue);
+            border-radius: 16px;
+            font-size: 1.2rem;
+            background: var(--light-blue);
+            transition: all 0.3s ease;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: var(--vibrant-blue);
+            background: #f0f8ff;
+            box-shadow: 0 0 0 3px rgba(30, 144, 255, 0.2);
+        }
+
+        .phrase-input {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .phrase-input .input-field {
+            flex: 1;
+        }
+
+        .calculate-btn {
+            display: block;
+            width: 100%;
+            padding: 16px;
+            background: var(--vibrant-blue);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+            margin-top: 10px;
+        }
+
+        .calculate-btn:hover {
+            background: var(--dark-blue);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .result-section {
+            display: none;
+            margin-top: 30px;
+            padding: 25px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, var(--bright-yellow), #FFB300);
+            box-shadow: 0 8px 20px rgba(255, 215, 0, 0.3);
+            text-align: center;
+        }
+
+        .result-title {
+            margin-bottom: 20px;
+            color: #1a237e;
+            font-weight: 800;
+            font-size: 1.6rem;
+            text-shadow: 0 1px 2px rgba(255,255,255,0.5);
+        }
+
+        .result-value {
+            font-size: 2.8rem;
+            font-weight: 800;
+            color: #1a237e;
+            margin: 15px 0;
+        }
+
+        .result-explanation {
+            margin-top: 15px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 12px;
+            display: inline-block;
+            font-weight: 600;
+            color: #1a237e;
+        }
+
+        .error-message {
+            color: #d32f2f;
+            font-weight: 600;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .info-box {
+            background: var(--light-blue);
+            padding: 15px;
+            border-radius: 12px;
+            margin: 20px 0;
+            border: 1px solid var(--vibrant-blue);
+            color: var(--dark-blue);
+            font-weight: 600;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 600px) {
+            .container {
+                border-radius: 16px;
+            }
+            
+            header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .tool-container {
+                padding: 20px;
+            }
+            
+            .input-field {
+                padding: 12px;
+                font-size: 1.1rem;
+            }
+            
+            .calculate-btn {
+                padding: 14px;
+                font-size: 1.1rem;
+            }
+            
+            .result-value {
+                font-size: 2.2rem;
+            }
+            
+            .phrase-input {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Percentage Calculator</h1>
+            <p>Calculate percentages, differences, and solve common percentage problems</p>
+        </header>
+        
+        <div class="tool-container">
+            <div class="calculator-tabs">
+                <button class="tab-btn active" data-tab="basic">Basic</button>
+                <button class="tab-btn" data-tab="difference">Difference</button>
+                <button class="tab-btn" data-tab="phrases">Common Phrases</button>
+            </div>
+            
+            <!-- Basic Percentage Calculator -->
+            <div class="calculator-section active" id="basicCalculator">
+                <div class="info-box">
+                    <p>Enter any two values to calculate the third:</p>
+                    <p><strong>What is [percentage]% of [number]?</strong></p>
+                </div>
+                
+                <div class="input-section">
+                    <div class="input-group">
+                        <label class="input-label" for="basicPercentage">Percentage (%)</label>
+                        <input type="number" id="basicPercentage" class="input-field" placeholder="Enter percentage">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-label" for="basicNumber">Number</label>
+                        <input type="number" id="basicNumber" class="input-field" placeholder="Enter number">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-label" for="basicResult">Result</label>
+                        <input type="number" id="basicResult" class="input-field" placeholder="Result will appear here" readonly>
+                    </div>
+                    
+                    <div class="error-message" id="basicError"></div>
+                    
+                    <button class="calculate-btn" id="basicCalculateBtn">Calculate</button>
+                </div>
+            </div>
+            
+            <!-- Percentage Difference Calculator -->
+            <div class="calculator-section" id="differenceCalculator">
+                <div class="info-box">
+                    <p>Calculate the percentage difference between two values:</p>
+                    <p><strong>|(Value1 - Value2)| / ((Value1 + Value2)/2) × 100%</strong></p>
+                </div>
+                
+                <div class="input-section">
+                    <div class="input-group">
+                        <label class="input-label" for="value1">First Value</label>
+                        <input type="number" id="value1" class="input-field" placeholder="Enter first value">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-label" for="value2">Second Value</label>
+                        <input type="number" id="value2" class="input-field" placeholder="Enter second value">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-label" for="differenceResult">Percentage Difference</label>
+                        <input type="number" id="differenceResult" class="input-field" placeholder="Result will appear here" readonly>
+                    </div>
+                    
+                    <div class="error-message" id="differenceError"></div>
+                    
+                    <button class="calculate-btn" id="differenceCalculateBtn">Calculate Difference</button>
+                </div>
+            </div>
+            
+            <!-- Common Phrases Calculator -->
+            <div class="calculator-section" id="phrasesCalculator">
+                <div class="info-box">
+                    <p>Solve common percentage problems:</p>
+                    <p><strong>[X] is what percent of [Y]?</strong></p>
+                </div>
+                
+                <div class="input-section">
+                    <div class="input-group">
+                        <label class="input-label">Enter values for: "[X] is what percent of [Y]?"</label>
+                        <div class="phrase-input">
+                            <input type="number" id="phraseX" class="input-field" placeholder="X">
+                            <span style="font-weight: 600; color: var(--dark-blue);">is what percent of</span>
+                            <input type="number" id="phraseY" class="input-field" placeholder="Y">
+                        </div>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-label" for="phraseResult">Result</label>
+                        <input type="number" id="phraseResult" class="input-field" placeholder="Result will appear here" readonly>
+                    </div>
+                    
+                    <div class="error-message" id="phraseError"></div>
+                    
+                    <button class="calculate-btn" id="phraseCalculateBtn">Calculate Percentage</button>
+                </div>
+            </div>
+            
+            <div class="result-section" id="resultSection">
+                <h3 class="result-title" id="resultTitle">Calculation Result</h3>
+                <div class="result-value" id="resultValue">0</div>
+                <div class="result-explanation" id="resultExplanation"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM Elements
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            const calculatorSections = document.querySelectorAll('.calculator-section');
+            
+            const basicPercentage = document.getElementById('basicPercentage');
+            const basicNumber = document.getElementById('basicNumber');
+            const basicResult = document.getElementById('basicResult');
+            const basicCalculateBtn = document.getElementById('basicCalculateBtn');
+            const basicError = document.getElementById('basicError');
+            
+            const value1 = document.getElementById('value1');
+            const value2 = document.getElementById('value2');
+            const differenceResult = document.getElementById('differenceResult');
+            const differenceCalculateBtn = document.getElementById('differenceCalculateBtn');
+            const differenceError = document.getElementById('differenceError');
+            
+            const phraseX = document.getElementById('phraseX');
+            const phraseY = document.getElementById('phraseY');
+            const phraseResult = document.getElementById('phraseResult');
+            const phraseCalculateBtn = document.getElementById('phraseCalculateBtn');
+            const phraseError = document.getElementById('phraseError');
+            
+            const resultSection = document.getElementById('resultSection');
+            const resultTitle = document.getElementById('resultTitle');
+            const resultValue = document.getElementById('resultValue');
+            const resultExplanation = document.getElementById('resultExplanation');
+            
+            // Tab switching
+            tabButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    tabButtons.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    
+                    calculatorSections.forEach(section => section.classList.remove('active'));
+                    document.getElementById(btn.dataset.tab + 'Calculator').classList.add('active');
+                    
+                    // Reset results when switching tabs
+                    resultSection.style.display = 'none';
+                    basicError.style.display = 'none';
+                    differenceError.style.display = 'none';
+                    phraseError.style.display = 'none';
+                });
+            });
+            
+            // Basic calculator
+            basicCalculateBtn.addEventListener('click', calculateBasic);
+            
+            function calculateBasic() {
+                basicError.style.display = 'none';
+                const percentage = parseFloat(basicPercentage.value);
+                const number = parseFloat(basicNumber.value);
+                const result = parseFloat(basicResult.value);
+                
+                // Count how many fields are filled
+                const filledFields = [percentage, number, result].filter(val => !isNaN(val)).length;
+                
+                if (filledFields !== 2) {
+                    showError('Please fill exactly two fields.', basicError);
+                    return;
+                }
+                
+                let calculatedResult;
+                let explanation;
+                
+                if (isNaN(percentage) && !isNaN(number) && !isNaN(result)) {
+                    // Calculate percentage
+                    calculatedResult = (result / number) * 100;
+                    explanation = `${result} is ${calculatedResult.toFixed(2)}% of ${number}`;
+                    basicPercentage.value = calculatedResult;
+                } else if (!isNaN(percentage) && isNaN(number) && !isNaN(result)) {
+                    // Calculate number
+                    calculatedResult = result / (percentage / 100);
+                    explanation = `${result} is ${percentage}% of ${calculatedResult.toFixed(2)}`;
+                    basicNumber.value = calculatedResult;
+                } else if (!isNaN(percentage) && !isNaN(number) && isNaN(result)) {
+                    // Calculate result
+                    calculatedResult = (percentage / 100) * number;
+                    explanation = `${percentage}% of ${number} is ${calculatedResult.toFixed(2)}`;
+                    basicResult.value = calculatedResult;
+                } else {
+                    showError('Invalid input combination.', basicError);
+                    return;
+                }
+                
+                showResult(calculatedResult, explanation, 'Basic Percentage Calculation');
+            }
+            
+            // Difference calculator
+            differenceCalculateBtn.addEventListener('click', calculateDifference);
+            
+            function calculateDifference() {
+                differenceError.style.display = 'none';
+                const val1 = parseFloat(value1.value);
+                const val2 = parseFloat(value2.value);
+                
+                if (isNaN(val1) || isNaN(val2)) {
+                    showError('Please enter both values.', differenceError);
+                    return;
+                }
+                
+                if (val1 === 0 && val2 === 0) {
+                    showError('Both values cannot be zero.', differenceError);
+                    return;
+                }
+                
+                const difference = Math.abs(val1 - val2);
+                const average = (val1 + val2) / 2;
+                const percentageDifference = (difference / average) * 100;
+                
+                differenceResult.value = percentageDifference;
+                const explanation = `The percentage difference between ${val1} and ${val2} is ${percentageDifference.toFixed(2)}%`;
+                
+                showResult(percentageDifference, explanation, 'Percentage Difference');
+            }
+            
+            // Phrases calculator
+            phraseCalculateBtn.addEventListener('click', calculatePhrase);
+            
+            function calculatePhrase() {
+                phraseError.style.display = 'none';
+                const x = parseFloat(phraseX.value);
+                const y = parseFloat(phraseY.value);
+                
+                if (isNaN(x) || isNaN(y)) {
+                    showError('Please enter both values.', phraseError);
+                    return;
+                }
+                
+                if (y === 0) {
+                    showError('The second value cannot be zero.', phraseError);
+                    return;
+                }
+                
+                const percentage = (x / y) * 100;
+                phraseResult.value = percentage;
+                const explanation = `${x} is ${percentage.toFixed(2)}% of ${y}`;
+                
+                showResult(percentage, explanation, 'Common Phrase Calculation');
+            }
+            
+            // Show result
+            function showResult(value, explanation, title) {
+                resultValue.textContent = value.toFixed(2);
+                resultExplanation.textContent = explanation;
+                resultTitle.textContent = title;
+                
+                resultSection.style.display = 'block';
+                resultSection.style.opacity = '0';
+                resultSection.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    resultSection.style.transition = 'opacity 0.5s, transform 0.5s';
+                    resultSection.style.opacity = '1';
+                    resultSection.style.transform = 'translateY(0)';
+                }, 10);
+            }
+            
+            // Show error
+            function showError(message, errorElement) {
+                errorElement.textContent = message;
+                errorElement.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>
