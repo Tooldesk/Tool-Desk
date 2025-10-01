@@ -1,1 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Word Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
 
+        :root {
+            --bright-yellow: #FFD700;
+            --vibrant-blue: #1E90FF;
+            --dark-blue: #0066CC;
+            --light-yellow: #FFF9C4;
+            --light-blue: #E3F2FD;
+            --dark-yellow: #FFA000;
+        }
+
+        body {
+            background: linear-gradient(135deg, #E3F2FD, #FFF9C4);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+        }
+
+        header {
+            background: var(--vibrant-blue);
+            color: white;
+            padding: 25px;
+            text-align: center;
+            position: relative;
+        }
+
+        header::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 100%;
+            height: 20px;
+            background: var(--bright-yellow);
+            clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 70%);
+        }
+
+        header h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        header p {
+            margin-top: 10px;
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+
+        .tool-container {
+            padding: 30px;
+        }
+
+        .controls-section {
+            background: var(--light-yellow);
+            padding: 25px;
+            border-radius: 16px;
+            border: 2px solid var(--bright-yellow);
+            margin-bottom: 30px;
+        }
+
+        .controls-title {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #e65100;
+            font-weight: 700;
+            font-size: 1.4rem;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .option-item {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .option-label {
+            font-weight: 600;
+            color: #e65100;
+        }
+
+        .option-input {
+            padding: 12px;
+            border: 2px solid var(--light-yellow);
+            border-radius: 8px;
+            font-size: 1rem;
+            text-align: center;
+        }
+
+        .word-type-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .word-type-btn {
+            padding: 8px 16px;
+            border: 2px solid var(--light-yellow);
+            border-radius: 8px;
+            background: white;
+            color: var(--dark-blue);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .word-type-btn:hover, .word-type-btn.active {
+            background: var(--light-yellow);
+            border-color: var(--bright-yellow);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .generate-btn, .clear-btn, .copy-btn {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .generate-btn {
+            background: var(--vibrant-blue);
+            color: white;
+        }
+
+        .generate-btn:hover {
+            background: var(--dark-blue);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .clear-btn {
+            background: #ffcdd2;
+            color: #c62828;
+        }
+
+        .clear-btn:hover {
+            background: #ef9a9a;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .copy-btn {
+            background: var(--dark-yellow);
+            color: #1a237e;
+        }
+
+        .copy-btn:hover {
+            background: #e69500;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .results-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .results-section {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+        }
+
+        .words-column {
+            background: var(--light-blue);
+            padding: 20px;
+            border-radius: 16px;
+            border: 2px solid var(--vibrant-blue);
+        }
+
+        .column-title {
+            text-align: center;
+            margin-bottom: 20px;
+            color: var(--dark-blue);
+            font-weight: 700;
+            font-size: 1.4rem;
+        }
+
+        .words-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 12px;
+            min-height: 200px;
+        }
+
+        .word-item {
+            padding: 12px;
+            background: white;
+            border-radius: 12px;
+            text-align: center;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+        }
+
+        .word-item:hover {
+            background: var(--light-yellow);
+            border-color: var(--bright-yellow);
+            transform: translateY(-2px);
+        }
+
+        .word-item.selected {
+            background: var(--bright-yellow);
+            color: #1a237e;
+            border-color: var(--dark-yellow);
+        }
+
+        .empty-message {
+            text-align: center;
+            color: #666;
+            font-style: italic;
+            padding: 20px;
+        }
+
+        .format-info {
+            text-align: center;
+            margin: 20px 0;
+            padding: 15px;
+            background: var(--light-blue);
+            border-radius: 12px;
+            border: 1px solid var(--vibrant-blue);
+            color: var(--dark-blue);
+            font-weight: 600;
+        }
+
+        .uses-list {
+            text-align: left;
+            margin-top: 15px;
+            padding-left: 20px;
+        }
+
+        .uses-list li {
+            margin: 8px 0;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .container {
+                border-radius: 16px;
+            }
+            
+            header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .tool-container {
+                padding: 20px;
+            }
+            
+            .generate-btn, .clear-btn, .copy-btn {
+                padding: 12px 24px;
+                font-size: 1rem;
+            }
+            
+            .action-buttons {
+                gap: 10px;
+            }
+            
+            .options-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .word-type-btn {
+                width: 100%;
+                max-width: 150px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            header h1 {
+                font-size: 1.5rem;
+            }
+            
+            header p {
+                font-size: 1rem;
+            }
+            
+            .generate-btn, .clear-btn, .copy-btn {
+                width: 100%;
+                max-width: 220px;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .words-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Random Word Generator</h1>
+            <p>Create lists of random words for any purpose</p>
+        </header>
+        
+        <div class="tool-container">
+            <div class="format-info">
+                <p>✅ Generate random words instantly</p>
+                <p>✅ Filter by word type (nouns, verbs, adjectives)</p>
+                <p>✅ Select and build your custom word list</p>
+                
+                <div class="uses-list">
+                    <p><strong>Common uses:</strong></p>
+                    <ul>
+                        <li>Writing prompts and creative writing</li>
+                        <li>Brainstorming sessions</li>
+                        <li>Game development and word games</li>
+                        <li>Language learning exercises</li>
+                        <li>Password generation ideas</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="controls-section">
+                <h3 class="controls-title">Generator Settings</h3>
+                <div class="options-grid">
+                    <div class="option-item">
+                        <label class="option-label">Number of Words</label>
+                        <input type="number" id="wordCount" class="option-input" min="1" max="50" value="5">
+                    </div>
+                    <div class="option-item">
+                        <label class="option-label">Word Type</label>
+                        <div class="word-type-options">
+                            <button class="word-type-btn active" data-type="all">All Words</button>
+                            <button class="word-type-btn" data-type="nouns">Nouns</button>
+                            <button class="word-type-btn" data-type="verbs">Verbs</button>
+                            <button class="word-type-btn" data-type="adjectives">Adjectives</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="action-buttons">
+                    <button class="generate-btn" id="generateBtn">Generate Random Words</button>
+                    <button class="clear-btn" id="clearBtn">Clear Selection</button>
+                    <button class="copy-btn" id="copyBtn">Copy Selected Words</button>
+                </div>
+            </div>
+            
+            <div class="results-section">
+                <div class="words-column">
+                    <h3 class="column-title">Random Words</h3>
+                    <div id="randomWords" class="words-list">
+                        <div class="empty-message">Click "Generate Random Words" to start</div>
+                    </div>
+                </div>
+                
+                <div class="words-column">
+                    <h3 class="column-title">Your Word List</h3>
+                    <div id="selectedWords" class="words-list">
+                        <div class="empty-message">Select words from the left to add them here</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM Elements
+            const wordCount = document.getElementById('wordCount');
+            const wordTypeBtns = document.querySelectorAll('.word-type-btn');
+            const generateBtn = document.getElementById('generateBtn');
+            const clearBtn = document.getElementById('clearBtn');
+            const copyBtn = document.getElementById('copyBtn');
+            const randomWords = document.getElementById('randomWords');
+            const selectedWords = document.getElementById('selectedWords');
+            
+            let currentWordType = 'all';
+            let selectedWordList = [];
+            
+            // Word databases
+            const wordDatabase = {
+                all: [
+                    "apple", "brave", "create", "dance", "elegant", "forest", "grace", "harmony", "inspire", "journey",
+                    "kindness", "laughter", "mountain", "nature", "ocean", "peace", "quiet", "river", "serene", "tranquil",
+                    "unique", "vibrant", "wonder", "xenial", "youth", "zenith", "amazing", "beautiful", "creative", "dynamic",
+                    "energetic", "fabulous", "glorious", "heroic", "incredible", "joyful", "keen", "lively", "magnificent", "noble",
+                    "optimistic", "passionate", "quality", "resilient", "strong", "tenacious", "unstoppable", "victorious", "wise", "yare"
+                ],
+                nouns: [
+                    "apple", "forest", "mountain", "ocean", "river", "journey", "peace", "nature", "wonder", "zenith",
+                    "laughter", "kindness", "harmony", "grace", "serenity", "beauty", "strength", "courage", "wisdom", "hope",
+                    "dream", "vision", "idea", "concept", "theory", "practice", "method", "system", "structure", "foundation",
+                    "building", "house", "car", "book", "computer", "phone", "table", "chair", "window", "door",
+                    "garden", "park", "city", "country", "world", "universe", "planet", "star", "moon", "sun"
+                ],
+                verbs: [
+                    "create", "dance", "inspire", "journey", "laugh", "live", "love", "move", "run", "walk",
+                    "jump", "swim", "fly", "drive", "write", "read", "speak", "listen", "think", "feel",
+                    "believe", "hope", "dream", "imagine", "design", "build", "make", "do", "act", "perform",
+                    "achieve", "succeed", "win", "lose", "learn", "teach", "help", "support", "care", "protect",
+                    "defend", "attack", "conquer", "explore", "discover", "invent", "create", "produce", "generate", "develop"
+                ],
+                adjectives: [
+                    "brave", "elegant", "graceful", "serene", "tranquil", "unique", "vibrant", "amazing", "beautiful", "creative",
+                    "dynamic", "energetic", "fabulous", "glorious", "heroic", "incredible", "joyful", "keen", "lively", "magnificent",
+                    "noble", "optimistic", "passionate", "quality", "resilient", "strong", "tenacious", "unstoppable", "victorious", "wise",
+                    "yare", "xenial", "young", "zesty", "zealous", "youthful", "yellow", "wild", "warm", "vast",
+                    "upbeat", "unique", "trustworthy", "thoughtful", "sweet", "sunny", "strong", "smart", "silent", "shiny",
+                    "peaceful", "patient", "open", "neat", "merry", "lovely", "kind", "jolly", "happy", "gentle"
+                ]
+            };
+            
+            // Event Listeners
+            wordTypeBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    wordTypeBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentWordType = btn.dataset.type;
+                });
+            });
+            
+            generateBtn.addEventListener('click', generateRandomWords);
+            clearBtn.addEventListener('click', clearSelection);
+            copyBtn.addEventListener('click', copySelectedWords);
+            
+            // Generate random words function
+            function generateRandomWords() {
+                const count = parseInt(wordCount.value) || 5;
+                if (count < 1 || count > 50) {
+                    alert('Please enter a number between 1 and 50.');
+                    return;
+                }
+                
+                const words = wordDatabase[currentWordType];
+                const randomWordsList = [];
+                
+                // Generate unique random words
+                const usedIndices = new Set();
+                for (let i = 0; i < count; i++) {
+                    let randomIndex;
+                    let attempts = 0;
+                    do {
+                        randomIndex = Math.floor(Math.random() * words.length);
+                        attempts++;
+                        if (attempts > 100) break; // Prevent infinite loop
+                    } while (usedIndices.has(randomIndex) && attempts <= 100);
+                    
+                    usedIndices.add(randomIndex);
+                    randomWordsList.push(words[randomIndex]);
+                }
+                
+                // Display random words
+                randomWords.innerHTML = '';
+                randomWordsList.forEach(word => {
+                    const wordElement = document.createElement('div');
+                    wordElement.className = 'word-item';
+                    wordElement.textContent = word;
+                    wordElement.addEventListener('click', () => selectWord(word));
+                    randomWords.appendChild(wordElement);
+                });
+            }
+            
+            // Select word function
+            function selectWord(word) {
+                if (!selectedWordList.includes(word)) {
+                    selectedWordList.push(word);
+                    updateSelectedWords();
+                }
+            }
+            
+            // Update selected words display
+            function updateSelectedWords() {
+                selectedWords.innerHTML = '';
+                if (selectedWordList.length === 0) {
+                    selectedWords.innerHTML = '<div class="empty-message">Select words from the left to add them here</div>';
+                    return;
+                }
+                
+                selectedWordList.forEach(word => {
+                    const wordElement = document.createElement('div');
+                    wordElement.className = 'word-item selected';
+                    wordElement.textContent = word;
+                    wordElement.addEventListener('click', () => {
+                        selectedWordList = selectedWordList.filter(w => w !== word);
+                        updateSelectedWords();
+                    });
+                    selectedWords.appendChild(wordElement);
+                });
+            }
+            
+            // Clear selection function
+            function clearSelection() {
+                selectedWordList = [];
+                updateSelectedWords();
+            }
+            
+            // Copy selected words function
+            function copySelectedWords() {
+                if (selectedWordList.length === 0) {
+                    alert('No words selected. Please select some words first.');
+                    return;
+                }
+                
+                const textToCopy = selectedWordList.join(', ');
+                const tempInput = document.createElement('textarea');
+                tempInput.value = textToCopy;
+                document.body.appendChild(tempInput);
+                tempInput.select();
+                document.execCommand('copy');
+                document.body.removeChild(tempInput);
+                
+                // Show visual feedback
+                const originalText = copyBtn.textContent;
+                copyBtn.textContent = 'Copied!';
+                setTimeout(() => {
+                    copyBtn.textContent = originalText;
+                }, 2000);
+            }
+        });
+    </script>
+</body>
+</html>
