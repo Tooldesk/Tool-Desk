@@ -1,1 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript DeObfuscator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
 
+        :root {
+            --bright-yellow: #FFD700;
+            --vibrant-blue: #1E90FF;
+            --dark-blue: #0066CC;
+            --light-yellow: #FFF9C4;
+            --light-blue: #E3F2FD;
+            --dark-yellow: #FFA000;
+        }
+
+        body {
+            background: linear-gradient(135deg, #E3F2FD, #FFF9C4);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1000px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+        }
+
+        header {
+            background: var(--vibrant-blue);
+            color: white;
+            padding: 25px;
+            text-align: center;
+            position: relative;
+        }
+
+        header::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 100%;
+            height: 20px;
+            background: var(--bright-yellow);
+            clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 70%);
+        }
+
+        header h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        header p {
+            margin-top: 10px;
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+
+        .tool-container {
+            padding: 30px;
+        }
+
+        .format-info {
+            text-align: center;
+            margin: 20px 0;
+            padding: 15px;
+            background: var(--light-blue);
+            border-radius: 12px;
+            border: 1px solid var(--vibrant-blue);
+            color: var(--dark-blue);
+            font-weight: 600;
+        }
+
+        .editor-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .editor-section {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+        }
+
+        .editor-box {
+            background: var(--light-blue);
+            border-radius: 16px;
+            padding: 20px;
+            border: 2px solid var(--vibrant-blue);
+        }
+
+        .editor-title {
+            text-align: center;
+            margin-bottom: 15px;
+            color: var(--dark-blue);
+            font-weight: 700;
+            font-size: 1.3rem;
+        }
+
+        .code-input, .code-output {
+            width: 100%;
+            min-height: 250px;
+            padding: 15px;
+            border: none;
+            border-radius: 12px;
+            background: white;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.4;
+            resize: vertical;
+            overflow: auto;
+        }
+
+        .code-output {
+            background: var(--light-yellow);
+            border: 2px solid var(--bright-yellow);
+        }
+
+        .controls-section {
+            background: var(--light-yellow);
+            padding: 25px;
+            border-radius: 16px;
+            border: 2px solid var(--bright-yellow);
+            margin: 25px 0;
+        }
+
+        .controls-title {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #e65100;
+            font-weight: 700;
+            font-size: 1.4rem;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .option-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .option-input {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--vibrant-blue);
+        }
+
+        .option-label {
+            font-weight: 600;
+            color: #e65100;
+        }
+
+        .indent-options {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .indent-input {
+            width: 60px;
+            padding: 8px;
+            border: 2px solid var(--light-yellow);
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .deobfuscate-btn, .clear-btn, .copy-btn {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .deobfuscate-btn {
+            background: var(--vibrant-blue);
+            color: white;
+        }
+
+        .deobfuscate-btn:hover {
+            background: var(--dark-blue);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .clear-btn {
+            background: #ffcdd2;
+            color: #c62828;
+        }
+
+        .clear-btn:hover {
+            background: #ef9a9a;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .copy-btn {
+            background: var(--dark-yellow);
+            color: #1a237e;
+        }
+
+        .copy-btn:hover {
+            background: #e69500;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .stats-info {
+            margin-top: 20px;
+            text-align: center;
+            padding: 12px;
+            background: var(--light-blue);
+            border-radius: 12px;
+            font-weight: 600;
+            color: var(--dark-blue);
+        }
+
+        .warning-box {
+            background: #fff3e0;
+            border: 1px solid #ffb74d;
+            border-radius: 12px;
+            padding: 15px;
+            margin: 20px 0;
+            color: #e65100;
+            font-weight: 600;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .container {
+                border-radius: 16px;
+            }
+            
+            header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .tool-container {
+                padding: 20px;
+            }
+            
+            .code-input, .code-output {
+                min-height: 200px;
+                font-size: 13px;
+            }
+            
+            .deobfuscate-btn, .clear-btn, .copy-btn {
+                padding: 12px 24px;
+                font-size: 1rem;
+            }
+            
+            .action-buttons {
+                gap: 10px;
+            }
+            
+            .options-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .indent-options {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+
+        @media (max-width: 480px) {
+            header h1 {
+                font-size: 1.5rem;
+            }
+            
+            header p {
+                font-size: 1rem;
+            }
+            
+            .deobfuscate-btn, .clear-btn, .copy-btn {
+                width: 100%;
+                max-width: 220px;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>JavaScript DeObfuscator</h1>
+            <p>Reveal obfuscated JavaScript code and enhance readability</p>
+        </header>
+        
+        <div class="tool-container">
+            <div class="format-info">
+                <p>✅ Decodes common obfuscation techniques</p>
+                <p>✅ Formats code for better readability</p>
+                <p>✅ Helps identify potentially malicious code</p>
+            </div>
+            
+            <div class="warning-box">
+                <p>⚠️ <strong>Security Warning:</strong> Only deobfuscate code from trusted sources. Malicious code can still be dangerous even when deobfuscated.</p>
+            </div>
+            
+            <div class="editor-section">
+                <div class="editor-box">
+                    <h3 class="editor-title">Obfuscated JavaScript</h3>
+                    <textarea id="jsInput" class="code-input" placeholder="Paste your obfuscated JavaScript code here..."></textarea>
+                </div>
+                
+                <div class="editor-box">
+                    <h3 class="editor-title">DeObfuscated JavaScript</h3>
+                    <textarea id="jsOutput" class="code-output" placeholder="Deobfuscated JavaScript will appear here..." readonly></textarea>
+                </div>
+            </div>
+            
+            <div class="controls-section">
+                <h3 class="controls-title">DeObfuscation Options</h3>
+                <div class="options-grid">
+                    <div class="option-item">
+                        <input type="checkbox" id="decodeStrings" class="option-input" checked>
+                        <label for="decodeStrings" class="option-label">Decode strings</label>
+                    </div>
+                    <div class="option-item">
+                        <input type="checkbox" id="formatCode" class="option-input" checked>
+                        <label for="formatCode" class="option-label">Format code</label>
+                    </div>
+                    <div class="option-item indent-options">
+                        <label for="indentSize" class="option-label">Indent size:</label>
+                        <input type="number" id="indentSize" class="indent-input" min="1" max="8" value="2">
+                    </div>
+                </div>
+                
+                <div class="action-buttons">
+                    <button class="deobfuscate-btn" id="deobfuscateBtn">DeObfuscate JS</button>
+                    <button class="clear-btn" id="clearBtn">Clear All</button>
+                    <button class="copy-btn" id="copyBtn">Copy DeObfuscated</button>
+                </div>
+            </div>
+            
+            <div class="stats-info" id="statsInfo">Original: 0 lines | DeObfuscated: 0 lines</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM Elements
+            const jsInput = document.getElementById('jsInput');
+            const jsOutput = document.getElementById('jsOutput');
+            const decodeStrings = document.getElementById('decodeStrings');
+            const formatCode = document.getElementById('formatCode');
+            const indentSize = document.getElementById('indentSize');
+            const deobfuscateBtn = document.getElementById('deobfuscateBtn');
+            const clearBtn = document.getElementById('clearBtn');
+            const copyBtn = document.getElementById('copyBtn');
+            const statsInfo = document.getElementById('statsInfo');
+            
+            // Event Listeners
+            deobfuscateBtn.addEventListener('click', deobfuscateJS);
+            clearBtn.addEventListener('click', clearAll);
+            copyBtn.addEventListener('click', copyDeobfuscated);
+            
+            // Deobfuscate JavaScript function
+            function deobfuscateJS() {
+                const inputJS = jsInput.value;
+                if (!inputJS.trim()) {
+                    jsOutput.value = '';
+                    updateStats(0, 0);
+                    return;
+                }
+                
+                let deobfuscated = inputJS;
+                
+                try {
+                    // Decode common string obfuscation
+                    if (decodeStrings.checked) {
+                        // Decode hex-encoded strings (\x48\x65\x6c\x6c\x6f)
+                        deobfuscated = deobfuscated.replace(/\\x([0-9A-Fa-f]{2})/g, (match, hex) => {
+                            return String.fromCharCode(parseInt(hex, 16));
+                        });
+                        
+                        // Decode unicode escape sequences (\u0048\u0065\u006c\u006c\u006f)
+                        deobfuscated = deobfuscated.replace(/\\u([0-9A-Fa-f]{4})/g, (match, hex) => {
+                            return String.fromCharCode(parseInt(hex, 16));
+                        });
+                        
+                        // Decode octal escape sequences (\110\145\154\154\157)
+                        deobfuscated = deobfuscated.replace(/\\([0-7]{3})/g, (match, oct) => {
+                            return String.fromCharCode(parseInt(oct, 8));
+                        });
+                        
+                        // Decode base64 encoded strings in common patterns
+                        deobfuscated = deobfuscated.replace(/atob\(['"]([A-Za-z0-9+/=]+)['"]\)/g, (match, b64) => {
+                            try {
+                                return `"${atob(b64)}"`;
+                            } catch (e) {
+                                return match; // Return original if decoding fails
+                            }
+                        });
+                    }
+                    
+                    // Format code if selected
+                    if (formatCode.checked) {
+                        const indent = ' '.repeat(parseInt(indentSize.value) || 2);
+                        let formatted = '';
+                        let indentLevel = 0;
+                        let i = 0;
+                        
+                        while (i < deobfuscated.length) {
+                            const char = deobfuscated[i];
+                            
+                            if (char === '{') {
+                                formatted += char + '\n' + indent.repeat(++indentLevel);
+                            } else if (char === '}') {
+                                formatted += '\n' + indent.repeat(--indentLevel) + char;
+                            } else if (char === ';') {
+                                formatted += char + '\n' + indent.repeat(indentLevel);
+                            } else if (char === ',') {
+                                formatted += char + ' ';
+                            } else {
+                                formatted += char;
+                            }
+                            
+                            i++;
+                        }
+                        
+                        deobfuscated = formatted;
+                    }
+                    
+                    // Clean up extra whitespace
+                    deobfuscated = deobfuscated.replace(/\n\s*\n/g, '\n\n').trim();
+                    
+                    jsOutput.value = deobfuscated;
+                    updateStats(inputJS.split('\n').length, deobfuscated.split('\n').length);
+                } catch (error) {
+                    jsOutput.value = `/* Error during deobfuscation: ${error.message} */\n\n${inputJS}`;
+                    updateStats(inputJS.split('\n').length, 2);
+                }
+            }
+            
+            // Update stats display
+            function updateStats(originalLines, deobfuscatedLines) {
+                statsInfo.textContent = 
+                    `Original: ${originalLines} lines | ` +
+                    `DeObfuscated: ${deobfuscatedLines} lines`;
+            }
+            
+            // Clear all function
+            function clearAll() {
+                jsInput.value = '';
+                jsOutput.value = '';
+                updateStats(0, 0);
+                jsInput.focus();
+            }
+            
+            // Copy deobfuscated function
+            function copyDeobfuscated() {
+                if (!jsOutput.value.trim()) {
+                    alert('No deobfuscated JavaScript to copy.');
+                    return;
+                }
+                
+                jsOutput.select();
+                jsOutput.setSelectionRange(0, 99999); // For mobile devices
+                
+                try {
+                    document.execCommand('copy');
+                    // Show visual feedback
+                    const originalText = copyBtn.textContent;
+                    copyBtn.textContent = 'Copied!';
+                    setTimeout(() => {
+                        copyBtn.textContent = originalText;
+                    }, 2000);
+                } catch (err) {
+                    alert('Failed to copy to clipboard. Please try manually.');
+                }
+            }
+            
+            // Sample obfuscated JavaScript for demonstration
+            const sampleObfuscatedJS = `eval(function(p,a,c,k,e,d){e=function(c){return c.toString(36)};if(!''.replace(/^/,String)){while(c--){d[c.toString(a)]=k[c]||c.toString(a)}k=[function(e){return d[e]}];e=function(){return'\\\\w+'};c=1};while(c--){if(k[c]){p=p.replace(new RegExp('\\\\b'+e(c)+'\\\\b','g'),k[c])}}return p}('1 0="2 3!";4(0);',5,5,'str|var|Hello|World|console.log'.split('|'),0,{}))`;
+            
+            jsInput.value = sampleObfuscatedJS;
+        });
+    </script>
+</body>
+</html>
