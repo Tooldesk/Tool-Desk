@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Probability Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --bright-yellow: #FFD700;
+            --vibrant-blue: #1E90FF;
+            --dark-blue: #0066CC;
+            --light-yellow: #FFF9C4;
+            --light-blue: #E3F2FD;
+            --dark-yellow: #FFA000;
+        }
+
+        body {
+            background: linear-gradient(135deg, #E3F2FD, #FFF9C4);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 700px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+        }
+
+        header {
+            background: var(--vibrant-blue);
+            color: white;
+            padding: 25px;
+            text-align: center;
+            position: relative;
+        }
+
+        header::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 100%;
+            height: 20px;
+            background: var(--bright-yellow);
+            clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 70%);
+        }
+
+        header h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        header p {
+            margin-top: 10px;
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+
+        .tool-container {
+            padding: 30px;
+        }
+
+        .input-section {
+            margin-bottom: 30px;
+        }
+
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--dark-blue);
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 14px;
+            border: 3px solid var(--light-blue);
+            border-radius: 16px;
+            font-size: 1.2rem;
+            background: var(--light-blue);
+            transition: all 0.3s ease;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: var(--vibrant-blue);
+            background: #f0f8ff;
+            box-shadow: 0 0 0 3px rgba(30, 144, 255, 0.2);
+        }
+
+        .trials-section {
+            background: var(--light-yellow);
+            padding: 20px;
+            border-radius: 16px;
+            border: 2px solid var(--bright-yellow);
+            margin-bottom: 25px;
+        }
+
+        .trials-title {
+            text-align: center;
+            margin-bottom: 15px;
+            color: #e65100;
+            font-weight: 700;
+            font-size: 1.3rem;
+        }
+
+        .trials-input {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .trials-input .input-field {
+            flex: 1;
+        }
+
+        .calculate-btn {
+            display: block;
+            width: 100%;
+            padding: 16px;
+            background: var(--vibrant-blue);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+            margin-top: 10px;
+        }
+
+        .calculate-btn:hover {
+            background: var(--dark-blue);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .result-section {
+            display: none;
+            margin-top: 30px;
+        }
+
+        .result-title {
+            text-align: center;
+            margin-bottom: 20px;
+            color: var(--dark-blue);
+            font-weight: 700;
+            font-size: 1.4rem;
+        }
+
+        .scenarios-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .scenario-card {
+            background: var(--light-blue);
+            padding: 20px;
+            border-radius: 16px;
+            border: 2px solid var(--vibrant-blue);
+        }
+
+        .scenario-title {
+            font-weight: 700;
+            color: var(--dark-blue);
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .scenario-value {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--vibrant-blue);
+        }
+
+        .scenario-explanation {
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: var(--dark-blue);
+            line-height: 1.4;
+        }
+
+        .error-message {
+            color: #d32f2f;
+            font-weight: 600;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .info-box {
+            background: var(--light-yellow);
+            padding: 15px;
+            border-radius: 12px;
+            margin: 20px 0;
+            border: 1px solid var(--bright-yellow);
+            color: #e65100;
+            font-weight: 600;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 700px) {
+            .container {
+                border-radius: 16px;
+            }
+            
+            header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .tool-container {
+                padding: 20px;
+            }
+            
+            .input-field {
+                padding: 12px;
+                font-size: 1.1rem;
+            }
+            
+            .calculate-btn {
+                padding: 14px;
+                font-size: 1.1rem;
+            }
+            
+            .scenario-value {
+                font-size: 1.5rem;
+            }
+            
+            .scenario-card {
+                padding: 15px;
+            }
+            
+            .input-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Probability Calculator</h1>
+            <p>Calculate probabilities for multiple scenarios with two events</p>
+        </header>
+        
+        <div class="tool-container">
+            <div class="info-box">
+                <p><strong>How it works:</strong> Enter the probabilities for two independent events A and B (as percentages or decimals). The calculator will show you the probabilities for 6 different scenarios.</p>
+                <p>You can also specify the number of trials to see additional probability calculations.</p>
+            </div>
+            
+            <div class="input-section">
+                <div class="input-grid">
+                    <div class="input-group">
+                        <label class="input-label" for="probA">Probability of Event A</label>
+                        <input type="number" id="probA" class="input-field" placeholder="Enter probability (0-100)" min="0" max="100" step="0.01">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-label" for="probB">Probability of Event B</label>
+                        <input type="number" id="probB" class="input-field" placeholder="Enter probability (0-100)" min="0" max="100" step="0.01">
+                    </div>
+                </div>
+                
+                <div class="trials-section">
+                    <h3 class="trials-title">Number of Trials (Optional)</h3>
+                    <div class="trials-input">
+                        <label class="input-label" for="trials">Trials:</label>
+                        <input type="number" id="trials" class="input-field" placeholder="Enter number of trials" min="1" value="1">
+                    </div>
+                    <p style="margin-top: 10px; font-size: 0.9rem; color: #e65100;">Enter trials to see additional probability scenarios</p>
+                </div>
+                
+                <div class="error-message" id="errorMessage"></div>
+                
+                <button class="calculate-btn" id="calculateBtn">Calculate Probabilities</button>
+            </div>
+            
+            <div class="result-section" id="resultSection">
+                <h3 class="result-title">Probability Scenarios</h3>
+                <div class="scenarios-grid" id="scenariosGrid">
+                    <!-- Scenarios will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM Elements
+            const probA = document.getElementById('probA');
+            const probB = document.getElementById('probB');
+            const trials = document.getElementById('trials');
+            const calculateBtn = document.getElementById('calculateBtn');
+            const errorMessage = document.getElementById('errorMessage');
+            const resultSection = document.getElementById('resultSection');
+            const scenariosGrid = document.getElementById('scenariosGrid');
+            
+            // Event Listener
+            calculateBtn.addEventListener('click', calculateProbabilities);
+            
+            // Calculate probabilities function
+            function calculateProbabilities() {
+                errorMessage.style.display = 'none';
+                
+                // Get input values
+                let pA = parseFloat(probA.value);
+                let pB = parseFloat(probB.value);
+                const numTrials = parseInt(trials.value) || 1;
+                
+                // Validate inputs
+                if (isNaN(pA) || isNaN(pB)) {
+                    showError('Please enter valid probabilities for both events.');
+                    return;
+                }
+                
+                if (pA < 0 || pA > 100 || pB < 0 || pB > 100) {
+                    showError('Probabilities must be between 0 and 100.');
+                    return;
+                }
+                
+                if (numTrials < 1) {
+                    showError('Number of trials must be at least 1.');
+                    return;
+                }
+                
+                // Convert percentages to decimals
+                pA = pA / 100;
+                pB = pB / 100;
+                
+                // Calculate basic probabilities
+                const pBoth = pA * pB;
+                const pOnlyA = pA * (1 - pB);
+                const pOnlyB = (1 - pA) * pB;
+                const pNeither = (1 - pA) * (1 - pB);
+                const pAtLeastOne = 1 - pNeither;
+                const pExactlyOne = pOnlyA + pOnlyB;
+                
+                // Create scenarios array
+                let scenarios = [
+                    {
+                        title: "Both Events Occur",
+                        value: pBoth,
+                        explanation: "Probability that both A and B happen"
+                    },
+                    {
+                        title: "Only A Occurs",
+                        value: pOnlyA,
+                        explanation: "Probability that A happens but B does not"
+                    },
+                    {
+                        title: "Only B Occurs",
+                        value: pOnlyB,
+                        explanation: "Probability that B happens but A does not"
+                    },
+                    {
+                        title: "Neither Event Occurs",
+                        value: pNeither,
+                        explanation: "Probability that neither A nor B happens"
+                    },
+                    {
+                        title: "At Least One Occurs",
+                        value: pAtLeastOne,
+                        explanation: "Probability that A or B or both happen"
+                    },
+                    {
+                        title: "Exactly One Occurs",
+                        value: pExactlyOne,
+                        explanation: "Probability that either A or B happens, but not both"
+                    }
+                ];
+                
+                // Add trial-based scenarios if trials > 1
+                if (numTrials > 1) {
+                    // Probability of at least one success in n trials for event A
+                    const pAtLeastOneA = 1 - Math.pow(1 - pA, numTrials);
+                    scenarios.push({
+                        title: `At Least One A in ${numTrials} Trials`,
+                        value: pAtLeastOneA,
+                        explanation: `Probability of at least one A occurring in ${numTrials} independent trials`
+                    });
+                    
+                    // Probability of at least one success in n trials for event B
+                    const pAtLeastOneB = 1 - Math.pow(1 - pB, numTrials);
+                    scenarios.push({
+                        title: `At Least One B in ${numTrials} Trials`,
+                        value: pAtLeastOneB,
+                        explanation: `Probability of at least one B occurring in ${numTrials} independent trials`
+                    });
+                    
+                    // Probability of both events occurring at least once in n trials
+                    const pBothAtLeastOnce = (1 - Math.pow(1 - pA, numTrials)) * (1 - Math.pow(1 - pB, numTrials));
+                    scenarios.push({
+                        title: `Both Events at Least Once in ${numTrials} Trials`,
+                        value: pBothAtLeastOnce,
+                        explanation: `Probability that both A and B occur at least once in ${numTrials} trials`
+                    });
+                    
+                    // Probability of exactly k successes for event A (using k=1 as example)
+                    const pExactlyOneA = numTrials * pA * Math.pow(1 - pA, numTrials - 1);
+                    scenarios.push({
+                        title: `Exactly One A in ${numTrials} Trials`,
+                        value: pExactlyOneA,
+                        explanation: `Probability of exactly one A occurring in ${numTrials} independent trials`
+                    });
+                    
+                    // Probability of all trials being successful for event A
+                    const pAllA = Math.pow(pA, numTrials);
+                    scenarios.push({
+                        title: `All ${numTrials} Trials are A`,
+                        value: pAllA,
+                        explanation: `Probability that all ${numTrials} trials result in event A`
+                    });
+                    
+                    // Probability of no successes in n trials for event A
+                    const pNoA = Math.pow(1 - pA, numTrials);
+                    scenarios.push({
+                        title: `No A in ${numTrials} Trials`,
+                        value: pNoA,
+                        explanation: `Probability that none of the ${numTrials} trials result in event A`
+                    });
+                }
+                
+                // Display results
+                displayResults(scenarios);
+            }
+            
+            // Display results function
+            function displayResults(scenarios) {
+                // Clear previous results
+                scenariosGrid.innerHTML = '';
+                
+                // Create scenario cards
+                scenarios.forEach(scenario => {
+                    const card = document.createElement('div');
+                    card.className = 'scenario-card';
+                    card.innerHTML = `
+                        <div class="scenario-title">${scenario.title}</div>
+                        <div class="scenario-value">${(scenario.value * 100).toFixed(2)}%</div>
+                        <div class="scenario-explanation">${scenario.explanation}</div>
+                    `;
+                    scenariosGrid.appendChild(card);
+                });
+                
+                // Show result section with animation
+                resultSection.style.display = 'block';
+                resultSection.style.opacity = '0';
+                resultSection.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    resultSection.style.transition = 'opacity 0.5s, transform 0.5s';
+                    resultSection.style.opacity = '1';
+                    resultSection.style.transform = 'translateY(0)';
+                }, 10);
+            }
+            
+            // Show error message
+            function showError(message) {
+                errorMessage.textContent = message;
+                errorMessage.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>
