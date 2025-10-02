@@ -1,1 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keywords Suggestion Tool | Multi-Tool Website</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
 
+        :root {
+            --primary-blue: #2563eb;
+            --primary-yellow: #fbbf24;
+            --light-blue: #dbeafe;
+            --dark-blue: #1d4ed8;
+            --light-yellow: #fef3c7;
+            --dark-yellow: #d97706;
+            --text-dark: #1e293b;
+            --text-light: #f8fafc;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --radius: 12px;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f0f9ff, #fffbeb);
+            color: var(--text-dark);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .logo i {
+            font-size: 2.5rem;
+            color: var(--primary-blue);
+            background: var(--primary-yellow);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: var(--dark-blue);
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #4b5563;
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .tool-container {
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        .input-section {
+            padding: 25px;
+            background: linear-gradient(to right, var(--light-blue), var(--light-yellow));
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark-blue);
+        }
+
+        input, select {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+        }
+
+        .btn {
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            background: var(--dark-blue);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+
+        .btn-yellow {
+            background: var(--primary-yellow);
+            color: var(--dark-blue);
+        }
+
+        .btn-yellow:hover {
+            background: var(--dark-yellow);
+            color: white;
+        }
+
+        .results-section {
+            padding: 25px;
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .results-title {
+            font-size: 1.5rem;
+            color: var(--dark-blue);
+        }
+
+        .filters {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .filter-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark-blue);
+            font-size: 0.9rem;
+        }
+
+        .keywords-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .keywords-table th {
+            background: var(--primary-blue);
+            color: white;
+            text-align: left;
+            padding: 14px;
+            font-weight: 600;
+        }
+
+        .keywords-table td {
+            padding: 14px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .keywords-table tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
+
+        .keywords-table tr:hover {
+            background-color: var(--light-blue);
+        }
+
+        .keyword-text {
+            font-weight: 600;
+            color: var(--dark-blue);
+        }
+
+        .volume-cell {
+            font-weight: 700;
+        }
+
+        .difficulty-cell {
+            font-weight: 700;
+        }
+
+        .difficulty-low {
+            color: var(--success);
+        }
+
+        .difficulty-medium {
+            color: var(--warning);
+        }
+
+        .difficulty-high {
+            color: var(--error);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #64748b;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: var(--primary-blue);
+        }
+
+        .tips {
+            background: var(--light-blue);
+            border-left: 4px solid var(--primary-blue);
+            padding: 15px;
+            margin-top: 25px;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .tips h3 {
+            margin-bottom: 10px;
+            color: var(--dark-blue);
+        }
+
+        .tips ul {
+            padding-left: 20px;
+        }
+
+        .tips li {
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .subtitle {
+                font-size: 1rem;
+            }
+            
+            .form-group {
+                margin-bottom: 15px;
+            }
+            
+            input, select {
+                padding: 12px;
+            }
+            
+            .filters {
+                flex-direction: column;
+            }
+            
+            .keywords-table th, .keywords-table td {
+                padding: 10px 8px;
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .input-section, .results-section {
+                padding: 20px 15px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .results-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .keywords-table {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-search"></i>
+                <h1>Keywords Suggestion Tool</h1>
+            </div>
+            <p class="subtitle">Keyword analysis is no rocket science. 🚀 Just go for the keywords with low SEO difficulty and high search volume. We have exact search volumes and the most accurate keyword difficulty.</p>
+        </header>
+
+        <div class="tool-container">
+            <div class="input-section">
+                <div class="form-group">
+                    <label for="keyword">Enter your keyword or topic</label>
+                    <input type="text" id="keyword" placeholder="e.g., digital marketing, healthy recipes, web design">
+                </div>
+                
+                <div class="form-group">
+                    <label for="country">Select country</label>
+                    <select id="country">
+                        <option value="us">United States</option>
+                        <option value="uk">United Kingdom</option>
+                        <option value="ca">Canada</option>
+                        <option value="au">Australia</option>
+                        <option value="de">Germany</option>
+                        <option value="fr">France</option>
+                        <option value="global">Global</option>
+                    </select>
+                </div>
+                
+                <button id="suggest-btn" class="btn">
+                    <i class="fas fa-bolt"></i> Get Keyword Suggestions
+                </button>
+            </div>
+            
+            <div class="results-section">
+                <div class="results-header">
+                    <h2 class="results-title">Keyword Suggestions</h2>
+                </div>
+                
+                <div class="filters">
+                    <div class="filter-group">
+                        <label class="filter-label">Min Search Volume</label>
+                        <select id="min-volume">
+                            <option value="0">Any</option>
+                            <option value="100">100+</option>
+                            <option value="500">500+</option>
+                            <option value="1000" selected>1,000+</option>
+                            <option value="5000">5,000+</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">Max Difficulty</label>
+                        <select id="max-difficulty">
+                            <option value="100">Any</option>
+                            <option value="30">Easy (0-30)</option>
+                            <option value="50" selected>Medium (0-50)</option>
+                            <option value="70">Hard (0-70)</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">Sort By</label>
+                        <select id="sort-by">
+                            <option value="volume">Search Volume</option>
+                            <option value="difficulty">Keyword Difficulty</option>
+                            <option value="cpc">CPC (High to Low)</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div id="results-container">
+                    <div class="empty-state">
+                        <i class="fas fa-key"></i>
+                        <h3>No Keywords Found Yet</h3>
+                        <p>Enter a keyword and click "Get Keyword Suggestions" to find valuable keywords</p>
+                    </div>
+                </div>
+                
+                <div class="tips">
+                    <h3>Keyword Selection Tips</h3>
+                    <ul>
+                        <li><strong>Low Difficulty, High Volume:</strong> Target keywords with KD < 30 and high search volume</li>
+                        <li><strong>Long-Tail Keywords:</strong> Use specific phrases with lower competition</li>
+                        <li><strong>Commercial Intent:</strong> Prioritize keywords with buyer intent for better conversions</li>
+                        <li><strong>Content Relevance:</strong> Ensure keywords match your content and expertise</li>
+                        <li><strong>Track Performance:</strong> Monitor rankings and adjust your strategy regularly</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Keywords Suggestion Tool | Part of Multi-Tool Website Suite</p>
+        </footer>
+    </div>
+
+    <script>
+        // DOM Elements
+        const suggestBtn = document.getElementById('suggest-btn');
+        const keywordInput = document.getElementById('keyword');
+        const countrySelect = document.getElementById('country');
+        const minVolumeSelect = document.getElementById('min-volume');
+        const maxDifficultySelect = document.getElementById('max-difficulty');
+        const sortBySelect = document.getElementById('sort-by');
+        const resultsContainer = document.getElementById('results-container');
+
+        // Sample keyword database
+        const keywordDatabase = {
+            'digital marketing': [
+                { keyword: 'digital marketing agency', volume: 12000, difficulty: 65, cpc: 12.50 },
+                { keyword: 'digital marketing course', volume: 8500, difficulty: 45, cpc: 8.20 },
+                { keyword: 'digital marketing tools', volume: 6200, difficulty: 38, cpc: 6.75 },
+                { keyword: 'digital marketing strategy', volume: 5400, difficulty: 52, cpc: 9.30 },
+                { keyword: 'digital marketing for beginners', volume: 4800, difficulty: 28, cpc: 5.40 },
+                { keyword: 'digital marketing certification', volume: 3900, difficulty: 42, cpc: 11.20 },
+                { keyword: 'digital marketing services', volume: 3500, difficulty: 58, cpc: 14.80 },
+                { keyword: 'digital marketing jobs', volume: 2900, difficulty: 35, cpc: 4.20 },
+                { keyword: 'digital marketing trends 2023', volume: 2600, difficulty: 32, cpc: 7.10 },
+                { keyword: 'digital marketing freelance', volume: 2100, difficulty: 25, cpc: 6.90 },
+                { keyword: 'digital marketing roi', volume: 1800, difficulty: 48, cpc: 10.50 },
+                { keyword: 'digital marketing audit', volume: 1500, difficulty: 30, cpc: 9.80 },
+                { keyword: 'digital marketing funnel', volume: 1200, difficulty: 35, cpc: 8.40 },
+                { keyword: 'digital marketing analytics', volume: 950, difficulty: 40, cpc: 12.30 },
+                { keyword: 'digital marketing automation', volume: 850, difficulty: 55, cpc: 15.20 }
+            ],
+            'healthy recipes': [
+                { keyword: 'healthy dinner recipes', volume: 9800, difficulty: 42, cpc: 3.20 },
+                { keyword: 'healthy meal prep', volume: 7600, difficulty: 38, cpc: 4.10 },
+                { keyword: 'healthy breakfast ideas', volume: 6500, difficulty: 35, cpc: 2.80 },
+                { keyword: 'healthy recipes for weight loss', volume: 5900, difficulty: 45, cpc: 5.30 },
+                { keyword: 'quick healthy recipes', volume: 5200, difficulty: 32, cpc: 3.70 },
+                { keyword: 'healthy vegetarian recipes', volume: 4700, difficulty: 40, cpc: 4.50 },
+                { keyword: 'healthy smoothie recipes', volume: 4100, difficulty: 28, cpc: 2.90 },
+                { keyword: 'healthy lunch ideas', volume: 3800, difficulty: 30, cpc: 3.10 },
+                { keyword: 'healthy recipes for kids', volume: 3200, difficulty: 35, cpc: 4.20 },
+                { keyword: 'healthy high protein recipes', volume: 2800, difficulty: 38, cpc: 5.80 },
+                { keyword: 'healthy low carb recipes', volume: 2500, difficulty: 42, cpc: 6.10 },
+                { keyword: 'healthy gluten free recipes', volume: 2100, difficulty: 45, cpc: 5.40 },
+                { keyword: 'healthy vegan recipes', volume: 1900, difficulty: 48, cpc: 4.90 },
+                { keyword: 'healthy snack ideas', volume: 1700, difficulty: 25, cpc: 2.60 },
+                { keyword: 'healthy dessert recipes', volume: 1500, difficulty: 32, cpc: 3.80 }
+            ],
+            'web design': [
+                { keyword: 'web design services', volume: 14500, difficulty: 72, cpc: 18.50 },
+                { keyword: 'web design agency', volume: 11200, difficulty: 68, cpc: 22.30 },
+                { keyword: 'web design company', volume: 9800, difficulty: 65, cpc: 20.10 },
+                { keyword: 'web design tools', volume: 7500, difficulty: 45, cpc: 8.70 },
+                { keyword: 'web design course', volume: 6800, difficulty: 42, cpc: 12.40 },
+                { keyword: 'web design trends 2023', volume: 5900, difficulty: 38, cpc: 9.20 },
+                { keyword: 'web design portfolio', volume: 5200, difficulty: 40, cpc: 7.80 },
+                { keyword: 'web design for beginners', volume: 4700, difficulty: 32, cpc: 6.50 },
+                { keyword: 'web design software', volume: 4100, difficulty: 50, cpc: 15.30 },
+                { keyword: 'web design templates', volume: 3800, difficulty: 35, cpc: 9.10 },
+                { keyword: 'responsive web design', volume: 3500, difficulty: 48, cpc: 11.20 },
+                { keyword: 'web design freelance', volume: 3100, difficulty: 30, cpc: 8.40 },
+                { keyword: 'web design certification', volume: 2800, difficulty: 45, cpc: 14.70 },
+                { keyword: 'web design jobs', volume: 2500, difficulty: 38, cpc: 7.30 },
+                { keyword: 'web design inspiration', volume: 2200, difficulty: 32, cpc: 6.80 }
+            ]
+        };
+
+        // Get keyword suggestions
+        suggestBtn.addEventListener('click', () => {
+            const keyword = keywordInput.value.trim().toLowerCase();
+            if (!keyword) {
+                alert('Please enter a keyword or topic');
+                return;
+            }
+            
+            // Simulate analysis
+            suggestBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Finding Keywords...';
+            
+            // In a real implementation, you would call an API to get keyword data
+            // For this demo, we'll use simulated data
+            setTimeout(() => {
+                generateKeywordReport(keyword);
+                suggestBtn.innerHTML = '<i class="fas fa-bolt"></i> Get Keyword Suggestions';
+            }, 1500);
+        });
+
+        // Apply filters and sorting
+        function applyFiltersAndSorting(keywords) {
+            const minVolume = parseInt(minVolumeSelect.value);
+            const maxDifficulty = parseInt(maxDifficultySelect.value);
+            const sortBy = sortBySelect.value;
+            
+            // Filter keywords
+            let filtered = keywords.filter(kw => {
+                return kw.volume >= minVolume && kw.difficulty <= maxDifficulty;
+            });
+            
+            // Sort keywords
+            if (sortBy === 'volume') {
+                filtered.sort((a, b) => b.volume - a.volume);
+            } else if (sortBy === 'difficulty') {
+                filtered.sort((a, b) => a.difficulty - b.difficulty);
+            } else if (sortBy === 'cpc') {
+                filtered.sort((a, b) => b.cpc - a.cpc);
+            }
+            
+            return filtered;
+        }
+
+        // Generate keyword report
+        function generateKeywordReport(keyword) {
+            // Find matching keywords
+            let suggestions = [];
+            let foundMatch = false;
+            
+            // Check if we have data for this keyword
+            for (const [key, keywords] of Object.entries(keywordDatabase)) {
+                if (keyword.includes(key) || key.includes(keyword)) {
+                    suggestions = [...keywords];
+                    foundMatch = true;
+                    break;
+                }
+            }
+            
+            // If no match, use a default set
+            if (!foundMatch) {
+                suggestions = [
+                    { keyword: `${keyword} services`, volume: 5200, difficulty: 48, cpc: 12.30 },
+                    { keyword: `${keyword} tools`, volume: 3800, difficulty: 35, cpc: 8.70 },
+                    { keyword: `${keyword} course`, volume: 2900, difficulty: 42, cpc: 10.50 },
+                    { keyword: `${keyword} for beginners`, volume: 2100, difficulty: 28, cpc: 6.20 },
+                    { keyword: `best ${keyword}`, volume: 1800, difficulty: 52, cpc: 14.10 },
+                    { keyword: `${keyword} tips`, volume: 1500, difficulty: 30, cpc: 7.80 },
+                    { keyword: `${keyword} software`, volume: 1200, difficulty: 45, cpc: 16.40 },
+                    { keyword: `${keyword} agency`, volume: 950, difficulty: 60, cpc: 19.20 },
+                    { keyword: `${keyword} trends 2023`, volume: 850, difficulty: 38, cpc: 9.30 },
+                    { keyword: `${keyword} freelance`, volume: 720, difficulty: 25, cpc: 8.10 }
+                ];
+            }
+            
+            // Apply filters and sorting
+            const filteredKeywords = applyFiltersAndSorting(suggestions);
+            
+            // Build results HTML
+            if (filteredKeywords.length === 0) {
+                resultsContainer.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-search"></i>
+                        <h3>No Keywords Match Your Filters</h3>
+                        <p>Try adjusting your filters to see more results</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            let tableHTML = `
+                <table class="keywords-table">
+                    <thead>
+                        <tr>
+                            <th>Keyword</th>
+                            <th>Search Volume</th>
+                            <th>Keyword Difficulty</th>
+                            <th>CPC</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            filteredKeywords.forEach(kw => {
+                let difficultyClass = 'difficulty-high';
+                if (kw.difficulty <= 30) difficultyClass = 'difficulty-low';
+                else if (kw.difficulty <= 50) difficultyClass = 'difficulty-medium';
+                
+                tableHTML += `
+                    <tr>
+                        <td class="keyword-text">${kw.keyword}</td>
+                        <td class="volume-cell">${kw.volume.toLocaleString()}</td>
+                        <td class="difficulty-cell ${difficultyClass}">${kw.difficulty}%</td>
+                        <td>$${kw.cpc.toFixed(2)}</td>
+                    </tr>
+                `;
+            });
+            
+            tableHTML += `
+                    </tbody>
+                </table>
+            `;
+            
+            resultsContainer.innerHTML = tableHTML;
+            
+            // Add event listeners to filter controls
+            minVolumeSelect.addEventListener('change', () => generateKeywordReport(keyword));
+            maxDifficultySelect.addEventListener('change', () => generateKeywordReport(keyword));
+            sortBySelect.addEventListener('change', () => generateKeywordReport(keyword));
+        }
+        
+        // Initialize with sample keyword for demo
+        window.addEventListener('load', () => {
+            keywordInput.value = 'digital marketing';
+        });
+    </script>
+</body>
+</html>
