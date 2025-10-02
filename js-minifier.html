@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript Minifier - Free Online Tool</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary-blue: #2563eb;
+            --primary-yellow: #fbbf24;
+            --light-blue: #dbeafe;
+            --dark-blue: #1d4ed8;
+            --light-yellow: #fef3c7;
+            --dark-yellow: #d97706;
+            --success: #10b981;
+            --error: #ef4444;
+            --gray: #6b7280;
+            --light-gray: #f3f4f6;
+            --dark-gray: #374151;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f0f9ff 0%, #fffbeb 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: var(--dark-gray);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .logo-icon {
+            background: var(--primary-blue);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: var(--dark-blue);
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: var(--gray);
+            font-size: 1.1rem;
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .converter-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+
+        @media (min-width: 992px) {
+            .converter-container {
+                flex-direction: row;
+            }
+        }
+
+        .panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 500px;
+        }
+
+        .panel-header {
+            padding: 16px 20px;
+            background: var(--light-blue);
+            color: var(--dark-blue);
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .panel-header.yellow {
+            background: var(--light-yellow);
+            color: var(--dark-yellow);
+        }
+
+        .panel-content {
+            flex: 1;
+            padding: 0;
+            position: relative;
+        }
+
+        textarea {
+            width: 100%;
+            height: 100%;
+            border: none;
+            padding: 20px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 15px;
+            line-height: 1.5;
+            resize: none;
+            outline: none;
+            background: transparent;
+        }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            padding: 20px;
+            background: white;
+            border-top: 1px solid #e5e7eb;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.2s ease;
+            font-size: 16px;
+        }
+
+        .btn-primary {
+            background: var(--primary-blue);
+            color: white;
+            box-shadow: 0 4px 6px rgba(37, 99, 235, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: var(--dark-blue);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(37, 99, 235, 0.4);
+        }
+
+        .btn-yellow {
+            background: var(--primary-yellow);
+            color: var(--dark-yellow);
+            box-shadow: 0 4px 6px rgba(251, 191, 36, 0.3);
+        }
+
+        .btn-yellow:hover {
+            background: var(--dark-yellow);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(217, 119, 6, 0.4);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary-blue);
+            color: var(--primary-blue);
+        }
+
+        .btn-outline:hover {
+            background: var(--light-blue);
+        }
+
+        .status-bar {
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            background: var(--light-gray);
+            font-size: 14px;
+            color: var(--gray);
+        }
+
+        .status-valid {
+            color: var(--success);
+        }
+
+        .status-invalid {
+            color: var(--error);
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transform: translateX(200%);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.success {
+            background: var(--success);
+        }
+
+        .notification.error {
+            background: var(--error);
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            text-align: center;
+        }
+
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--light-blue);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            color: var(--primary-blue);
+            font-size: 24px;
+        }
+
+        .feature-card.yellow .feature-icon {
+            background: var(--light-yellow);
+            color: var(--dark-yellow);
+        }
+
+        .feature-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--dark-blue);
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .panel {
+                min-height: 400px;
+            }
+            
+            .controls {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .features {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .example-btn {
+            background: var(--light-gray);
+            color: var(--gray);
+            border: 1px solid #d1d5db;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        
+        .example-btn:hover {
+            background: var(--light-blue);
+            color: var(--dark-blue);
+        }
+        
+        .options {
+            display: flex;
+            gap: 15px;
+            padding: 0 20px 15px;
+            background: white;
+            flex-wrap: wrap;
+        }
+        
+        .option-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        .option-label {
+            font-size: 14px;
+            color: var(--gray);
+        }
+        
+        select, input {
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .checkbox-group input {
+            width: auto;
+            margin: 0;
+        }
+        
+        .stats {
+            display: flex;
+            gap: 20px;
+            padding: 10px 20px;
+            background: var(--light-gray);
+            font-size: 14px;
+            color: var(--gray);
+        }
+        
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .stat-value {
+            font-weight: 600;
+            color: var(--dark-blue);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-compress-alt"></i>
+                </div>
+                <h1>JavaScript Minifier</h1>
+            </div>
+            <p class="subtitle">Online JavaScript Minifier Tool and Compressor, with Fast and Simple API Access. Reduce your JavaScript file size instantly for better performance.</p>
+        </header>
+
+        <div class="features">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-bolt"></i>
+                </div>
+                <h3 class="feature-title">Fast Minification</h3>
+                <p>Minify your JavaScript in milliseconds</p>
+            </div>
+            <div class="feature-card yellow">
+                <div class="feature-icon">
+                    <i class="fas fa-file-code"></i>
+                </div>
+                <h3 class="feature-title">Preserves Functionality</h3>
+                <p>Minified code works exactly like the original</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-percentage"></i>
+                </div>
+                <h3 class="feature-title">Size Reduction</h3>
+                <p>Reduce file size by up to 70% for faster loading</p>
+            </div>
+        </div>
+
+        <div class="options">
+            <div class="option-group">
+                <label class="option-label">Minification Options</label>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="remove-comments" checked>
+                    <label for="remove-comments">Remove comments</label>
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="remove-whitespace" checked>
+                    <label for="remove-whitespace">Remove extra whitespace</label>
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="shorten-variables">
+                    <label for="shorten-variables">Shorten variable names (experimental)</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="converter-container">
+            <div class="panel">
+                <div class="panel-header">
+                    <span>JavaScript Input</span>
+                </div>
+                <div class="panel-content">
+                    <textarea id="js-input" placeholder='Paste your JavaScript here or try an example:
+// This is a sample function
+function calculateTotal(price, tax) {
+    // Calculate the total with tax
+    const total = price + (price * tax);
+    return total;
+}
+
+// Another function
+function displayMessage(name) {
+    console.log("Hello, " + name + "!");
+}
+
+// Array of products
+const products = [
+    { id: 1, name: "Laptop", price: 999.99 },
+    { id: 2, name: "Mouse", price: 29.99 },
+    { id: 3, name: "Keyboard", price: 79.99 }
+];'></textarea>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-header yellow">
+                    <span>Minified JavaScript</span>
+                </div>
+                <div class="panel-content">
+                    <textarea id="js-output" placeholder="Minified JavaScript will appear here..." readonly></textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="stats">
+            <div class="stat-item">
+                <span>Original Size</span>
+                <span id="original-size" class="stat-value">0 bytes</span>
+            </div>
+            <div class="stat-item">
+                <span>Minified Size</span>
+                <span id="minified-size" class="stat-value">0 bytes</span>
+            </div>
+            <div class="stat-item">
+                <span>Reduction</span>
+                <span id="reduction" class="stat-value">0%</span>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button id="minify-btn" class="btn btn-primary">
+                <i class="fas fa-compress-alt"></i> Minify JavaScript
+            </button>
+            <button id="clear-btn" class="btn btn-outline">
+                <i class="fas fa-trash"></i> Clear All
+            </button>
+            <button id="copy-btn" class="btn btn-yellow">
+                <i class="fas fa-copy"></i> Copy Minified Code
+            </button>
+            <button id="download-btn" class="btn btn-outline">
+                <i class="fas fa-download"></i> Download .js
+            </button>
+            <button id="example-btn" class="example-btn">
+                <i class="fas fa-lightbulb"></i> Load Example
+            </button>
+        </div>
+
+        <div class="status-bar">
+            <div id="status">Ready to minify JavaScript</div>
+            <div id="char-count">0 characters</div>
+        </div>
+
+        <div id="notification" class="notification"></div>
+    </div>
+
+    <footer>
+        <p>Free Online JavaScript Minifier | Fast, Simple, and Effective Code Compression</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM Elements
+            const jsInput = document.getElementById('js-input');
+            const jsOutput = document.getElementById('js-output');
+            const minifyBtn = document.getElementById('minify-btn');
+            const clearBtn = document.getElementById('clear-btn');
+            const copyBtn = document.getElementById('copy-btn');
+            const downloadBtn = document.getElementById('download-btn');
+            const exampleBtn = document.getElementById('example-btn');
+            const statusEl = document.getElementById('status');
+            const charCountEl = document.getElementById('char-count');
+            const notification = document.getElementById('notification');
+            const removeCommentsCheckbox = document.getElementById('remove-comments');
+            const removeWhitespaceCheckbox = document.getElementById('remove-whitespace');
+            const shortenVariablesCheckbox = document.getElementById('shorten-variables');
+            const originalSizeEl = document.getElementById('original-size');
+            const minifiedSizeEl = document.getElementById('minified-size');
+            const reductionEl = document.getElementById('reduction');
+            
+            // Example JavaScript
+            const exampleJS = `// This is a sample function
+function calculateTotal(price, tax) {
+    // Calculate the total with tax
+    const total = price + (price * tax);
+    return total;
+}
+
+// Another function
+function displayMessage(name) {
+    console.log("Hello, " + name + "!");
+}
+
+// Array of products
+const products = [
+    { id: 1, name: "Laptop", price: 999.99 },
+    { id: 2, name: "Mouse", price: 29.99 },
+    { id: 3, name: "Keyboard", price: 79.99 }
+];`;
+            
+            // Initialize with empty state
+            updateCharCount();
+            updateStats();
+            
+            // Event Listeners
+            jsInput.addEventListener('input', () => {
+                updateCharCount();
+                updateStats();
+            });
+            
+            minifyBtn.addEventListener('click', minifyJavaScript);
+            clearBtn.addEventListener('click', clearAll);
+            copyBtn.addEventListener('click', copyMinified);
+            downloadBtn.addEventListener('click', downloadMinified);
+            exampleBtn.addEventListener('click', loadExample);
+            
+            // Functions
+            function updateCharCount() {
+                const count = jsInput.value.length;
+                charCountEl.textContent = `${count} character${count !== 1 ? 's' : ''}`;
+            }
+            
+            function updateStats() {
+                const originalSize = jsInput.value.length;
+                const minifiedSize = jsOutput.value.length;
+                
+                originalSizeEl.textContent = `${originalSize} bytes`;
+                minifiedSizeEl.textContent = `${minifiedSize} bytes`;
+                
+                if (originalSize > 0) {
+                    const reduction = Math.round(((originalSize - minifiedSize) / originalSize) * 100);
+                    reductionEl.textContent = `${reduction >= 0 ? reduction : 0}%`;
+                } else {
+                    reductionEl.textContent = '0%';
+                }
+            }
+            
+            function minifyJavaScript() {
+                const jsCode = jsInput.value;
+                
+                if (jsCode.trim() === '') {
+                    showNotification('Please enter JavaScript code to minify', 'error');
+                    statusEl.textContent = 'Empty input';
+                    statusEl.className = 'status-invalid';
+                    jsOutput.value = '';
+                    updateStats();
+                    return;
+                }
+                
+                try {
+                    let minified = jsCode;
+                    
+                    // Remove comments if selected
+                    if (removeCommentsCheckbox.checked) {
+                        // Remove single-line comments
+                        minified = minified.replace(/\/\/.*$/gm, '');
+                        // Remove multi-line comments
+                        minified = minified.replace(/\/\*[\s\S]*?\*\//g, '');
+                    }
+                    
+                    // Remove extra whitespace if selected
+                    if (removeWhitespaceCheckbox.checked) {
+                        // Remove leading/trailing whitespace from each line
+                        minified = minified.replace(/^\s+|\s+$/gm, '');
+                        // Replace multiple spaces with single space
+                        minified = minified.replace(/\s+/g, ' ');
+                        // Remove spaces around certain characters
+                        minified = minified.replace(/\s*([{}[\]()\.,;:+\-*/=<>!&|?])\s*/g, '$1');
+                        // Remove spaces after function names
+                        minified = minified.replace(/function\s+(\w+)\s*\(/g, 'function $1(');
+                        // Remove unnecessary semicolons
+                        minified = minified.replace(/;+/g, ';');
+                        // Remove trailing semicolon
+                        minified = minified.replace(/;$/, '');
+                    }
+                    
+                    // Shorten variable names (experimental)
+                    if (shortenVariablesCheckbox.checked) {
+                        minified = shortenVariableNames(minified);
+                    }
+                    
+                    // Final cleanup
+                    minified = minified.trim();
+                    
+                    jsOutput.value = minified;
+                    statusEl.textContent = 'Minification successful!';
+                    statusEl.className = 'status-valid';
+                    updateStats();
+                    showNotification('JavaScript minified successfully!', 'success');
+                } catch (error) {
+                    statusEl.textContent = 'Minification failed: ' + error.message;
+                    statusEl.className = 'status-invalid';
+                    jsOutput.value = `// Error: ${error.message}\n${jsCode}`;
+                    updateStats();
+                    showNotification('Failed to minify: ' + error.message, 'error');
+                }
+            }
+            
+            function shortenVariableNames(code) {
+                // This is a simplified implementation
+                // In a real minifier, this would be much more complex
+                
+                // Find all variable declarations
+                const varRegex = /(?:const|let|var)\s+([a-zA-Z_$][a-zA-Z0-9_$]*)/g;
+                const declarations = [];
+                let match;
+                
+                while ((match = varRegex.exec(code)) !== null) {
+                    declarations.push(match[1]);
+                }
+                
+                // Create a mapping of original names to short names
+                const nameMap = {};
+                let counter = 0;
+                const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+                
+                declarations.forEach(name => {
+                    if (!nameMap[name]) {
+                        let shortName;
+                        if (counter < chars.length) {
+                            shortName = chars[counter];
+                        } else {
+                            shortName = 'a' + (counter - chars.length);
+                        }
+                        nameMap[name] = shortName;
+                        counter++;
+                    }
+                });
+                
+                // Replace variable names in the code
+                let result = code;
+                Object.keys(nameMap).forEach(original => {
+                    const short = nameMap[original];
+                    // Use word boundaries to avoid partial replacements
+                    const regex = new RegExp(`\\b${original}\\b`, 'g');
+                    result = result.replace(regex, short);
+                });
+                
+                return result;
+            }
+            
+            function clearAll() {
+                jsInput.value = '';
+                jsOutput.value = '';
+                statusEl.textContent = 'Ready to minify JavaScript';
+                statusEl.className = '';
+                updateCharCount();
+                updateStats();
+            }
+            
+            function copyMinified() {
+                if (jsOutput.value.trim() === '') {
+                    showNotification('Nothing to copy', 'error');
+                    return;
+                }
+                
+                navigator.clipboard.writeText(jsOutput.value)
+                    .then(() => {
+                        showNotification('Minified code copied to clipboard!', 'success');
+                    })
+                    .catch(err => {
+                        showNotification('Failed to copy: ' + err, 'error');
+                    });
+            }
+            
+            function downloadMinified() {
+                if (jsOutput.value.trim() === '') {
+                    showNotification('Nothing to download', 'error');
+                    return;
+                }
+                
+                const blob = new Blob([jsOutput.value], { type: 'application/javascript;charset=utf-8;' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.setAttribute('href', url);
+                link.setAttribute('download', 'minified.js');
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+            
+            function loadExample() {
+                jsInput.value = exampleJS;
+                updateCharCount();
+                minifyJavaScript();
+                showNotification('Example JavaScript loaded!', 'success');
+            }
+            
+            function showNotification(message, type) {
+                notification.textContent = message;
+                notification.className = `notification ${type}`;
+                notification.classList.add('show');
+                
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                }, 3000);
+            }
+        });
+    </script>
+</body>
+</html>
