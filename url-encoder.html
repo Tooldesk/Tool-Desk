@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL Encoder/Decoder - Free Online Tool</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary-blue: #2563eb;
+            --primary-yellow: #fde047;
+            --dark-blue: #1d4ed8;
+            --light-yellow: #fef9c3;
+            --dark-yellow: #eab308;
+            --light-gray: #f8fafc;
+            --dark-gray: #1e293b;
+            --medium-gray: #94a3b8;
+            --success: #10b981;
+            --error: #ef4444;
+            --warning: #f59e0b;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+            min-height: 100vh;
+            padding: 20px;
+            color: var(--dark-gray);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            padding: 30px 0;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .logo-icon {
+            background: var(--primary-blue);
+            color: white;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            color: var(--dark-blue);
+            margin-bottom: 15px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .subtitle {
+            color: var(--medium-gray);
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto 25px;
+            padding: 0 15px;
+        }
+
+        .description {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            margin: 25px auto 35px;
+            max-width: 800px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            border-left: 4px solid var(--primary-blue);
+        }
+
+        .description p {
+            margin-bottom: 12px;
+            font-size: 1.05rem;
+        }
+
+        .examples {
+            background: var(--light-yellow);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            border-left: 3px solid var(--dark-yellow);
+        }
+
+        .examples h3 {
+            color: var(--dark-blue);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .example-item {
+            display: flex;
+            margin: 12px 0;
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 14px;
+        }
+
+        .example-label {
+            min-width: 80px;
+            font-weight: bold;
+            color: var(--dark-blue);
+        }
+
+        .tool-container {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        @media (min-width: 992px) {
+            .tool-container {
+                flex-direction: row;
+            }
+        }
+
+        .input-section, .output-section {
+            flex: 1;
+            background: white;
+            border-radius: 18px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .section-header {
+            background: var(--primary-blue);
+            color: white;
+            padding: 18px 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-weight: 700;
+            font-size: 1.3rem;
+        }
+
+        .section-header.yellow {
+            background: var(--primary-yellow);
+            color: var(--dark-blue);
+        }
+
+        .editor-container {
+            padding: 20px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        textarea {
+            width: 100%;
+            flex: 1;
+            border: 2px solid #e2e8f0;
+            border-radius: 14px;
+            padding: 18px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 15px;
+            resize: none;
+            outline: none;
+            transition: all 0.3s ease;
+            background: #fafbff;
+            line-height: 1.5;
+        }
+
+        textarea:focus {
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25);
+        }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+            padding: 25px;
+            background: var(--light-gray);
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .btn {
+            padding: 14px 22px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.25s ease;
+            font-size: 16px;
+            min-width: 140px;
+            justify-content: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.08);
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.12);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-primary {
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--dark-blue);
+        }
+
+        .btn-secondary {
+            background: var(--primary-yellow);
+            color: var(--dark-blue);
+        }
+
+        .btn-secondary:hover {
+            background: var(--dark-yellow);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #0da271;
+        }
+
+        .btn-danger {
+            background: var(--error);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        .status-bar {
+            padding: 18px 25px;
+            background: var(--light-gray);
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            font-size: 15px;
+            color: var(--medium-gray);
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .status-valid {
+            background: var(--success);
+        }
+
+        .status-invalid {
+            background: var(--error);
+        }
+
+        .status-warning {
+            background: var(--warning);
+        }
+
+        .notification {
+            position: fixed;
+            top: 25px;
+            right: 25px;
+            padding: 18px 28px;
+            border-radius: 14px;
+            color: white;
+            font-weight: 700;
+            font-size: 16px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+            transform: translateX(120%);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 1000;
+            max-width: 350px;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.success {
+            background: var(--success);
+        }
+
+        .notification.error {
+            background: var(--error);
+        }
+
+        .notification.warning {
+            background: var(--warning);
+        }
+
+        footer {
+            text-align: center;
+            padding: 35px 0 25px;
+            color: var(--medium-gray);
+            font-size: 15px;
+            margin-top: 30px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .footer-content {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        @media (max-width: 768px) {
+            .controls {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                min-width: auto;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .logo-icon {
+                width: 60px;
+                height: 60px;
+                font-size: 26px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .subtitle {
+                font-size: 1rem;
+            }
+            
+            .logo-container {
+                gap: 12px;
+            }
+            
+            .logo-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 22px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo-container">
+                <div class="logo-icon">
+                    <i class="fas fa-link"></i>
+                </div>
+                <h1>URL Encoder/Decoder</h1>
+            </div>
+            <p class="subtitle">Encode and decode URLs for safe transmission over the Internet</p>
+            
+            <div class="description">
+                <p>URL encoding is a process that converts characters into a format that can be sent over the Internet. On the Internet, URLs can only be sent using ASCII characters.</p>
+                <p>URLs often contain characters outside the ASCII set, so the URL must be converted into a valid ASCII format. URL encoding replaces unsafe ASCII characters with a "%" followed by two hexadecimal digits.</p>
+                
+                <div class="examples">
+                    <h3><i class="fas fa-code"></i> Encoding Examples</h3>
+                    <div class="example-item">
+                        <div class="example-label">Original:</div>
+                        <div>https://example.com/search?q=hello world</div>
+                    </div>
+                    <div class="example-item">
+                        <div class="example-label">Encoded:</div>
+                        <div>https://example.com/search?q=hello%20world</div>
+                    </div>
+                    <div class="example-item">
+                        <div class="example-label">Original:</div>
+                        <div>café & résumé.pdf</div>
+                    </div>
+                    <div class="example-item">
+                        <div class="example-label">Encoded:</div>
+                        <div>caf%C3%A9%20%26%20r%C3%A9sum%C3%A9.pdf</div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="tool-container">
+            <div class="input-section">
+                <div class="section-header">
+                    <i class="fas fa-keyboard"></i>
+                    <span>Input URL or Text</span>
+                </div>
+                <div class="editor-container">
+                    <textarea id="inputUrl" placeholder="Enter URL or text to encode/decode...&#10;&#10;Example: https://example.com/search?q=hello world">https://example.com/search?q=hello world</textarea>
+                </div>
+                <div class="status-bar">
+                    <div class="status-indicator">
+                        <div class="status-dot status-valid"></div>
+                        <span>Ready</span>
+                    </div>
+                    <div id="charCount">Characters: 42</div>
+                </div>
+            </div>
+
+            <div class="output-section">
+                <div class="section-header yellow">
+                    <i class="fas fa-terminal"></i>
+                    <span>Output Result</span>
+                </div>
+                <div class="editor-container">
+                    <textarea id="outputUrl" placeholder="// Result will appear here..." readonly></textarea>
+                </div>
+                <div class="controls">
+                    <button class="btn btn-primary" id="encodeBtn">
+                        <i class="fas fa-lock"></i> Encode URL
+                    </button>
+                    <button class="btn btn-success" id="decodeBtn">
+                        <i class="fas fa-unlock"></i> Decode URL
+                    </button>
+                    <button class="btn btn-secondary" id="copyBtn">
+                        <i class="fas fa-copy"></i> Copy Result
+                    </button>
+                    <button class="btn btn-secondary" id="clearBtn">
+                        <i class="fas fa-trash"></i> Clear All
+                    </button>
+                    <button class="btn btn-warning" id="swapBtn">
+                        <i class="fas fa-exchange-alt"></i> Swap Input/Output
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="notification" id="notification">
+            Operation completed successfully!
+        </div>
+
+        <footer>
+            <div class="footer-content">
+                <p>URL Encoder/Decoder &copy; 2023 | Free Online Tool for Developers</p>
+                <p style="margin-top: 8px; font-size: 0.9rem; color: var(--medium-gray);">Encode and decode URLs in seconds</p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM Elements
+            const inputUrl = document.getElementById('inputUrl');
+            const outputUrl = document.getElementById('outputUrl');
+            const charCount = document.getElementById('charCount');
+            const notification = document.getElementById('notification');
+            
+            // Buttons
+            const encodeBtn = document.getElementById('encodeBtn');
+            const decodeBtn = document.getElementById('decodeBtn');
+            const copyBtn = document.getElementById('copyBtn');
+            const clearBtn = document.getElementById('clearBtn');
+            const swapBtn = document.getElementById('swapBtn');
+            
+            // Initialize character count
+            updateCharCount();
+            
+            // Event Listeners
+            inputUrl.addEventListener('input', updateCharCount);
+            
+            encodeBtn.addEventListener('click', encodeUrl);
+            decodeBtn.addEventListener('click', decodeUrl);
+            copyBtn.addEventListener('click', copyOutput);
+            clearBtn.addEventListener('click', clearAll);
+            swapBtn.addEventListener('click', swapInputOutput);
+            
+            // Functions
+            function updateCharCount() {
+                const count = inputUrl.value.length;
+                charCount.textContent = `Characters: ${count}`;
+            }
+            
+            function showNotification(message, type = 'success') {
+                notification.textContent = message;
+                notification.className = `notification ${type} show`;
+                
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                }, 3500);
+            }
+            
+            function encodeUrl() {
+                try {
+                    const input = inputUrl.value;
+                    if (!input) {
+                        showNotification('Please enter a URL or text first!', 'warning');
+                        return;
+                    }
+                    
+                    // Encode URL
+                    const encoded = encodeURIComponent(input)
+                        .replace(/!/g, '%21')
+                        .replace(/'/g, '%27')
+                        .replace(/\(/g, '%28')
+                        .replace(/\)/g, '%29')
+                        .replace(/\*/g, '%2A');
+                    
+                    outputUrl.value = encoded;
+                    showNotification('URL encoded successfully!');
+                } catch (error) {
+                    showNotification('Error encoding URL: ' + error.message, 'error');
+                    outputUrl.value = '';
+                }
+            }
+            
+            function decodeUrl() {
+                try {
+                    const input = inputUrl.value.trim();
+                    if (!input) {
+                        showNotification('Please enter an encoded URL first!', 'warning');
+                        return;
+                    }
+                    
+                    // Decode URL
+                    const decoded = decodeURIComponent(input);
+                    outputUrl.value = decoded;
+                    showNotification('URL decoded successfully!');
+                } catch (error) {
+                    showNotification('Invalid encoded URL: ' + error.message, 'error');
+                    outputUrl.value = '';
+                }
+            }
+            
+            function copyOutput() {
+                if (!outputUrl.value.trim()) {
+                    showNotification('Nothing to copy!', 'warning');
+                    return;
+                }
+                
+                outputUrl.select();
+                document.execCommand('copy');
+                showNotification('Result copied to clipboard!');
+            }
+            
+            function clearAll() {
+                inputUrl.value = '';
+                outputUrl.value = '';
+                updateCharCount();
+                showNotification('All fields cleared!');
+            }
+            
+            function swapInputOutput() {
+                const temp = inputUrl.value;
+                inputUrl.value = outputUrl.value;
+                outputUrl.value = temp;
+                updateCharCount();
+                showNotification('Input and output swapped!');
+            }
+        });
+    </script>
+</body>
+</html>
