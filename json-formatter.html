@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON Formatter & Validator - Free Online Tool</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary-blue: #2563eb;
+            --primary-yellow: #fde047;
+            --dark-blue: #1d4ed8;
+            --light-yellow: #fef9c3;
+            --dark-yellow: #eab308;
+            --light-gray: #f8fafc;
+            --dark-gray: #1e293b;
+            --medium-gray: #94a3b8;
+            --success: #10b981;
+            --error: #ef4444;
+            --warning: #f59e0b;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+            min-height: 100vh;
+            padding: 20px;
+            color: var(--dark-gray);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            padding: 30px 0;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .logo-icon {
+            background: var(--primary-blue);
+            color: white;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            color: var(--dark-blue);
+            margin-bottom: 15px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .subtitle {
+            color: var(--medium-gray);
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto 25px;
+            padding: 0 15px;
+        }
+
+        .description {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            margin: 25px auto 35px;
+            max-width: 800px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            border-left: 4px solid var(--primary-blue);
+        }
+
+        .description p {
+            margin-bottom: 12px;
+            font-size: 1.05rem;
+        }
+
+        .features {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 20px;
+            padding: 0 10px;
+        }
+
+        .feature-tag {
+            background: var(--light-yellow);
+            color: var(--dark-blue);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+        }
+
+        .tool-container {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        @media (min-width: 992px) {
+            .tool-container {
+                flex-direction: row;
+            }
+        }
+
+        .input-section, .output-section {
+            flex: 1;
+            background: white;
+            border-radius: 18px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .section-header {
+            background: var(--primary-blue);
+            color: white;
+            padding: 18px 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-weight: 700;
+            font-size: 1.3rem;
+        }
+
+        .section-header.yellow {
+            background: var(--primary-yellow);
+            color: var(--dark-blue);
+        }
+
+        .editor-container {
+            padding: 20px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        textarea {
+            width: 100%;
+            flex: 1;
+            border: 2px solid #e2e8f0;
+            border-radius: 14px;
+            padding: 18px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 15px;
+            resize: none;
+            outline: none;
+            transition: all 0.3s ease;
+            background: #fafbff;
+            line-height: 1.5;
+        }
+
+        textarea:focus {
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25);
+        }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+            padding: 25px;
+            background: var(--light-gray);
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .btn {
+            padding: 14px 22px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.25s ease;
+            font-size: 16px;
+            min-width: 140px;
+            justify-content: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.08);
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.12);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-primary {
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--dark-blue);
+        }
+
+        .btn-secondary {
+            background: var(--primary-yellow);
+            color: var(--dark-blue);
+        }
+
+        .btn-secondary:hover {
+            background: var(--dark-yellow);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #0da271;
+        }
+
+        .btn-danger {
+            background: var(--error);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        .status-bar {
+            padding: 18px 25px;
+            background: var(--light-gray);
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            font-size: 15px;
+            color: var(--medium-gray);
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .status-valid {
+            background: var(--success);
+        }
+
+        .status-invalid {
+            background: var(--error);
+        }
+
+        .status-warning {
+            background: var(--warning);
+        }
+
+        .stats-container {
+            display: flex;
+            gap: 20px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 12px 18px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            min-width: 120px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--medium-gray);
+            margin-top: 4px;
+        }
+
+        .notification {
+            position: fixed;
+            top: 25px;
+            right: 25px;
+            padding: 18px 28px;
+            border-radius: 14px;
+            color: white;
+            font-weight: 700;
+            font-size: 16px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+            transform: translateX(120%);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 1000;
+            max-width: 350px;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.success {
+            background: var(--success);
+        }
+
+        .notification.error {
+            background: var(--error);
+        }
+
+        .notification.warning {
+            background: var(--warning);
+        }
+
+        footer {
+            text-align: center;
+            padding: 35px 0 25px;
+            color: var(--medium-gray);
+            font-size: 15px;
+            margin-top: 30px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .footer-content {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        @media (max-width: 768px) {
+            .controls {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                min-width: auto;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .logo-icon {
+                width: 60px;
+                height: 60px;
+                font-size: 26px;
+            }
+            
+            .stats-container {
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .subtitle {
+                font-size: 1rem;
+            }
+            
+            .logo-container {
+                gap: 12px;
+            }
+            
+            .logo-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 22px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo-container">
+                <div class="logo-icon">
+                    <i class="fas fa-code"></i>
+                </div>
+                <h1>JSON Formatter & Validator</h1>
+            </div>
+            <p class="subtitle">Format, validate, and analyze your JSON data with ease</p>
+            
+            <div class="description">
+                <p>JSON (pronounced as Jason), stands for "JavaScript Object Notation," is a human-readable and compact solution to represent a complex data structure and facilitate data interchange between systems.</p>
+                <p>It's a widespread data format with a diverse range of applications enabled by its simplicity and semblance to readable text. As such, it's used by most but not all systems for communicating data.</p>
+                <p><strong>Copy, Paste, and Format</strong> - Validate your JSON in seconds!</p>
+            </div>
+            
+            <div class="features">
+                <div class="feature-tag"><i class="fas fa-magic"></i> Format & Beautify</div>
+                <div class="feature-tag"><i class="fas fa-check-circle"></i> Validate Syntax</div>
+                <div class="feature-tag"><i class="fas fa-compress"></i> Minify JSON</div>
+                <div class="feature-tag"><i class="fas fa-chart-bar"></i> Data Statistics</div>
+            </div>
+        </header>
+
+        <div class="tool-container">
+            <div class="input-section">
+                <div class="section-header">
+                    <i class="fas fa-file-code"></i>
+                    <span>Your JSON Data</span>
+                </div>
+                <div class="editor-container">
+                    <textarea id="inputJson" placeholder='// Paste your JSON data here...&#10;// Example:&#10;{&#10;  "name": "John",&#10;  "age": 30,&#10;  "city": "New York"&#10;}'>{
+  "name": "John",
+  "age": 30,
+  "city": "New York",
+  "hobbies": [
+    "reading",
+    "swimming",
+    "coding"
+  ],
+  "address": {
+    "street": "123 Main St",
+    "zipcode": "10001"
+  },
+  "active": true
+}</textarea>
+                </div>
+                <div class="status-bar">
+                    <div class="status-indicator">
+                        <div class="status-dot status-valid"></div>
+                        <span>Valid JSON</span>
+                    </div>
+                    <div id="charCount">Characters: 185</div>
+                </div>
+            </div>
+
+            <div class="output-section">
+                <div class="section-header yellow">
+                    <i class="fas fa-terminal"></i>
+                    <span>Formatted JSON</span>
+                </div>
+                <div class="editor-container">
+                    <textarea id="outputJson" placeholder="// Formatted JSON will appear here..." readonly></textarea>
+                </div>
+                <div class="controls">
+                    <button class="btn btn-primary" id="formatBtn">
+                        <i class="fas fa-magic"></i> Format JSON
+                    </button>
+                    <button class="btn btn-success" id="validateBtn">
+                        <i class="fas fa-check-circle"></i> Validate
+                    </button>
+                    <button class="btn btn-warning" id="minifyBtn">
+                        <i class="fas fa-compress"></i> Minify
+                    </button>
+                    <button class="btn btn-secondary" id="copyBtn">
+                        <i class="fas fa-copy"></i> Copy Result
+                    </button>
+                    <button class="btn btn-secondary" id="clearBtn">
+                        <i class="fas fa-trash"></i> Clear All
+                    </button>
+                </div>
+                
+                <div class="stats-container">
+                    <div class="stat-card">
+                        <div class="stat-value" id="sizeStat">0</div>
+                        <div class="stat-label">Size (bytes)</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="keysStat">0</div>
+                        <div class="stat-label">Keys</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="depthStat">0</div>
+                        <div class="stat-label">Max Depth</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="notification" id="notification">
+            JSON formatted successfully!
+        </div>
+
+        <footer>
+            <div class="footer-content">
+                <p>JSON Formatter & Validator &copy; 2023 | Free Online Tool for Developers</p>
+                <p style="margin-top: 8px; font-size: 0.9rem; color: var(--medium-gray);">Format, validate, and analyze your JSON data in seconds</p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM Elements
+            const inputJson = document.getElementById('inputJson');
+            const outputJson = document.getElementById('outputJson');
+            const charCount = document.getElementById('charCount');
+            const notification = document.getElementById('notification');
+            
+            // Stats elements
+            const sizeStat = document.getElementById('sizeStat');
+            const keysStat = document.getElementById('keysStat');
+            const depthStat = document.getElementById('depthStat');
+            
+            // Buttons
+            const formatBtn = document.getElementById('formatBtn');
+            const validateBtn = document.getElementById('validateBtn');
+            const minifyBtn = document.getElementById('minifyBtn');
+            const copyBtn = document.getElementById('copyBtn');
+            const clearBtn = document.getElementById('clearBtn');
+            
+            // Initialize character count
+            updateCharCount();
+            
+            // Event Listeners
+            inputJson.addEventListener('input', updateCharCount);
+            
+            formatBtn.addEventListener('click', formatJson);
+            validateBtn.addEventListener('click', validateJson);
+            minifyBtn.addEventListener('click', minifyJson);
+            copyBtn.addEventListener('click', copyOutput);
+            clearBtn.addEventListener('click', clearAll);
+            
+            // Functions
+            function updateCharCount() {
+                const count = inputJson.value.length;
+                charCount.textContent = `Characters: ${count}`;
+            }
+            
+            function showNotification(message, type = 'success') {
+                notification.textContent = message;
+                notification.className = `notification ${type} show`;
+                
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                }, 3500);
+            }
+            
+            function getJsonStats(obj) {
+                let keyCount = 0;
+                let maxDepth = 0;
+                
+                function traverse(current, depth = 0) {
+                    maxDepth = Math.max(maxDepth, depth);
+                    
+                    if (current !== null && typeof current === 'object') {
+                        const keys = Object.keys(current);
+                        keyCount += keys.length;
+                        
+                        for (const key of keys) {
+                            traverse(current[key], depth + 1);
+                        }
+                    }
+                }
+                
+                traverse(obj);
+                return { keyCount, maxDepth };
+            }
+            
+            function formatJson() {
+                try {
+                    const jsonStr = inputJson.value.trim();
+                    if (!jsonStr) {
+                        showNotification('Please enter some JSON data first!', 'warning');
+                        return;
+                    }
+                    
+                    const parsed = JSON.parse(jsonStr);
+                    const formatted = JSON.stringify(parsed, null, 2);
+                    outputJson.value = formatted;
+                    
+                    // Update stats
+                    const stats = getJsonStats(parsed);
+                    sizeStat.textContent = new Blob([formatted]).size;
+                    keysStat.textContent = stats.keyCount;
+                    depthStat.textContent = stats.maxDepth;
+                    
+                    showNotification('JSON formatted successfully!');
+                } catch (error) {
+                    showNotification('Invalid JSON: ' + error.message, 'error');
+                    outputJson.value = '';
+                    resetStats();
+                }
+            }
+            
+            function validateJson() {
+                try {
+                    const jsonStr = inputJson.value.trim();
+                    if (!jsonStr) {
+                        showNotification('Please enter some JSON data first!', 'warning');
+                        return;
+                    }
+                    
+                    const parsed = JSON.parse(jsonStr);
+                    outputJson.value = "✅ Valid JSON!\n\nYour JSON data is properly formatted and valid.";
+                    
+                    // Update stats
+                    const stats = getJsonStats(parsed);
+                    sizeStat.textContent = new Blob([jsonStr]).size;
+                    keysStat.textContent = stats.keyCount;
+                    depthStat.textContent = stats.maxDepth;
+                    
+                    showNotification('JSON is valid!');
+                } catch (error) {
+                    outputJson.value = `❌ Invalid JSON:\n\n${error.message}`;
+                    showNotification('Invalid JSON!', 'error');
+                    resetStats();
+                }
+            }
+            
+            function minifyJson() {
+                try {
+                    const jsonStr = inputJson.value.trim();
+                    if (!jsonStr) {
+                        showNotification('Please enter some JSON data first!', 'warning');
+                        return;
+                    }
+                    
+                    const parsed = JSON.parse(jsonStr);
+                    const minified = JSON.stringify(parsed);
+                    outputJson.value = minified;
+                    
+                    // Update stats
+                    const stats = getJsonStats(parsed);
+                    sizeStat.textContent = new Blob([minified]).size;
+                    keysStat.textContent = stats.keyCount;
+                    depthStat.textContent = stats.maxDepth;
+                    
+                    showNotification('JSON minified successfully!');
+                } catch (error) {
+                    showNotification('Invalid JSON: ' + error.message, 'error');
+                    outputJson.value = '';
+                    resetStats();
+                }
+            }
+            
+            function resetStats() {
+                sizeStat.textContent = '0';
+                keysStat.textContent = '0';
+                depthStat.textContent = '0';
+            }
+            
+            function copyOutput() {
+                if (!outputJson.value.trim()) {
+                    showNotification('Nothing to copy!', 'warning');
+                    return;
+                }
+                
+                outputJson.select();
+                document.execCommand('copy');
+                showNotification('JSON copied to clipboard!');
+            }
+            
+            function clearAll() {
+                inputJson.value = '';
+                outputJson.value = '';
+                updateCharCount();
+                resetStats();
+                showNotification('All fields cleared!');
+            }
+        });
+    </script>
+</body>
+</html>
