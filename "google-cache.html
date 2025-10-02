@@ -419,7 +419,7 @@
                 <i class="fas fa-history"></i>
                 <h1>Google Cache Checker</h1>
             </div>
-            <p class="subtitle">Check when Google last cached your webpage and access the cached version directly. This tool helps you verify how Google sees your site and troubleshoot indexing issues.</p>
+            <p class="subtitle">Google, the ever-watchful guardian of the internet, continually takes snapshots of websites. These snapshots, stored in Google's vast cache, offer a fascinating glimpse into how the search engine perceives your site—and your competitors. Tooldesk Google Cache Checker empowers you to tap into this valuable resource effortlessly.</p>
         </header>
 
         <div class="tool-container">
@@ -510,7 +510,11 @@
                 const daysAgo = Math.floor(Math.random() * 30) + 1;
                 const date = new Date();
                 date.setDate(date.getDate() - daysAgo);
-                cacheDate = date.toISOString().split('T')[0];
+                cacheDate = date.toLocaleDateString('en-US', { 
+                    year: 'numeric', 
+                    month: 'short', 
+                    day: 'numeric' 
+                });
                 cacheAge = daysAgo;
             }
             
@@ -571,6 +575,7 @@
                             <li>Troubleshoot indexing issues</li>
                             <li>Recover content if your site goes down</li>
                             <li>Check for rendering problems</li>
+                            <li>Monitor competitors' historical content</li>
                         </ul>
                     </div>
                 </div>
