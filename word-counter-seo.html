@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Word & Character Counter | Multi-Tool Website</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary-blue: #2563eb;
+            --primary-yellow: #fbbf24;
+            --light-blue: #dbeafe;
+            --dark-blue: #1d4ed8;
+            --light-yellow: #fef3c7;
+            --dark-yellow: #d97706;
+            --text-dark: #1e293b;
+            --text-light: #f8fafc;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --radius: 12px;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f0f9ff, #fffbeb);
+            color: var(--text-dark);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .logo i {
+            font-size: 2.5rem;
+            color: var(--primary-blue);
+            background: var(--primary-yellow);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: var(--dark-blue);
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #4b5563;
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .tool-container {
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        .input-section {
+            padding: 25px;
+        }
+
+        .text-input {
+            width: 100%;
+            min-height: 250px;
+            padding: 20px;
+            border: 2px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            resize: vertical;
+            transition: border-color 0.3s;
+            margin-bottom: 20px;
+        }
+
+        .text-input:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, var(--light-blue), var(--light-yellow));
+            border-radius: var(--radius);
+            padding: 20px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--dark-blue);
+            margin: 10px 0;
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            color: var(--dark-blue);
+            font-weight: 600;
+        }
+
+        .actions {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            flex: 1;
+            min-width: 120px;
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            padding: 14px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn:hover {
+            background: var(--dark-blue);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+
+        .btn-yellow {
+            background: var(--primary-yellow);
+            color: var(--dark-blue);
+        }
+
+        .btn-yellow:hover {
+            background: var(--dark-yellow);
+            color: white;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary-blue);
+            color: var(--primary-blue);
+        }
+
+        .btn-outline:hover {
+            background: var(--light-blue);
+        }
+
+        .features {
+            background: var(--light-blue);
+            border-radius: var(--radius);
+            padding: 25px;
+            margin-top: 30px;
+        }
+
+        .features h3 {
+            color: var(--dark-blue);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .features ul {
+            padding-left: 20px;
+        }
+
+        .features li {
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .subtitle {
+                font-size: 1rem;
+            }
+            
+            .stat-card {
+                padding: 15px;
+            }
+            
+            .stat-value {
+                font-size: 2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .input-section {
+                padding: 20px 15px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .actions {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-calculator"></i>
+                <h1>Word & Character Counter</h1>
+            </div>
+            <p class="subtitle">The best way to know how many characters are in your text is to use Tooldesk free character counter tool. It will instantly give you the exact length of your writing.</p>
+        </header>
+
+        <div class="tool-container">
+            <div class="input-section">
+                <textarea id="text-input" class="text-input" placeholder="Start typing or paste your text here..."></textarea>
+                
+                <div class="stats-container">
+                    <div class="stat-card">
+                        <div class="stat-value" id="characters">0</div>
+                        <div class="stat-label">Characters</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="characters-no-spaces">0</div>
+                        <div class="stat-label">Characters (no spaces)</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="words">0</div>
+                        <div class="stat-label">Words</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="sentences">0</div>
+                        <div class="stat-label">Sentences</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="paragraphs">0</div>
+                        <div class="stat-label">Paragraphs</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="reading-time">0</div>
+                        <div class="stat-label">Reading Time</div>
+                    </div>
+                </div>
+                
+                <div class="actions">
+                    <button id="clear-btn" class="btn btn-outline">
+                        <i class="fas fa-eraser"></i> Clear Text
+                    </button>
+                    <button id="copy-btn" class="btn btn-yellow">
+                        <i class="fas fa-copy"></i> Copy Text
+                    </button>
+                    <button id="sample-btn" class="btn">
+                        <i class="fas fa-file-alt"></i> Load Sample
+                    </button>
+                </div>
+            </div>
+            
+            <div class="features">
+                <h3><i class="fas fa-star"></i> Why Use Our Counter?</h3>
+                <ul>
+                    <li><strong>Real-time counting</strong> - See stats update as you type</li>
+                    <li><strong>Multiple metrics</strong> - Characters, words, sentences, paragraphs, and reading time</li>
+                    <li><strong>No character limits</strong> - Analyze texts of any length</li>
+                    <li><strong>Privacy focused</strong> - Your text never leaves your browser</li>
+                    <li><strong>Fully responsive</strong> - Works on all devices from phones to desktops</li>
+                    <li><strong>Zero ads</strong> - Clean interface without distractions</li>
+                </ul>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Word & Character Counter | Part of Multi-Tool Website Suite</p>
+        </footer>
+    </div>
+
+    <script>
+        // DOM Elements
+        const textInput = document.getElementById('text-input');
+        const charactersEl = document.getElementById('characters');
+        const charactersNoSpacesEl = document.getElementById('characters-no-spaces');
+        const wordsEl = document.getElementById('words');
+        const sentencesEl = document.getElementById('sentences');
+        const paragraphsEl = document.getElementById('paragraphs');
+        const readingTimeEl = document.getElementById('reading-time');
+        const clearBtn = document.getElementById('clear-btn');
+        const copyBtn = document.getElementById('copy-btn');
+        const sampleBtn = document.getElementById('sample-btn');
+
+        // Update counters function
+        function updateCounters() {
+            const text = textInput.value;
+            
+            // Characters (with spaces)
+            const characters = text.length;
+            charactersEl.textContent = characters.toLocaleString();
+            
+            // Characters (without spaces)
+            const charactersNoSpaces = text.replace(/\s/g, '').length;
+            charactersNoSpacesEl.textContent = charactersNoSpaces.toLocaleString();
+            
+            // Words
+            const words = text.trim() === '' ? 0 : text.trim().split(/\s+/).length;
+            wordsEl.textContent = words.toLocaleString();
+            
+            // Sentences
+            const sentences = text.trim() === '' ? 0 : text.split(/[.!?]+/).filter(s => s.trim() !== '').length;
+            sentencesEl.textContent = sentences.toLocaleString();
+            
+            // Paragraphs
+            const paragraphs = text.trim() === '' ? 0 : text.split(/\n\s*\n/).filter(p => p.trim() !== '').length;
+            paragraphsEl.textContent = paragraphs.toLocaleString();
+            
+            // Reading time (200 words per minute)
+            const readingTime = words === 0 ? 0 : Math.ceil(words / 200);
+            readingTimeEl.textContent = readingTime === 0 ? '<1' : readingTime;
+            readingTimeEl.textContent += readingTime === 1 ? ' min' : ' mins';
+        }
+
+        // Event listeners
+        textInput.addEventListener('input', updateCounters);
+        
+        clearBtn.addEventListener('click', () => {
+            textInput.value = '';
+            updateCounters();
+            textInput.focus();
+        });
+        
+        copyBtn.addEventListener('click', () => {
+            if (textInput.value.trim() === '') {
+                alert('Nothing to copy!');
+                return;
+            }
+            
+            textInput.select();
+            document.execCommand('copy');
+            
+            // Visual feedback
+            const originalText = copyBtn.innerHTML;
+            copyBtn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+            setTimeout(() => {
+                copyBtn.innerHTML = originalText;
+            }, 2000);
+        });
+        
+        sampleBtn.addEventListener('click', () => {
+            textInput.value = `The quick brown fox jumps over the lazy dog. This pangram contains every letter of the English alphabet.
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+
+Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.`;
+            updateCounters();
+        });
+        
+        // Initialize with empty counters
+        updateCounters();
+    </script>
+</body>
+</html>
