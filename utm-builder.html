@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UTM Builder | Multi-Tool Website</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary-blue: #2563eb;
+            --primary-yellow: #fbbf24;
+            --light-blue: #dbeafe;
+            --dark-blue: #1d4ed8;
+            --light-yellow: #fef3c7;
+            --dark-yellow: #d97706;
+            --text-dark: #1e293b;
+            --text-light: #f8fafc;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --radius: 12px;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f0f9ff, #fffbeb);
+            color: var(--text-dark);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .logo i {
+            font-size: 2.5rem;
+            color: var(--primary-blue);
+            background: var(--primary-yellow);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: var(--dark-blue);
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #4b5563;
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .tool-container {
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        .input-section {
+            padding: 25px;
+            background: linear-gradient(to right, var(--light-blue), var(--light-yellow));
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark-blue);
+        }
+
+        input, select {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+        }
+
+        .required {
+            color: var(--error);
+        }
+
+        .btn {
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            background: var(--dark-blue);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+
+        .btn-yellow {
+            background: var(--primary-yellow);
+            color: var(--dark-blue);
+        }
+
+        .btn-yellow:hover {
+            background: var(--dark-yellow);
+            color: white;
+        }
+
+        .results-section {
+            padding: 25px;
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .results-title {
+            font-size: 1.5rem;
+            color: var(--dark-blue);
+        }
+
+        .output-container {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+            position: relative;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .copy-btn:hover {
+            background: var(--dark-blue);
+            transform: scale(1.05);
+        }
+
+        #generated-url {
+            width: 100%;
+            min-height: 80px;
+            padding: 15px;
+            border: none;
+            background: transparent;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1rem;
+            line-height: 1.5;
+            resize: none;
+            outline: none;
+            color: var(--dark-blue);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #64748b;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: var(--primary-blue);
+        }
+
+        .tips {
+            background: var(--light-blue);
+            border-left: 4px solid var(--primary-blue);
+            padding: 15px;
+            margin-top: 25px;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .tips h3 {
+            margin-bottom: 10px;
+            color: var(--dark-blue);
+        }
+
+        .tips ul {
+            padding-left: 20px;
+        }
+
+        .tips li {
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+
+        .utm-params {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .param-card {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .param-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--dark-blue);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .param-desc {
+            font-size: 0.9rem;
+            color: #4b5563;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .subtitle {
+                font-size: 1rem;
+            }
+            
+            .form-group {
+                margin-bottom: 15px;
+            }
+            
+            input, select {
+                padding: 12px;
+            }
+            
+            .utm-params {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .input-section, .results-section {
+                padding: 20px 15px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .results-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-link"></i>
+                <h1>UTM Builder</h1>
+            </div>
+            <p class="subtitle">Create UTM tracking links in seconds, for free! Fill in your campaign information in the fields below, click the Build URL button and copy the generated URL for use in your campaign.</p>
+        </header>
+
+        <div class="tool-container">
+            <div class="input-section">
+                <div class="form-group">
+                    <label for="website-url">Website URL <span class="required">*</span></label>
+                    <input type="url" id="website-url" placeholder="https://yourwebsite.com" value="https://example.com">
+                </div>
+                
+                <div class="form-group">
+                    <label for="utm-source">Campaign Source <span class="required">*</span></label>
+                    <input type="text" id="utm-source" placeholder="google, newsletter, facebook" value="newsletter">
+                </div>
+                
+                <div class="form-group">
+                    <label for="utm-medium">Campaign Medium <span class="required">*</span></label>
+                    <select id="utm-medium">
+                        <option value="cpc">cpc (paid search)</option>
+                        <option value="banner">banner (display ads)</option>
+                        <option value="email" selected>email (email marketing)</option>
+                        <option value="social">social (social media)</option>
+                        <option value="organic">organic (organic search)</option>
+                        <option value="referral">referral (referral traffic)</option>
+                        <option value="affiliate">affiliate (affiliate marketing)</option>
+                        <option value="other">other</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="utm-campaign">Campaign Name <span class="required">*</span></label>
+                    <input type="text" id="utm-campaign" placeholder="summer_sale, product_launch" value="summer_promo">
+                </div>
+                
+                <div class="form-group">
+                    <label for="utm-term">Campaign Term (optional)</label>
+                    <input type="text" id="utm-term" placeholder="running shoes, blue widgets">
+                </div>
+                
+                <div class="form-group">
+                    <label for="utm-content">Campaign Content (optional)</label>
+                    <input type="text" id="utm-content" placeholder="logolink, textlink, banner_ad">
+                </div>
+                
+                <button id="build-btn" class="btn">
+                    <i class="fas fa-cogs"></i> Build URL
+                </button>
+            </div>
+            
+            <div class="results-section">
+                <div class="results-header">
+                    <h2 class="results-title">Generated Tracking URL</h2>
+                </div>
+                
+                <div id="results-container">
+                    <div class="empty-state">
+                        <i class="fas fa-link"></i>
+                        <h3>No URL Generated Yet</h3>
+                        <p>Fill in the form above and click "Build URL" to create your tracking link</p>
+                    </div>
+                </div>
+                
+                <div class="utm-params">
+                    <div class="param-card">
+                        <div class="param-title">
+                            <i class="fas fa-code-branch"></i> utm_source
+                        </div>
+                        <div class="param-desc">Identifies which site sent the traffic (e.g., google, newsletter)</div>
+                    </div>
+                    <div class="param-card">
+                        <div class="param-title">
+                            <i class="fas fa-ad"></i> utm_medium
+                        </div>
+                        <div class="param-desc">Identifies what type of link was used (e.g., cpc, email, social)</div>
+                    </div>
+                    <div class="param-card">
+                        <div class="param-title">
+                            <i class="fas fa-bullhorn"></i> utm_campaign
+                        </div>
+                        <div class="param-desc">Identifies a specific product promotion or strategic campaign</div>
+                    </div>
+                    <div class="param-card">
+                        <div class="param-title">
+                            <i class="fas fa-search"></i> utm_term
+                        </div>
+                        <div class="param-desc">Identifies paid search keywords (used for PPC campaigns)</div>
+                    </div>
+                    <div class="param-card">
+                        <div class="param-title">
+                            <i class="fas fa-layer-group"></i> utm_content
+                        </div>
+                        <div class="param-desc">Differentiates similar content or links within the same ad</div>
+                    </div>
+                </div>
+                
+                <div class="tips">
+                    <h3>UTM Best Practices</h3>
+                    <ul>
+                        <li><strong>Be consistent:</strong> Use the same naming conventions across all campaigns</li>
+                        <li><strong>Use lowercase:</strong> Avoid uppercase letters to prevent duplicate tracking</li>
+                        <li><strong>Avoid special characters:</strong> Stick to letters, numbers, underscores, and hyphens</li>
+                        <li><strong>Test your links:</strong> Always verify your UTM parameters before launching campaigns</li>
+                        <li><strong>Document your structure:</strong> Keep a record of your UTM naming conventions</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>UTM Builder | Part of Multi-Tool Website Suite</p>
+        </footer>
+    </div>
+
+    <script>
+        // DOM Elements
+        const buildBtn = document.getElementById('build-btn');
+        const websiteUrl = document.getElementById('website-url');
+        const utmSource = document.getElementById('utm-source');
+        const utmMedium = document.getElementById('utm-medium');
+        const utmCampaign = document.getElementById('utm-campaign');
+        const utmTerm = document.getElementById('utm-term');
+        const utmContent = document.getElementById('utm-content');
+        const resultsContainer = document.getElementById('results-container');
+
+        // Build UTM URL
+        buildBtn.addEventListener('click', () => {
+            // Validate required fields
+            if (!websiteUrl.value.trim()) {
+                alert('Please enter a website URL');
+                websiteUrl.focus();
+                return;
+            }
+            
+            if (!utmSource.value.trim()) {
+                alert('Please enter a campaign source');
+                utmSource.focus();
+                return;
+            }
+            
+            if (!utmCampaign.value.trim()) {
+                alert('Please enter a campaign name');
+                utmCampaign.focus();
+                return;
+            }
+            
+            // Validate URL format
+            try {
+                new URL(websiteUrl.value);
+            } catch (e) {
+                alert('Please enter a valid URL (e.g., https://example.com)');
+                websiteUrl.focus();
+                return;
+            }
+            
+            // Build UTM parameters
+            const params = new URLSearchParams();
+            params.append('utm_source', utmSource.value.trim());
+            params.append('utm_medium', utmMedium.value);
+            params.append('utm_campaign', utmCampaign.value.trim());
+            
+            if (utmTerm.value.trim()) {
+                params.append('utm_term', utmTerm.value.trim());
+            }
+            
+            if (utmContent.value.trim()) {
+                params.append('utm_content', utmContent.value.trim());
+            }
+            
+            // Construct final URL
+            const url = new URL(websiteUrl.value);
+            url.search = params.toString();
+            const finalUrl = url.toString();
+            
+            // Display results
+            resultsContainer.innerHTML = `
+                <div class="output-container">
+                    <button class="copy-btn" id="copy-btn" title="Copy to clipboard">
+                        <i class="fas fa-copy"></i>
+                    </button>
+                    <textarea id="generated-url" readonly>${finalUrl}</textarea>
+                </div>
+            `;
+            
+            // Add copy functionality
+            document.getElementById('copy-btn').addEventListener('click', () => {
+                const urlField = document.getElementById('generated-url');
+                urlField.select();
+                document.execCommand('copy');
+                
+                // Show feedback
+                const originalIcon = document.querySelector('.copy-btn i');
+                originalIcon.className = 'fas fa-check';
+                setTimeout(() => {
+                    originalIcon.className = 'fas fa-copy';
+                }, 2000);
+            });
+        });
+        
+        // Initialize with sample data
+        window.addEventListener('load', () => {
+            // Sample data already in inputs
+        });
+    </script>
+</body>
+</html>
