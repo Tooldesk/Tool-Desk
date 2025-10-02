@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meta Tag Generator | Multi-Tool Website</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary-blue: #2563eb;
+            --primary-yellow: #fbbf24;
+            --light-blue: #dbeafe;
+            --dark-blue: #1d4ed8;
+            --light-yellow: #fef3c7;
+            --dark-yellow: #d97706;
+            --text-dark: #1e293b;
+            --text-light: #f8fafc;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --radius: 12px;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f0f9ff, #fffbeb);
+            color: var(--text-dark);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .logo i {
+            font-size: 2.5rem;
+            color: var(--primary-blue);
+            background: var(--primary-yellow);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: var(--dark-blue);
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #4b5563;
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .tool-container {
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        .input-section {
+            padding: 25px;
+            background: linear-gradient(to right, var(--light-blue), var(--light-yellow));
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark-blue);
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+        }
+
+        .btn {
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            background: var(--dark-blue);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+
+        .btn-yellow {
+            background: var(--primary-yellow);
+            color: var(--dark-blue);
+        }
+
+        .btn-yellow:hover {
+            background: var(--dark-yellow);
+            color: white;
+        }
+
+        .results-section {
+            padding: 25px;
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .results-title {
+            font-size: 1.5rem;
+            color: var(--dark-blue);
+        }
+
+        .output-container {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+            position: relative;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .copy-btn:hover {
+            background: var(--dark-blue);
+            transform: scale(1.05);
+        }
+
+        pre {
+            white-space: pre-wrap;
+            word-break: break-all;
+            font-family: 'Courier New', monospace;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            overflow-x: auto;
+            padding: 10px 0;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #64748b;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: var(--primary-blue);
+        }
+
+        .tips {
+            background: var(--light-blue);
+            border-left: 4px solid var(--primary-blue);
+            padding: 15px;
+            margin-top: 25px;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .tips h3 {
+            margin-bottom: 10px;
+            color: var(--dark-blue);
+        }
+
+        .tips ul {
+            padding-left: 20px;
+        }
+
+        .tips li {
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .subtitle {
+                font-size: 1rem;
+            }
+            
+            .form-group {
+                margin-bottom: 15px;
+            }
+            
+            input, textarea {
+                padding: 12px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .input-section, .results-section {
+                padding: 20px 15px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .results-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-tags"></i>
+                <h1>Meta Tag Generator</h1>
+            </div>
+            <p class="subtitle">Create description, keyword and other important meta tags for your website. Meta tags provide metadata about your website that search engines use to index and display relevant content in search results.</p>
+        </header>
+
+        <div class="tool-container">
+            <div class="input-section">
+                <div class="form-group">
+                    <label for="page-title">Page Title</label>
+                    <input type="text" id="page-title" placeholder="Enter your page title (50-60 characters)">
+                </div>
+                
+                <div class="form-group">
+                    <label for="meta-description">Meta Description</label>
+                    <textarea id="meta-description" placeholder="Enter your meta description (150-160 characters)"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="meta-keywords">Meta Keywords (comma separated)</label>
+                    <input type="text" id="meta-keywords" placeholder="keyword1, keyword2, keyword3">
+                </div>
+                
+                <div class="form-group">
+                    <label for="author">Author (Optional)</label>
+                    <input type="text" id="author" placeholder="Your name or company">
+                </div>
+                
+                <div class="form-group">
+                    <label for="charset">Character Set</label>
+                    <select id="charset" class="form-control">
+                        <option value="UTF-8">UTF-8 (Recommended)</option>
+                        <option value="ISO-8859-1">ISO-8859-1</option>
+                        <option value="Windows-1252">Windows-1252</option>
+                    </select>
+                </div>
+                
+                <button id="generate-btn" class="btn">
+                    <i class="fas fa-cogs"></i> Generate Meta Tags
+                </button>
+            </div>
+            
+            <div class="results-section">
+                <div class="results-header">
+                    <h2 class="results-title">Generated Meta Tags</h2>
+                </div>
+                
+                <div id="results-container">
+                    <div class="empty-state">
+                        <i class="fas fa-code"></i>
+                        <h3>No Meta Tags Generated Yet</h3>
+                        <p>Fill in the form above and click "Generate Meta Tags" to create your meta tags</p>
+                    </div>
+                </div>
+                
+                <div class="tips">
+                    <h3>Meta Tag Best Practices</h3>
+                    <ul>
+                        <li><strong>Title Tag:</strong> Keep it between 50-60 characters for optimal display in search results</li>
+                        <li><strong>Meta Description:</strong> Aim for 150-160 characters to avoid truncation</li>
+                        <li><strong>Keywords:</strong> While less important for SEO today, include relevant terms</li>
+                        <li><strong>Place meta tags</strong> in the <code><head></code> section of your HTML document</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Meta Tag Generator | Part of Multi-Tool Website Suite</p>
+        </footer>
+    </div>
+
+    <script>
+        // DOM Elements
+        const generateBtn = document.getElementById('generate-btn');
+        const resultsContainer = document.getElementById('results-container');
+        const pageTitle = document.getElementById('page-title');
+        const metaDescription = document.getElementById('meta-description');
+        const metaKeywords = document.getElementById('meta-keywords');
+        const author = document.getElementById('author');
+        const charsetSelect = document.getElementById('charset');
+
+        // Generate meta tags
+        generateBtn.addEventListener('click', () => {
+            // Get values
+            const title = pageTitle.value.trim();
+            const description = metaDescription.value.trim();
+            const keywords = metaKeywords.value.trim();
+            const authorName = author.value.trim();
+            const charset = charsetSelect.value;
+            
+            // Validate required fields
+            if (!title && !description && !keywords) {
+                alert('Please fill in at least one field (Title, Description, or Keywords)');
+                return;
+            }
+            
+            // Build meta tags
+            let metaTags = '';
+            
+            // Charset
+            metaTags += `<meta charset="${charset}">\n`;
+            
+            // Viewport (always include for responsive sites)
+            metaTags += '<meta name="viewport" content="width=device-width, initial-scale=1.0">\n';
+            
+            // Title
+            if (title) {
+                metaTags += `<title>${escapeHtml(title)}</title>\n`;
+            }
+            
+            // Description
+            if (description) {
+                metaTags += `<meta name="description" content="${escapeHtml(description)}">\n`;
+            }
+            
+            // Keywords
+            if (keywords) {
+                metaTags += `<meta name="keywords" content="${escapeHtml(keywords)}">\n`;
+            }
+            
+            // Author
+            if (authorName) {
+                metaTags += `<meta name="author" content="${escapeHtml(authorName)}">\n`;
+            }
+            
+            // Robots (default)
+            metaTags += '<meta name="robots" content="index, follow">\n';
+            
+            // Open Graph (basic)
+            if (title) {
+                metaTags += `<meta property="og:title" content="${escapeHtml(title)}">\n`;
+            }
+            if (description) {
+                metaTags += `<meta property="og:description" content="${escapeHtml(description)}">\n`;
+            }
+            
+            // Twitter Card
+            metaTags += '<meta name="twitter:card" content="summary">\n';
+            if (title) {
+                metaTags += `<meta name="twitter:title" content="${escapeHtml(title)}">\n`;
+            }
+            if (description) {
+                metaTags += `<meta name="twitter:description" content="${escapeHtml(description)}">\n`;
+            }
+            
+            // Display results
+            resultsContainer.innerHTML = `
+                <div class="output-container">
+                    <button class="copy-btn" id="copy-btn" title="Copy to clipboard">
+                        <i class="fas fa-copy"></i>
+                    </button>
+                    <pre id="meta-output">${metaTags}</pre>
+                </div>
+            `;
+            
+            // Add copy functionality
+            document.getElementById('copy-btn').addEventListener('click', () => {
+                const output = document.getElementById('meta-output');
+                const textArea = document.createElement('textarea');
+                textArea.value = output.textContent;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                
+                // Show feedback
+                const originalIcon = document.querySelector('.copy-btn i');
+                originalIcon.className = 'fas fa-check';
+                setTimeout(() => {
+                    originalIcon.className = 'fas fa-copy';
+                }, 2000);
+            });
+        });
+        
+        // Helper function to escape HTML characters
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        // Initialize with sample data for demo
+        window.addEventListener('load', () => {
+            pageTitle.value = "Best SEO Practices for 2023";
+            metaDescription.value = "Learn the most effective SEO strategies to improve your website ranking in 2023. Expert tips for on-page and off-page optimization.";
+            metaKeywords.value = "SEO, search engine optimization, website ranking, digital marketing";
+            author.value = "Multi-Tool Website Team";
+        });
+    </script>
+</body>
+</html>
