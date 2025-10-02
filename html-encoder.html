@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML Encoder/Decoder - Free Online Tool</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary-blue: #2563eb;
+            --primary-yellow: #fbbf24;
+            --light-blue: #dbeafe;
+            --dark-blue: #1d4ed8;
+            --light-yellow: #fef3c7;
+            --dark-yellow: #d97706;
+            --success: #10b981;
+            --error: #ef4444;
+            --gray: #6b7280;
+            --light-gray: #f3f4f6;
+            --dark-gray: #374151;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f0f9ff 0%, #fffbeb 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: var(--dark-gray);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .logo-icon {
+            background: var(--primary-blue);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: var(--dark-blue);
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: var(--gray);
+            font-size: 1.1rem;
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .converter-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+
+        @media (min-width: 992px) {
+            .converter-container {
+                flex-direction: row;
+            }
+        }
+
+        .panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 500px;
+        }
+
+        .panel-header {
+            padding: 16px 20px;
+            background: var(--light-blue);
+            color: var(--dark-blue);
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .panel-header.yellow {
+            background: var(--light-yellow);
+            color: var(--dark-yellow);
+        }
+
+        .panel-content {
+            flex: 1;
+            padding: 0;
+            position: relative;
+        }
+
+        textarea {
+            width: 100%;
+            height: 100%;
+            border: none;
+            padding: 20px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 15px;
+            line-height: 1.5;
+            resize: none;
+            outline: none;
+            background: transparent;
+        }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            padding: 20px;
+            background: white;
+            border-top: 1px solid #e5e7eb;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.2s ease;
+            font-size: 16px;
+        }
+
+        .btn-primary {
+            background: var(--primary-blue);
+            color: white;
+            box-shadow: 0 4px 6px rgba(37, 99, 235, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: var(--dark-blue);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(37, 99, 235, 0.4);
+        }
+
+        .btn-yellow {
+            background: var(--primary-yellow);
+            color: var(--dark-yellow);
+            box-shadow: 0 4px 6px rgba(251, 191, 36, 0.3);
+        }
+
+        .btn-yellow:hover {
+            background: var(--dark-yellow);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(217, 119, 6, 0.4);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary-blue);
+            color: var(--primary-blue);
+        }
+
+        .btn-outline:hover {
+            background: var(--light-blue);
+        }
+
+        .status-bar {
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            background: var(--light-gray);
+            font-size: 14px;
+            color: var(--gray);
+        }
+
+        .status-valid {
+            color: var(--success);
+        }
+
+        .status-invalid {
+            color: var(--error);
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transform: translateX(200%);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.success {
+            background: var(--success);
+        }
+
+        .notification.error {
+            background: var(--error);
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            text-align: center;
+        }
+
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--light-blue);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            color: var(--primary-blue);
+            font-size: 24px;
+        }
+
+        .feature-card.yellow .feature-icon {
+            background: var(--light-yellow);
+            color: var(--dark-yellow);
+        }
+
+        .feature-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--dark-blue);
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .panel {
+                min-height: 400px;
+            }
+            
+            .controls {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .features {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .example-btn {
+            background: var(--light-gray);
+            color: var(--gray);
+            border: 1px solid #d1d5db;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        
+        .example-btn:hover {
+            background: var(--light-blue);
+            color: var(--dark-blue);
+        }
+        
+        .options {
+            display: flex;
+            gap: 15px;
+            padding: 0 20px 15px;
+            background: white;
+            flex-wrap: wrap;
+        }
+        
+        .option-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        .option-label {
+            font-size: 14px;
+            color: var(--gray);
+        }
+        
+        select, input {
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .checkbox-group input {
+            width: auto;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-code"></i>
+                </div>
+                <h1>HTML Encoder/Decoder</h1>
+            </div>
+            <p class="subtitle">Encode special characters into HTML entities for compatibility and security, or decode HTML entities back to their original characters. A versatile utility for handling HTML content.</p>
+        </header>
+
+        <div class="features">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-lock"></i>
+                </div>
+                <h3 class="feature-title">Security</h3>
+                <p>Encode HTML to prevent XSS attacks and ensure safe rendering</p>
+            </div>
+            <div class="feature-card yellow">
+                <div class="feature-icon">
+                    <i class="fas fa-sync-alt"></i>
+                </div>
+                <h3 class="feature-title">Bidirectional</h3>
+                <p>Encode to HTML entities or decode back to original text</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-file-code"></i>
+                </div>
+                <h3 class="feature-title">Developer Friendly</h3>
+                <p>Handle special characters with ease in your web projects</p>
+            </div>
+        </div>
+
+        <div class="options">
+            <div class="option-group">
+                <label class="option-label">Encoding Options</label>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="encode-quotes" checked>
+                    <label for="encode-quotes">Encode quotes (&quot; &apos;)</label>
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="encode-non-ascii">
+                    <label for="encode-non-ascii">Encode non-ASCII characters</label>
+                </div>
+            </div>
+            <div class="option-group">
+                <label class="option-label">Decoding Options</label>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="decode-named" checked>
+                    <label for="decode-named">Decode named entities (e.g., &amp;)</label>
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="decode-numeric" checked>
+                    <label for="decode-numeric">Decode numeric entities (e.g., &#38;)</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="converter-container">
+            <div class="panel">
+                <div class="panel-header">
+                    <span>Input Text</span>
+                </div>
+                <div class="panel-content">
+                    <textarea id="input-text" placeholder='Enter your text here or try an example:
+<h1>Welcome to "My Site"</h1>
+<p>Special characters: & < > " '</p>
+<p>Non-ASCII: café, naïve, résumé</p>'></textarea>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-header yellow">
+                    <span>Output Text</span>
+                </div>
+                <div class="panel-content">
+                    <textarea id="output-text" placeholder="Encoded/Decoded text will appear here..." readonly></textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button id="encode-btn" class="btn btn-primary">
+                <i class="fas fa-arrow-right"></i> Encode to HTML Entities
+            </button>
+            <button id="decode-btn" class="btn btn-yellow">
+                <i class="fas fa-arrow-left"></i> Decode HTML Entities
+            </button>
+            <button id="clear-btn" class="btn btn-outline">
+                <i class="fas fa-trash"></i> Clear All
+            </button>
+            <button id="copy-btn" class="btn btn-outline">
+                <i class="fas fa-copy"></i> Copy Output
+            </button>
+            <button id="example-btn" class="example-btn">
+                <i class="fas fa-lightbulb"></i> Load Example
+            </button>
+        </div>
+
+        <div class="status-bar">
+            <div id="status">Ready to encode/decode HTML</div>
+            <div id="char-count">0 characters</div>
+        </div>
+
+        <div id="notification" class="notification"></div>
+    </div>
+
+    <footer>
+        <p>Free Online HTML Encoder/Decoder | Secure and Versatile HTML Content Handling</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM Elements
+            const inputText = document.getElementById('input-text');
+            const outputText = document.getElementById('output-text');
+            const encodeBtn = document.getElementById('encode-btn');
+            const decodeBtn = document.getElementById('decode-btn');
+            const clearBtn = document.getElementById('clear-btn');
+            const copyBtn = document.getElementById('copy-btn');
+            const exampleBtn = document.getElementById('example-btn');
+            const statusEl = document.getElementById('status');
+            const charCountEl = document.getElementById('char-count');
+            const notification = document.getElementById('notification');
+            const encodeQuotesCheckbox = document.getElementById('encode-quotes');
+            const encodeNonAsciiCheckbox = document.getElementById('encode-non-ascii');
+            const decodeNamedCheckbox = document.getElementById('decode-named');
+            const decodeNumericCheckbox = document.getElementById('decode-numeric');
+            
+            // Example text
+            const exampleText = `<h1>Welcome to "My Site"</h1>
+<p>Special characters: & < > " '</p>
+<p>Non-ASCII: café, naïve, résumé</p>`;
+            
+            // Initialize with empty state
+            updateCharCount();
+            
+            // Event Listeners
+            inputText.addEventListener('input', updateCharCount);
+            
+            encodeBtn.addEventListener('click', encodeHTML);
+            decodeBtn.addEventListener('click', decodeHTML);
+            clearBtn.addEventListener('click', clearAll);
+            copyBtn.addEventListener('click', copyOutput);
+            exampleBtn.addEventListener('click', loadExample);
+            
+            // Functions
+            function updateCharCount() {
+                const count = inputText.value.length;
+                charCountEl.textContent = `${count} character${count !== 1 ? 's' : ''}`;
+            }
+            
+            function encodeHTML() {
+                const input = inputText.value;
+                
+                if (input === '') {
+                    showNotification('Please enter text to encode', 'error');
+                    statusEl.textContent = 'Empty input';
+                    statusEl.className = 'status-invalid';
+                    outputText.value = '';
+                    return;
+                }
+                
+                try {
+                    let encoded = input;
+                    
+                    // Basic HTML entity encoding
+                    const replacements = {
+                        '&': '&amp;',
+                        '<': '<',
+                        '>': '>'
+                    };
+                    
+                    // Encode basic entities
+                    encoded = encoded.replace(/[&<>]/g, char => replacements[char]);
+                    
+                    // Encode quotes if selected
+                    if (encodeQuotesCheckbox.checked) {
+                        encoded = encoded.replace(/"/g, '&quot;')
+                                         .replace(/'/g, '&#39;');
+                    }
+                    
+                    // Encode non-ASCII characters if selected
+                    if (encodeNonAsciiCheckbox.checked) {
+                        encoded = encoded.replace(/[^\x00-\x7F]/g, char => {
+                            return '&#' + char.charCodeAt(0) + ';';
+                        });
+                    }
+                    
+                    outputText.value = encoded;
+                    statusEl.textContent = 'Encoding successful!';
+                    statusEl.className = 'status-valid';
+                    showNotification('Text encoded to HTML entities!', 'success');
+                } catch (error) {
+                    statusEl.textContent = 'Encoding failed: ' + error.message;
+                    statusEl.className = 'status-invalid';
+                    outputText.value = `Error: ${error.message}`;
+                    showNotification('Failed to encode: ' + error.message, 'error');
+                }
+            }
+            
+            function decodeHTML() {
+                const input = inputText.value;
+                
+                if (input === '') {
+                    showNotification('Please enter text to decode', 'error');
+                    statusEl.textContent = 'Empty input';
+                    statusEl.className = 'status-invalid';
+                    outputText.value = '';
+                    return;
+                }
+                
+                try {
+                    let decoded = input;
+                    
+                    // Create a temporary element to decode HTML entities
+                    const textarea = document.createElement('textarea');
+                    
+                    // Decode named entities if selected
+                    if (decodeNamedCheckbox.checked) {
+                        // First handle common named entities
+                        const namedEntities = {
+                            '&amp;': '&',
+                            '<': '<',
+                            '>': '>',
+                            '&quot;': '"',
+                            '&#39;': "'",
+                            '&apos;': "'",
+                            '&nbsp;': '\u00A0'
+                        };
+                        
+                        Object.keys(namedEntities).forEach(entity => {
+                            const regex = new RegExp(entity, 'g');
+                            decoded = decoded.replace(regex, namedEntities[entity]);
+                        });
+                    }
+                    
+                    // Decode numeric entities if selected
+                    if (decodeNumericCheckbox.checked) {
+                        // Decode decimal numeric entities (&#123;)
+                        decoded = decoded.replace(/&#(\d+);/g, (match, dec) => {
+                            return String.fromCharCode(dec);
+                        });
+                        
+                        // Decode hexadecimal numeric entities (&#x12ab;)
+                        decoded = decoded.replace(/&#x([0-9a-fA-F]+);/g, (match, hex) => {
+                            return String.fromCharCode(parseInt(hex, 16));
+                        });
+                    }
+                    
+                    // Use browser's built-in decoding for any remaining entities
+                    textarea.innerHTML = decoded;
+                    decoded = textarea.value;
+                    
+                    outputText.value = decoded;
+                    statusEl.textContent = 'Decoding successful!';
+                    statusEl.className = 'status-valid';
+                    showNotification('HTML entities decoded successfully!', 'success');
+                } catch (error) {
+                    statusEl.textContent = 'Decoding failed: ' + error.message;
+                    statusEl.className = 'status-invalid';
+                    outputText.value = `Error: ${error.message}`;
+                    showNotification('Failed to decode: ' + error.message, 'error');
+                }
+            }
+            
+            function clearAll() {
+                inputText.value = '';
+                outputText.value = '';
+                statusEl.textContent = 'Ready to encode/decode HTML';
+                statusEl.className = '';
+                updateCharCount();
+            }
+            
+            function copyOutput() {
+                if (outputText.value.trim() === '') {
+                    showNotification('Nothing to copy', 'error');
+                    return;
+                }
+                
+                navigator.clipboard.writeText(outputText.value)
+                    .then(() => {
+                        showNotification('Output copied to clipboard!', 'success');
+                    })
+                    .catch(err => {
+                        showNotification('Failed to copy: ' + err, 'error');
+                    });
+            }
+            
+            function loadExample() {
+                inputText.value = exampleText;
+                updateCharCount();
+                showNotification('Example text loaded!', 'success');
+            }
+            
+            function showNotification(message, type) {
+                notification.textContent = message;
+                notification.className = `notification ${type}`;
+                notification.classList.add('show');
+                
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                }, 3000);
+            }
+        });
+    </script>
+</body>
+</html>
