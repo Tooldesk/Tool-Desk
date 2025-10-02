@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON Validator - Free Online Tool</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary-blue: #2563eb;
+            --primary-yellow: #fbbf24;
+            --light-blue: #dbeafe;
+            --dark-blue: #1d4ed8;
+            --light-yellow: #fef3c7;
+            --dark-yellow: #d97706;
+            --success: #10b981;
+            --error: #ef4444;
+            --gray: #6b7280;
+            --light-gray: #f3f4f6;
+            --dark-gray: #374151;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f0f9ff 0%, #fffbeb 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: var(--dark-gray);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .logo-icon {
+            background: var(--primary-blue);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: var(--dark-blue);
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: var(--gray);
+            font-size: 1.1rem;
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .converter-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+
+        @media (min-width: 992px) {
+            .converter-container {
+                flex-direction: row;
+            }
+        }
+
+        .panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 500px;
+        }
+
+        .panel-header {
+            padding: 16px 20px;
+            background: var(--light-blue);
+            color: var(--dark-blue);
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .panel-header.yellow {
+            background: var(--light-yellow);
+            color: var(--dark-yellow);
+        }
+
+        .panel-content {
+            flex: 1;
+            padding: 0;
+            position: relative;
+        }
+
+        textarea {
+            width: 100%;
+            height: 100%;
+            border: none;
+            padding: 20px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 15px;
+            line-height: 1.5;
+            resize: none;
+            outline: none;
+            background: transparent;
+        }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            padding: 20px;
+            background: white;
+            border-top: 1px solid #e5e7eb;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.2s ease;
+            font-size: 16px;
+        }
+
+        .btn-primary {
+            background: var(--primary-blue);
+            color: white;
+            box-shadow: 0 4px 6px rgba(37, 99, 235, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: var(--dark-blue);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(37, 99, 235, 0.4);
+        }
+
+        .btn-yellow {
+            background: var(--primary-yellow);
+            color: var(--dark-yellow);
+            box-shadow: 0 4px 6px rgba(251, 191, 36, 0.3);
+        }
+
+        .btn-yellow:hover {
+            background: var(--dark-yellow);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(217, 119, 6, 0.4);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary-blue);
+            color: var(--primary-blue);
+        }
+
+        .btn-outline:hover {
+            background: var(--light-blue);
+        }
+
+        .status-bar {
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            background: var(--light-gray);
+            font-size: 14px;
+            color: var(--gray);
+        }
+
+        .status-valid {
+            color: var(--success);
+        }
+
+        .status-invalid {
+            color: var(--error);
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transform: translateX(200%);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.success {
+            background: var(--success);
+        }
+
+        .notification.error {
+            background: var(--error);
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            text-align: center;
+        }
+
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--light-blue);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            color: var(--primary-blue);
+            font-size: 24px;
+        }
+
+        .feature-card.yellow .feature-icon {
+            background: var(--light-yellow);
+            color: var(--dark-yellow);
+        }
+
+        .feature-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--dark-blue);
+        }
+
+        .error-details {
+            padding: 20px;
+            background: var(--light-gray);
+            border-radius: 8px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .error-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--error);
+        }
+
+        .error-message {
+            font-family: 'Consolas', monospace;
+            background: white;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .panel {
+                min-height: 400px;
+            }
+            
+            .controls {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .features {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .example-btn {
+            background: var(--light-gray);
+            color: var(--gray);
+            border: 1px solid #d1d5db;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        
+        .example-btn:hover {
+            background: var(--light-blue);
+            color: var(--dark-blue);
+        }
+        
+        .validation-info {
+            display: flex;
+            gap: 20px;
+            padding: 15px 20px;
+            background: var(--light-gray);
+            font-size: 14px;
+            color: var(--gray);
+        }
+        
+        .info-item {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .info-value {
+            font-weight: 600;
+            color: var(--dark-blue);
+        }
+        
+        .valid-icon {
+            color: var(--success);
+        }
+        
+        .invalid-icon {
+            color: var(--error);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h1>JSON Validator</h1>
+            </div>
+            <p class="subtitle">JSON (pronounced as Jason), stands for "JavaScript Object Notation," is a human-readable and compact solution to represent a complex data structure and facilitate data interchange between systems. Validate your JSON instantly to ensure it's correctly formatted.</p>
+        </header>
+
+        <div class="features">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-bolt"></i>
+                </div>
+                <h3 class="feature-title">Instant Validation</h3>
+                <p>Validate your JSON in real-time as you type</p>
+            </div>
+            <div class="feature-card yellow">
+                <div class="feature-icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <h3 class="feature-title">Error Detection</h3>
+                <p>Get precise error messages with line numbers</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-file-code"></i>
+                </div>
+                <h3 class="feature-title">Developer Friendly</h3>
+                <p>Clear, actionable feedback for quick fixes</p>
+            </div>
+        </div>
+
+        <div class="converter-container">
+            <div class="panel">
+                <div class="panel-header">
+                    <span>JSON Input</span>
+                </div>
+                <div class="panel-content">
+                    <textarea id="json-input" placeholder='Paste your JSON here or try an example:
+{
+  "name": "John Doe",
+  "age": 30,
+  "city": "New York",
+  "skills": ["JavaScript", "Python", "HTML/CSS"],
+  "address": {
+    "street": "123 Main St",
+    "zipcode": "10001"
+  }
+}'>{
+  "name": "John Doe",
+  "age": 30,
+  "city": "New York",
+  "skills": ["JavaScript", "Python", "HTML/CSS"],
+  "address": {
+    "street": "123 Main St",
+    "zipcode": "10001"
+  }
+}</textarea>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-header yellow">
+                    <span>Validation Results</span>
+                </div>
+                <div class="panel-content">
+                    <div id="validation-output" class="validation-output">
+                        <div class="validation-info">
+                            <div class="info-item">
+                                <span>Status</span>
+                                <span id="status-icon" class="info-value valid-icon">
+                                    <i class="fas fa-check-circle"></i> Valid
+                                </span>
+                            </div>
+                            <div class="info-item">
+                                <span>Size</span>
+                                <span id="json-size" class="info-value">0 bytes</span>
+                            </div>
+                            <div class="info-item">
+                                <span>Structure</span>
+                                <span id="json-type" class="info-value">Object</span>
+                            </div>
+                        </div>
+                        
+                        <div id="error-details" class="error-details">
+                            <div class="error-title">Error Details</div>
+                            <div id="error-message" class="error-message"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button id="validate-btn" class="btn btn-primary">
+                <i class="fas fa-check"></i> Validate JSON
+            </button>
+            <button id="format-btn" class="btn btn-outline">
+                <i class="fas fa-magic"></i> Format JSON
+            </button>
+            <button id="clear-btn" class="btn btn-outline">
+                <i class="fas fa-trash"></i> Clear All
+            </button>
+            <button id="copy-btn" class="btn btn-yellow">
+                <i class="fas fa-copy"></i> Copy Valid JSON
+            </button>
+            <button id="example-btn" class="example-btn">
+                <i class="fas fa-lightbulb"></i> Load Example
+            </button>
+        </div>
+
+        <div class="status-bar">
+            <div id="status">Ready to validate JSON</div>
+            <div id="char-count">0 characters</div>
+        </div>
+
+        <div id="notification" class="notification"></div>
+    </div>
+
+    <footer>
+        <p>Free Online JSON Validator | Ensure Your JSON is Correctly Formatted</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM Elements
+            const jsonInput = document.getElementById('json-input');
+            const validateBtn = document.getElementById('validate-btn');
+            const formatBtn = document.getElementById('format-btn');
+            const clearBtn = document.getElementById('clear-btn');
+            const copyBtn = document.getElementById('copy-btn');
+            const exampleBtn = document.getElementById('example-btn');
+            const statusEl = document.getElementById('status');
+            const charCountEl = document.getElementById('char-count');
+            const notification = document.getElementById('notification');
+            const statusIcon = document.getElementById('status-icon');
+            const jsonSizeEl = document.getElementById('json-size');
+            const jsonTypeEl = document.getElementById('json-type');
+            const errorDetails = document.getElementById('error-details');
+            const errorMessageEl = document.getElementById('error-message');
+            
+            // Example JSON
+            const exampleJSON = `{
+  "name": "John Doe",
+  "age": 30,
+  "city": "New York",
+  "skills": ["JavaScript", "Python", "HTML/CSS"],
+  "address": {
+    "street": "123 Main St",
+    "zipcode": "10001"
+  }
+}`;
+            
+            // Initialize with validation
+            updateCharCount();
+            validateJSON();
+            
+            // Event Listeners
+            jsonInput.addEventListener('input', () => {
+                updateCharCount();
+                // Auto-validate after 500ms of inactivity
+                clearTimeout(jsonInput.validateTimer);
+                jsonInput.validateTimer = setTimeout(validateJSON, 500);
+            });
+            
+            validateBtn.addEventListener('click', validateJSON);
+            formatBtn.addEventListener('click', formatJSON);
+            clearBtn.addEventListener('click', clearAll);
+            copyBtn.addEventListener('click', copyValidJSON);
+            exampleBtn.addEventListener('click', loadExample);
+            
+            // Functions
+            function updateCharCount() {
+                const count = jsonInput.value.length;
+                charCountEl.textContent = `${count} character${count !== 1 ? 's' : ''}`;
+            }
+            
+            function validateJSON() {
+                const jsonString = jsonInput.value.trim();
+                
+                if (jsonString === '') {
+                    setValidationState('empty', 'Empty input', '');
+                    jsonSizeEl.textContent = '0 bytes';
+                    jsonTypeEl.textContent = '-';
+                    return;
+                }
+                
+                try {
+                    const parsed = JSON.parse(jsonString);
+                    const size = new Blob([jsonString]).size;
+                    const type = Array.isArray(parsed) ? 'Array' : typeof parsed === 'object' ? 'Object' : typeof parsed;
+                    
+                    setValidationState('valid', 'Valid JSON', '');
+                    jsonSizeEl.textContent = `${size} bytes`;
+                    jsonTypeEl.textContent = type.charAt(0).toUpperCase() + type.slice(1);
+                    showNotification('JSON is valid!', 'success');
+                } catch (error) {
+                    const errorDetails = getErrorDetails(error, jsonString);
+                    setValidationState('invalid', 'Invalid JSON', errorDetails.message);
+                    jsonSizeEl.textContent = '0 bytes';
+                    jsonTypeEl.textContent = '-';
+                    showNotification('Invalid JSON: ' + error.message, 'error');
+                }
+            }
+            
+            function getErrorDetails(error, jsonString) {
+                // Extract line and column from error message
+                const match = error.message.match(/in JSON at position (\d+)/);
+                if (match) {
+                    const position = parseInt(match[1]);
+                    const lines = jsonString.substring(0, position).split('\n');
+                    const line = lines.length;
+                    const column = lines[lines.length - 1].length + 1;
+                    return {
+                        message: `${error.message} (Line ${line}, Column ${column})`,
+                        line: line,
+                        column: column
+                    };
+                }
+                return { message: error.message };
+            }
+            
+            function setValidationState(state, statusText, errorDetails) {
+                statusEl.textContent = statusText;
+                
+                if (state === 'valid') {
+                    statusEl.className = 'status-valid';
+                    statusIcon.innerHTML = '<i class="fas fa-check-circle"></i> Valid';
+                    statusIcon.className = 'info-value valid-icon';
+                    errorDetailsEl.style.display = 'none';
+                } else if (state === 'invalid') {
+                    statusEl.className = 'status-invalid';
+                    statusIcon.innerHTML = '<i class="fas fa-exclamation-circle"></i> Invalid';
+                    statusIcon.className = 'info-value invalid-icon';
+                    errorMessageEl.textContent = errorDetails;
+                    errorDetailsEl.style.display = 'block';
+                } else { // empty
+                    statusEl.className = '';
+                    statusIcon.innerHTML = '<i class="fas fa-minus-circle"></i> Empty';
+                    statusIcon.className = 'info-value';
+                    errorDetailsEl.style.display = 'none';
+                }
+            }
+            
+            function formatJSON() {
+                if (jsonInput.value.trim() === '') {
+                    showNotification('Nothing to format', 'error');
+                    return;
+                }
+                
+                try {
+                    const parsed = JSON.parse(jsonInput.value);
+                    jsonInput.value = JSON.stringify(parsed, null, 2);
+                    updateCharCount();
+                    validateJSON();
+                    showNotification('JSON formatted successfully!', 'success');
+                } catch (error) {
+                    showNotification('Cannot format invalid JSON: ' + error.message, 'error');
+                }
+            }
+            
+            function clearAll() {
+                jsonInput.value = '';
+                setValidationState('empty', 'Ready to validate JSON', '');
+                jsonSizeEl.textContent = '0 bytes';
+                jsonTypeEl.textContent = '-';
+                updateCharCount();
+            }
+            
+            function copyValidJSON() {
+                if (jsonInput.value.trim() === '') {
+                    showNotification('Nothing to copy', 'error');
+                    return;
+                }
+                
+                try {
+                    JSON.parse(jsonInput.value);
+                    navigator.clipboard.writeText(jsonInput.value)
+                        .then(() => {
+                            showNotification('Valid JSON copied to clipboard!', 'success');
+                        })
+                        .catch(err => {
+                            showNotification('Failed to copy: ' + err, 'error');
+                        });
+                } catch (error) {
+                    showNotification('Cannot copy invalid JSON', 'error');
+                }
+            }
+            
+            function loadExample() {
+                jsonInput.value = exampleJSON;
+                updateCharCount();
+                validateJSON();
+                showNotification('Example JSON loaded!', 'success');
+            }
+            
+            function showNotification(message, type) {
+                notification.textContent = message;
+                notification.className = `notification ${type}`;
+                notification.classList.add('show');
+                
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                }, 3000);
+            }
+        });
+    </script>
+</body>
+</html>
