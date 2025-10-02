@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSV to JSON Converter - Free Online Tool</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary-blue: #2563eb;
+            --primary-yellow: #fde047;
+            --dark-blue: #1d4ed8;
+            --light-yellow: #fef9c3;
+            --dark-yellow: #eab308;
+            --light-gray: #f8fafc;
+            --dark-gray: #1e293b;
+            --medium-gray: #94a3b8;
+            --success: #10b981;
+            --error: #ef4444;
+            --warning: #f59e0b;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+            min-height: 100vh;
+            padding: 20px;
+            color: var(--dark-gray);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            padding: 30px 0;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .logo-icon {
+            background: var(--primary-blue);
+            color: white;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            color: var(--dark-blue);
+            margin-bottom: 15px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .subtitle {
+            color: var(--medium-gray);
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto 25px;
+            padding: 0 15px;
+        }
+
+        .description {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            margin: 25px auto 35px;
+            max-width: 800px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            border-left: 4px solid var(--primary-blue);
+        }
+
+        .description p {
+            margin-bottom: 12px;
+            font-size: 1.05rem;
+        }
+
+        .features {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 20px;
+            padding: 0 10px;
+        }
+
+        .feature-tag {
+            background: var(--light-yellow);
+            color: var(--dark-blue);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+        }
+
+        .tool-container {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        @media (min-width: 992px) {
+            .tool-container {
+                flex-direction: row;
+            }
+        }
+
+        .input-section, .output-section {
+            flex: 1;
+            background: white;
+            border-radius: 18px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .section-header {
+            background: var(--primary-blue);
+            color: white;
+            padding: 18px 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-weight: 700;
+            font-size: 1.3rem;
+        }
+
+        .section-header.yellow {
+            background: var(--primary-yellow);
+            color: var(--dark-blue);
+        }
+
+        .editor-container {
+            padding: 20px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        textarea {
+            width: 100%;
+            flex: 1;
+            border: 2px solid #e2e8f0;
+            border-radius: 14px;
+            padding: 18px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 15px;
+            resize: none;
+            outline: none;
+            transition: all 0.3s ease;
+            background: #fafbff;
+            line-height: 1.5;
+        }
+
+        textarea:focus {
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25);
+        }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+            padding: 25px;
+            background: var(--light-gray);
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .btn {
+            padding: 14px 22px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.25s ease;
+            font-size: 16px;
+            min-width: 140px;
+            justify-content: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.08);
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.12);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-primary {
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--dark-blue);
+        }
+
+        .btn-secondary {
+            background: var(--primary-yellow);
+            color: var(--dark-blue);
+        }
+
+        .btn-secondary:hover {
+            background: var(--dark-yellow);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #0da271;
+        }
+
+        .btn-danger {
+            background: var(--error);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        .status-bar {
+            padding: 18px 25px;
+            background: var(--light-gray);
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            font-size: 15px;
+            color: var(--medium-gray);
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .status-valid {
+            background: var(--success);
+        }
+
+        .status-invalid {
+            background: var(--error);
+        }
+
+        .status-warning {
+            background: var(--warning);
+        }
+
+        .notification {
+            position: fixed;
+            top: 25px;
+            right: 25px;
+            padding: 18px 28px;
+            border-radius: 14px;
+            color: white;
+            font-weight: 700;
+            font-size: 16px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+            transform: translateX(120%);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 1000;
+            max-width: 350px;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.success {
+            background: var(--success);
+        }
+
+        .notification.error {
+            background: var(--error);
+        }
+
+        .notification.warning {
+            background: var(--warning);
+        }
+
+        footer {
+            text-align: center;
+            padding: 35px 0 25px;
+            color: var(--medium-gray);
+            font-size: 15px;
+            margin-top: 30px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .footer-content {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        @media (max-width: 768px) {
+            .controls {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                min-width: auto;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .logo-icon {
+                width: 60px;
+                height: 60px;
+                font-size: 26px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .subtitle {
+                font-size: 1rem;
+            }
+            
+            .logo-container {
+                gap: 12px;
+            }
+            
+            .logo-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 22px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo-container">
+                <div class="logo-icon">
+                    <i class="fas fa-file-csv"></i>
+                </div>
+                <h1>CSV to JSON Converter</h1>
+            </div>
+            <p class="subtitle">Welcome to our free online CSV to JSON converter!</p>
+            
+            <div class="description">
+                <p>This tool allows you to effortlessly convert your CSV files into JSON format, which is widely used in web applications, APIs, and modern data storage solutions.</p>
+                <p>Whether you are a developer, data analyst, or just need to work with JSON, our converter makes it simple and efficient.</p>
+                <p><strong>Copy, Paste, and Convert</strong> - It's that simple!</p>
+            </div>
+            
+            <div class="features">
+                <div class="feature-tag"><i class="fas fa-exchange-alt"></i> CSV to JSON</div>
+                <div class="feature-tag"><i class="fas fa-file-code"></i> Valid JSON Output</div>
+                <div class="feature-tag"><i class="fas fa-copy"></i> Copy to Clipboard</div>
+                <div class="feature-tag"><i class="fas fa-mobile-alt"></i> Mobile Responsive</div>
+            </div>
+        </header>
+
+        <div class="tool-container">
+            <div class="input-section">
+                <div class="section-header">
+                    <i class="fas fa-file-csv"></i>
+                    <span>Your CSV Data</span>
+                </div>
+                <div class="editor-container">
+                    <textarea id="inputCsv" placeholder='// Paste your CSV data here...&#10;// Example:&#10;name,age,city&#10;John,30,New York&#10;Jane,25,Los Angeles'>name,age,city
+John,30,New York
+Jane,25,Los Angeles
+Bob,35,Chicago
+Alice,28,Houston</textarea>
+                </div>
+                <div class="status-bar">
+                    <div class="status-indicator">
+                        <div class="status-dot status-valid"></div>
+                        <span>Valid CSV</span>
+                    </div>
+                    <div id="charCount">Characters: 85</div>
+                </div>
+            </div>
+
+            <div class="output-section">
+                <div class="section-header yellow">
+                    <i class="fas fa-file-code"></i>
+                    <span>JSON Output</span>
+                </div>
+                <div class="editor-container">
+                    <textarea id="outputJson" placeholder="// Converted JSON will appear here..." readonly></textarea>
+                </div>
+                <div class="controls">
+                    <button class="btn btn-primary" id="convertBtn">
+                        <i class="fas fa-exchange-alt"></i> Convert to JSON
+                    </button>
+                    <button class="btn btn-success" id="validateBtn">
+                        <i class="fas fa-check-circle"></i> Validate CSV
+                    </button>
+                    <button class="btn btn-secondary" id="copyBtn">
+                        <i class="fas fa-copy"></i> Copy JSON
+                    </button>
+                    <button class="btn btn-secondary" id="clearBtn">
+                        <i class="fas fa-trash"></i> Clear All
+                    </button>
+                    <button class="btn btn-warning" id="beautifyBtn">
+                        <i class="fas fa-expand"></i> Beautify JSON
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="notification" id="notification">
+            CSV converted to JSON successfully!
+        </div>
+
+        <footer>
+            <div class="footer-content">
+                <p>CSV to JSON Converter &copy; 2023 | Free Online Tool for Developers and Data Analysts</p>
+                <p style="margin-top: 8px; font-size: 0.9rem; color: var(--medium-gray);">Convert your CSV files to JSON format in seconds</p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM Elements
+            const inputCsv = document.getElementById('inputCsv');
+            const outputJson = document.getElementById('outputJson');
+            const charCount = document.getElementById('charCount');
+            const notification = document.getElementById('notification');
+            
+            // Buttons
+            const convertBtn = document.getElementById('convertBtn');
+            const validateBtn = document.getElementById('validateBtn');
+            const copyBtn = document.getElementById('copyBtn');
+            const clearBtn = document.getElementById('clearBtn');
+            const beautifyBtn = document.getElementById('beautifyBtn');
+            
+            // Initialize character count
+            updateCharCount();
+            
+            // Event Listeners
+            inputCsv.addEventListener('input', updateCharCount);
+            
+            convertBtn.addEventListener('click', convertCsvToJson);
+            validateBtn.addEventListener('click', validateCsv);
+            copyBtn.addEventListener('click', copyOutput);
+            clearBtn.addEventListener('click', clearAll);
+            beautifyBtn.addEventListener('click', beautifyJson);
+            
+            // Functions
+            function updateCharCount() {
+                const count = inputCsv.value.length;
+                charCount.textContent = `Characters: ${count}`;
+            }
+            
+            function showNotification(message, type = 'success') {
+                notification.textContent = message;
+                notification.className = `notification ${type} show`;
+                
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                }, 3500);
+            }
+            
+            function csvToArray(str, delimiter = ',') {
+                const headers = str.slice(0, str.indexOf('\n')).split(delimiter);
+                const rows = str.slice(str.indexOf('\n') + 1).split('\n');
+                
+                const arr = rows.map(row => {
+                    const values = row.split(delimiter);
+                    const el = headers.reduce((object, header, index) => {
+                        object[header] = values[index];
+                        return object;
+                    }, {});
+                    return el;
+                });
+                
+                return arr;
+            }
+            
+            function convertCsvToJson() {
+                try {
+                    const csvStr = inputCsv.value.trim();
+                    if (!csvStr) {
+                        showNotification('Please enter some CSV data first!', 'warning');
+                        return;
+                    }
+                    
+                    // Basic CSV validation
+                    if (!csvStr.includes(',')) {
+                        showNotification('CSV data must contain commas to separate values!', 'error');
+                        return;
+                    }
+                    
+                    const jsonArray = csvToArray(csvStr);
+                    const jsonString = JSON.stringify(jsonArray);
+                    outputJson.value = jsonString;
+                    showNotification('CSV converted to JSON successfully!');
+                } catch (error) {
+                    showNotification('Error converting CSV: ' + error.message, 'error');
+                    outputJson.value = '';
+                }
+            }
+            
+            function validateCsv() {
+                try {
+                    const csvStr = inputCsv.value.trim();
+                    if (!csvStr) {
+                        showNotification('Please enter some CSV data first!', 'warning');
+                        return;
+                    }
+                    
+                    // Check for basic CSV structure
+                    if (!csvStr.includes(',')) {
+                        outputJson.value = "❌ Invalid CSV:\n\nCSV data must contain commas to separate values.";
+                        showNotification('Invalid CSV format!', 'error');
+                        return;
+                    }
+                    
+                    // Check if all rows have the same number of columns
+                    const lines = csvStr.split('\n');
+                    const headerColumns = lines[0].split(',').length;
+                    let valid = true;
+                    
+                    for (let i = 1; i < lines.length; i++) {
+                        if (lines[i].trim() === '') continue;
+                        if (lines[i].split(',').length !== headerColumns) {
+                            valid = false;
+                            break;
+                        }
+                    }
+                    
+                    if (valid) {
+                        outputJson.value = "✅ Valid CSV!\n\nYour CSV data is properly formatted.";
+                        showNotification('CSV is valid!');
+                    } else {
+                        outputJson.value = "❌ Invalid CSV:\n\nRow lengths do not match the header.";
+                        showNotification('Invalid CSV format!', 'error');
+                    }
+                } catch (error) {
+                    outputJson.value = `❌ Error validating CSV:\n\n${error.message}`;
+                    showNotification('Error validating CSV!', 'error');
+                }
+            }
+            
+            function beautifyJson() {
+                try {
+                    if (!outputJson.value.trim()) {
+                        showNotification('Nothing to beautify!', 'warning');
+                        return;
+                    }
+                    
+                    const parsed = JSON.parse(outputJson.value);
+                    const beautified = JSON.stringify(parsed, null, 2);
+                    outputJson.value = beautified;
+                    showNotification('JSON beautified successfully!');
+                } catch (error) {
+                    showNotification('Invalid JSON: ' + error.message, 'error');
+                }
+            }
+            
+            function copyOutput() {
+                if (!outputJson.value.trim()) {
+                    showNotification('Nothing to copy!', 'warning');
+                    return;
+                }
+                
+                outputJson.select();
+                document.execCommand('copy');
+                showNotification('JSON copied to clipboard!');
+            }
+            
+            function clearAll() {
+                inputCsv.value = '';
+                outputJson.value = '';
+                updateCharCount();
+                showNotification('All fields cleared!');
+            }
+        });
+    </script>
+</body>
+</html>
