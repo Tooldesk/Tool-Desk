@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Index Checker | Multi-Tool Website</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary-blue: #2563eb;
+            --primary-yellow: #fbbf24;
+            --light-blue: #dbeafe;
+            --dark-blue: #1d4ed8;
+            --light-yellow: #fef3c7;
+            --dark-yellow: #d97706;
+            --text-dark: #1e293b;
+            --text-light: #f8fafc;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --radius: 12px;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f0f9ff, #fffbeb);
+            color: var(--text-dark);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .logo i {
+            font-size: 2.5rem;
+            color: var(--primary-blue);
+            background: var(--primary-yellow);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: var(--dark-blue);
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #4b5563;
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .tool-container {
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        .input-section {
+            padding: 25px;
+            background: linear-gradient(to right, var(--light-blue), var(--light-yellow));
+        }
+
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .tab {
+            flex: 1;
+            padding: 14px;
+            text-align: center;
+            font-weight: 600;
+            cursor: pointer;
+            background: white;
+            transition: all 0.3s ease;
+            color: var(--dark-blue);
+        }
+
+        .tab.active {
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark-blue);
+        }
+
+        input {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+        }
+
+        .btn {
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            background: var(--dark-blue);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+
+        .btn-yellow {
+            background: var(--primary-yellow);
+            color: var(--dark-blue);
+        }
+
+        .btn-yellow:hover {
+            background: var(--dark-yellow);
+            color: white;
+        }
+
+        .results-section {
+            padding: 25px;
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .results-title {
+            font-size: 1.5rem;
+            color: var(--dark-blue);
+        }
+
+        .index-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .summary-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            border-top: 4px solid var(--primary-blue);
+        }
+
+        .summary-card.warning {
+            border-top-color: var(--warning);
+        }
+
+        .summary-card.error {
+            border-top-color: var(--error);
+        }
+
+        .summary-card.success {
+            border-top-color: var(--success);
+        }
+
+        .card-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 10px 0;
+        }
+
+        .card-label {
+            font-size: 0.9rem;
+            color: #4b5563;
+        }
+
+        .issues-container {
+            margin-top: 25px;
+        }
+
+        .issues-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--light-blue);
+        }
+
+        .issues-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .issue-item {
+            background: #f8fafc;
+            border-left: 4px solid var(--primary-blue);
+            padding: 15px;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .issue-item.warning {
+            border-left-color: var(--warning);
+        }
+
+        .issue-item.error {
+            border-left-color: var(--error);
+        }
+
+        .issue-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .issue-description {
+            color: #4b5563;
+            line-height: 1.5;
+        }
+
+        .indexed-pages {
+            margin-top: 25px;
+        }
+
+        .pages-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--light-blue);
+        }
+
+        .page-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .page-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            background: var(--light-blue);
+            border-radius: 8px;
+        }
+
+        .page-url {
+            font-weight: 600;
+            max-width: 70%;
+            word-break: break-all;
+        }
+
+        .page-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+        }
+
+        .status-indexed {
+            color: var(--success);
+        }
+
+        .status-not-indexed {
+            color: var(--error);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #64748b;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: var(--primary-blue);
+        }
+
+        .tips {
+            background: var(--light-blue);
+            border-left: 4px solid var(--primary-blue);
+            padding: 15px;
+            margin-top: 25px;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .tips h3 {
+            margin-bottom: 10px;
+            color: var(--dark-blue);
+        }
+
+        .tips ul {
+            padding-left: 20px;
+        }
+
+        .tips li {
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .subtitle {
+                font-size: 1rem;
+            }
+            
+            .form-group {
+                margin-bottom: 15px;
+            }
+            
+            input {
+                padding: 12px;
+            }
+            
+            .index-summary {
+                grid-template-columns: 1fr;
+            }
+            
+            .page-url {
+                max-width: 60%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .input-section, .results-section {
+                padding: 20px 15px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .results-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .tabs {
+                flex-direction: column;
+            }
+            
+            .page-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .page-url {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-search"></i>
+                <h1>Google Index Checker</h1>
+            </div>
+            <p class="subtitle">The Indexing Checker by Tooldesk is an online tool that allows users to audit the index status of a website or individual pages. It provides insights into indexed pages, meta noindex tags, and crawlability issues. You can analyze all pages, or test an instant report for a single page.</p>
+        </header>
+
+        <div class="tool-container">
+            <div class="input-section">
+                <div class="tabs">
+                    <div class="tab active" data-tab="single">Check Single Page</div>
+                    <div class="tab" data-tab="site">Check Entire Site</div>
+                </div>
+                
+                <div id="single-input" class="input-content">
+                    <div class="form-group">
+                        <label for="page-url">Enter page URL</label>
+                        <input type="url" id="page-url" placeholder="https://example.com/page">
+                    </div>
+                    <button id="check-single-btn" class="btn">
+                        <i class="fas fa-search"></i> Check Index Status
+                    </button>
+                </div>
+                
+                <div id="site-input" class="input-content" style="display: none;">
+                    <div class="form-group">
+                        <label for="site-url">Enter website URL</label>
+                        <input type="url" id="site-url" placeholder="https://example.com">
+                    </div>
+                    <button id="check-site-btn" class="btn btn-yellow">
+                        <i class="fas fa-globe"></i> Analyze Entire Site
+                    </button>
+                </div>
+            </div>
+            
+            <div class="results-section">
+                <div class="results-header">
+                    <h2 class="results-title">Indexing Analysis</h2>
+                </div>
+                
+                <div id="results-container">
+                    <div class="empty-state">
+                        <i class="fas fa-file-search"></i>
+                        <h3>No Indexing Data Yet</h3>
+                        <p>Enter a URL and click "Check" to analyze Google indexing status</p>
+                    </div>
+                </div>
+                
+                <div class="tips">
+                    <h3>Indexing Best Practices</h3>
+                    <ul>
+                        <li><strong>Robots.txt:</strong> Ensure your robots.txt isn't blocking important pages</li>
+                        <li><strong>Meta Tags:</strong> Avoid noindex tags on pages you want indexed</li>
+                        <li><strong>Sitemap:</strong> Submit a sitemap to Google Search Console</li>
+                        <li><strong>Internal Links:</strong> Make sure important pages are linked from your site</li>
+                        <li><strong>Page Speed:</strong> Improve loading times for better crawlability</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Google Index Checker | Part of Multi-Tool Website Suite</p>
+        </footer>
+    </div>
+
+    <script>
+        // DOM Elements
+        const singleTab = document.querySelector('.tab[data-tab="single"]');
+        const siteTab = document.querySelector('.tab[data-tab="site"]');
+        const singleInput = document.getElementById('single-input');
+        const siteInput = document.getElementById('site-input');
+        const pageUrl = document.getElementById('page-url');
+        const siteUrl = document.getElementById('site-url');
+        const checkSingleBtn = document.getElementById('check-single-btn');
+        const checkSiteBtn = document.getElementById('check-site-btn');
+        const resultsContainer = document.getElementById('results-container');
+
+        // Tab switching
+        singleTab.addEventListener('click', () => {
+            singleTab.classList.add('active');
+            siteTab.classList.remove('active');
+            singleInput.style.display = 'block';
+            siteInput.style.display = 'none';
+        });
+
+        siteTab.addEventListener('click', () => {
+            siteTab.classList.add('active');
+            singleTab.classList.remove('active');
+            siteInput.style.display = 'block';
+            singleInput.style.display = 'none';
+        });
+
+        // Check single page
+        checkSingleBtn.addEventListener('click', () => {
+            const url = pageUrl.value.trim();
+            if (!url) {
+                alert('Please enter a valid page URL');
+                return;
+            }
+            
+            // Validate URL format
+            try {
+                new URL(url);
+            } catch (e) {
+                alert('Please enter a valid URL (e.g., https://example.com/page)');
+                return;
+            }
+            
+            // Simulate analysis
+            checkSingleBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Checking...';
+            
+            // In a real implementation, you would call an API to check indexing status
+            // For this demo, we'll use simulated data
+            setTimeout(() => {
+                generateSinglePageReport(url);
+                checkSingleBtn.innerHTML = '<i class="fas fa-search"></i> Check Index Status';
+            }, 1500);
+        });
+
+        // Check entire site
+        checkSiteBtn.addEventListener('click', () => {
+            const url = siteUrl.value.trim();
+            if (!url) {
+                alert('Please enter a valid website URL');
+                return;
+            }
+            
+            // Validate URL format
+            try {
+                new URL(url);
+            } catch (e) {
+                alert('Please enter a valid URL (e.g., https://example.com)');
+                return;
+            }
+            
+            // Simulate analysis
+            checkSiteBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Analyzing...';
+            
+            // In a real implementation, you would call an API to check site indexing
+            // For this demo, we'll use simulated data
+            setTimeout(() => {
+                generateSiteReport(url);
+                checkSiteBtn.innerHTML = '<i class="fas fa-globe"></i> Analyze Entire Site';
+            }, 2000);
+        });
+
+        // Generate single page report
+        function generateSinglePageReport(url) {
+            // Simulate random indexing status
+            const isIndexed = Math.random() > 0.3;
+            const hasNoIndex = Math.random() > 0.7;
+            const hasRobotsTxtBlock = Math.random() > 0.8;
+            const crawlErrors = Math.random() > 0.6 ? ['404 Not Found'] : [];
+            
+            // Build issues array
+            const issues = [];
+            
+            if (!isIndexed) {
+                issues.push({
+                    type: 'error',
+                    title: 'Page Not Indexed',
+                    description: 'This page is not currently indexed by Google. This means it won\'t appear in search results.'
+                });
+            }
+            
+            if (hasNoIndex) {
+                issues.push({
+                    type: 'warning',
+                    title: 'Noindex Meta Tag Found',
+                    description: 'Your page contains a meta noindex tag which prevents search engines from indexing it.'
+                });
+            }
+            
+            if (hasRobotsTxtBlock) {
+                issues.push({
+                    type: 'warning',
+                    title: 'Blocked by Robots.txt',
+                    description: 'Your robots.txt file is blocking search engines from crawling this page.'
+                });
+            }
+            
+            if (crawlErrors.length > 0) {
+                issues.push({
+                    type: 'error',
+                    title: 'Crawl Errors Detected',
+                    description: `Google encountered errors when trying to crawl this page: ${crawlErrors.join(', ')}.`
+                });
+            }
+            
+            if (issues.length === 0 && isIndexed) {
+                issues.push({
+                    type: 'success',
+                    title: 'Page Successfully Indexed',
+                    description: 'Your page is properly indexed by Google and can appear in search results.'
+                });
+            }
+            
+            // Build results HTML
+            let resultsHTML = `
+                <div class="index-summary">
+                    <div class="summary-card ${isIndexed ? 'success' : 'error'}">
+                        <div class="card-value">${isIndexed ? 'Yes' : 'No'}</div>
+                        <div class="card-label">Indexed by Google</div>
+                    </div>
+                    <div class="summary-card ${hasNoIndex ? 'warning' : 'success'}">
+                        <div class="card-value">${hasNoIndex ? 'Yes' : 'No'}</div>
+                        <div class="card-label">Has Noindex Tag</div>
+                    </div>
+                    <div class="summary-card ${hasRobotsTxtBlock ? 'warning' : 'success'}">
+                        <div class="card-value">${hasRobotsTxtBlock ? 'Yes' : 'No'}</div>
+                        <div class="card-label">Blocked by Robots.txt</div>
+                    </div>
+                    <div class="summary-card ${crawlErrors.length > 0 ? 'error' : 'success'}">
+                        <div class="card-value">${crawlErrors.length}</div>
+                        <div class="card-label">Crawl Errors</div>
+                    </div>
+                </div>
+            `;
+            
+            // Add issues
+            if (issues.length > 0) {
+                resultsHTML += '<div class="issues-container">';
+                resultsHTML += '<div class="issues-header">';
+                resultsHTML += '<h3>Indexing Issues</h3>';
+                resultsHTML += '</div>';
+                resultsHTML += '<div class="issues-list">';
+                
+                issues.forEach(issue => {
+                    resultsHTML += `
+                        <div class="issue-item ${issue.type}">
+                            <div class="issue-title">
+                                <i class="fas fa-${issue.type === 'error' ? 'exclamation-triangle' : (issue.type === 'warning' ? 'exclamation-circle' : 'check-circle')}"></i>
+                                ${issue.title}
+                            </div>
+                            <div class="issue-description">${issue.description}</div>
+                        </div>
+                    `;
+                });
+                
+                resultsHTML += '</div></div>';
+            }
+            
+            resultsContainer.innerHTML = resultsHTML;
+        }
+        
+        // Generate site report
+        function generateSiteReport(url) {
+            // Simulate site data
+            const totalPages = Math.floor(Math.random() * 500) + 100;
+            const indexedPages = Math.floor(totalPages * (0.6 + Math.random() * 0.3));
+            const noIndexPages = Math.floor(totalPages * (0.1 + Math.random() * 0.2));
+            const blockedPages = Math.floor(totalPages * (0.05 + Math.random() * 0.1));
+            const crawlErrors = Math.floor(totalPages * (0.02 + Math.random() * 0.08));
+            
+            // Sample indexed pages
+            const indexedSample = [
+                { url: `${url}/`, indexed: true },
+                { url: `${url}/about`, indexed: true },
+                { url: `${url}/services`, indexed: true },
+                { url: `${url}/blog`, indexed: true },
+                { url: `${url}/contact`, indexed: false },
+                { url: `${url}/privacy-policy`, indexed: false },
+                { url: `${url}/admin`, indexed: false }
+            ];
+            
+            // Build results HTML
+            let resultsHTML = `
+                <div class="index-summary">
+                    <div class="summary-card success">
+                        <div class="card-value">${totalPages.toLocaleString()}</div>
+                        <div class="card-label">Total Pages</div>
+                    </div>
+                    <div class="summary-card success">
+                        <div class="card-value">${indexedPages.toLocaleString()}</div>
+                        <div class="card-label">Indexed Pages</div>
+                    </div>
+                    <div class="summary-card warning">
+                        <div class="card-value">${noIndexPages.toLocaleString()}</div>
+                        <div class="card-label">Noindex Pages</div>
+                    </div>
+                    <div class="summary-card error">
+                        <div class="card-value">${crawlErrors.toLocaleString()}</div>
+                        <div class="card-label">Crawl Errors</div>
+                    </div>
+                </div>
+            `;
+            
+            // Add indexed pages list
+            resultsHTML += '<div class="indexed-pages">';
+            resultsHTML += '<div class="pages-header">';
+            resultsHTML += '<h3>Sample Pages Index Status</h3>';
+            resultsHTML += '</div>';
+            resultsHTML += '<div class="page-list">';
+            
+            indexedSample.forEach(page => {
+                resultsHTML += `
+                    <div class="page-item">
+                        <div class="page-url">${page.url}</div>
+                        <div class="page-status ${page.indexed ? 'status-indexed' : 'status-not-indexed'}">
+                            <i class="fas fa-${page.indexed ? 'check-circle' : 'times-circle'}"></i>
+                            ${page.indexed ? 'Indexed' : 'Not Indexed'}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            resultsHTML += '</div></div>';
+            
+            resultsContainer.innerHTML = resultsHTML;
+        }
+        
+        // Initialize with sample URL for demo
+        window.addEventListener('load', () => {
+            pageUrl.value = 'https://example.com/blog/seo-tips';
+            siteUrl.value = 'https://example.com';
+        });
+    </script>
+</body>
+</html>
