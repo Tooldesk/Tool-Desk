@@ -1,1 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript Viewer Tool</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
 
+        :root {
+            --primary-blue: #2563eb;
+            --primary-yellow: #fde047;
+            --dark-blue: #1d4ed8;
+            --light-yellow: #fef9c3;
+            --dark-yellow: #eab308;
+            --light-gray: #f8fafc;
+            --dark-gray: #1e293b;
+            --medium-gray: #94a3b8;
+            --success: #10b981;
+            --error: #ef4444;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+            min-height: 100vh;
+            padding: 20px;
+            color: var(--dark-gray);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            padding: 20px 0;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .logo-icon {
+            background: var(--primary-blue);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: var(--dark-blue);
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: var(--medium-gray);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .tool-container {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        @media (min-width: 992px) {
+            .tool-container {
+                flex-direction: row;
+            }
+        }
+
+        .input-section, .output-section {
+            flex: 1;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+
+        .section-header {
+            background: var(--primary-blue);
+            color: white;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+        }
+
+        .section-header.yellow {
+            background: var(--primary-yellow);
+            color: var(--dark-blue);
+        }
+
+        .editor-container {
+            padding: 20px;
+            height: 350px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 100%;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 15px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 15px;
+            resize: none;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        textarea:focus {
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+        }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            padding: 20px;
+            background: var(--light-gray);
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+            font-size: 15px;
+        }
+
+        .btn-primary {
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--dark-blue);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: var(--primary-yellow);
+            color: var(--dark-blue);
+        }
+
+        .btn-secondary:hover {
+            background: var(--dark-yellow);
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #0da271;
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: var(--error);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+            transform: translateY(-2px);
+        }
+
+        .status-bar {
+            padding: 15px 20px;
+            background: var(--light-gray);
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            color: var(--medium-gray);
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .status-valid {
+            background: var(--success);
+        }
+
+        .status-invalid {
+            background: var(--error);
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 10px;
+            color: white;
+            font-weight: 600;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transform: translateX(120%);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.success {
+            background: var(--success);
+        }
+
+        .notification.error {
+            background: var(--error);
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px 0 20px;
+            color: var(--medium-gray);
+            font-size: 14px;
+        }
+
+        @media (max-width: 768px) {
+            .controls {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-code"></i>
+                </div>
+                <h1>JavaScript Viewer</h1>
+            </div>
+            <p class="subtitle">Beautify, Format, Validate, Minify and Obfuscate your JavaScript code with this powerful online tool</p>
+        </header>
+
+        <div class="tool-container">
+            <div class="input-section">
+                <div class="section-header">
+                    <i class="fas fa-file-code"></i>
+                    <span>Your JavaScript Code</span>
+                </div>
+                <div class="editor-container">
+                    <textarea id="inputCode" placeholder="// Paste your JavaScript code here...&#10;function example() {&#10;  console.log('Hello World!');&#10;}">function example() {
+  console.log('Hello World!');
+}</textarea>
+                </div>
+                <div class="status-bar">
+                    <div class="status-indicator">
+                        <div class="status-dot status-valid"></div>
+                        <span>Valid JavaScript</span>
+                    </div>
+                    <div id="charCount">Characters: 58</div>
+                </div>
+            </div>
+
+            <div class="output-section">
+                <div class="section-header yellow">
+                    <i class="fas fa-terminal"></i>
+                    <span>Processed Output</span>
+                </div>
+                <div class="editor-container">
+                    <textarea id="outputCode" placeholder="// Processed code will appear here..." readonly></textarea>
+                </div>
+                <div class="controls">
+                    <button class="btn btn-primary" id="beautifyBtn">
+                        <i class="fas fa-magic"></i> Beautify
+                    </button>
+                    <button class="btn btn-secondary" id="minifyBtn">
+                        <i class="fas fa-compress"></i> Minify
+                    </button>
+                    <button class="btn btn-success" id="validateBtn">
+                        <i class="fas fa-check-circle"></i> Validate
+                    </button>
+                    <button class="btn btn-danger" id="obfuscateBtn">
+                        <i class="fas fa-lock"></i> Obfuscate
+                    </button>
+                    <button class="btn btn-primary" id="copyBtn">
+                        <i class="fas fa-copy"></i> Copy
+                    </button>
+                    <button class="btn btn-secondary" id="clearBtn">
+                        <i class="fas fa-trash"></i> Clear
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="notification" id="notification">
+            Operation completed successfully!
+        </div>
+
+        <footer>
+            <p>JavaScript Viewer Tool &copy; 2023 | Beautify, Format, Validate, Minify and Obfuscate JavaScript</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM Elements
+            const inputCode = document.getElementById('inputCode');
+            const outputCode = document.getElementById('outputCode');
+            const charCount = document.getElementById('charCount');
+            const notification = document.getElementById('notification');
+            
+            // Buttons
+            const beautifyBtn = document.getElementById('beautifyBtn');
+            const minifyBtn = document.getElementById('minifyBtn');
+            const validateBtn = document.getElementById('validateBtn');
+            const obfuscateBtn = document.getElementById('obfuscateBtn');
+            const copyBtn = document.getElementById('copyBtn');
+            const clearBtn = document.getElementById('clearBtn');
+            
+            // Initialize character count
+            updateCharCount();
+            
+            // Event Listeners
+            inputCode.addEventListener('input', updateCharCount);
+            
+            beautifyBtn.addEventListener('click', beautifyCode);
+            minifyBtn.addEventListener('click', minifyCode);
+            validateBtn.addEventListener('click', validateCode);
+            obfuscateBtn.addEventListener('click', obfuscateCode);
+            copyBtn.addEventListener('click', copyOutput);
+            clearBtn.addEventListener('click', clearAll);
+            
+            // Functions
+            function updateCharCount() {
+                const count = inputCode.value.length;
+                charCount.textContent = `Characters: ${count}`;
+            }
+            
+            function showNotification(message, type = 'success') {
+                notification.textContent = message;
+                notification.className = `notification ${type} show`;
+                
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                }, 3000);
+            }
+            
+            function beautifyCode() {
+                try {
+                    // Simple beautification - in a real app you'd use a proper formatter like Prettier
+                    const code = inputCode.value;
+                    if (!code.trim()) {
+                        showNotification('Please enter some code first!', 'error');
+                        return;
+                    }
+                    
+                    // Basic indentation
+                    let beautified = '';
+                    let indent = 0;
+                    const lines = code.split('\n');
+                    
+                    for (let line of lines) {
+                        line = line.trim();
+                        if (line === '') continue;
+                        
+                        // Decrease indent for closing braces
+                        if (line.startsWith('}')) {
+                            indent = Math.max(0, indent - 1);
+                        }
+                        
+                        beautified += '  '.repeat(indent) + line + '\n';
+                        
+                        // Increase indent for opening braces
+                        if (line.endsWith('{')) {
+                            indent++;
+                        }
+                    }
+                    
+                    outputCode.value = beautified.trim();
+                    showNotification('Code beautified successfully!');
+                } catch (error) {
+                    showNotification('Error beautifying code: ' + error.message, 'error');
+                }
+            }
+            
+            function minifyCode() {
+                try {
+                    const code = inputCode.value;
+                    if (!code.trim()) {
+                        showNotification('Please enter some code first!', 'error');
+                        return;
+                    }
+                    
+                    // Simple minification - remove comments and extra whitespace
+                    let minified = code
+                        .replace(/\/\*[\s\S]*?\*\//g, '') // Remove multi-line comments
+                        .replace(/\/\/.*$/gm, '') // Remove single-line comments
+                        .replace(/\s+/g, ' ') // Replace multiple spaces with single space
+                        .replace(/\s*([{}()[\]:;,.])\s*/g, '$1') // Remove spaces around special characters
+                        .trim();
+                    
+                    outputCode.value = minified;
+                    showNotification('Code minified successfully!');
+                } catch (error) {
+                    showNotification('Error minifying code: ' + error.message, 'error');
+                }
+            }
+            
+            function validateCode() {
+                try {
+                    const code = inputCode.value;
+                    if (!code.trim()) {
+                        showNotification('Please enter some code first!', 'error');
+                        return;
+                    }
+                    
+                    // Try to evaluate the code in a safe way
+                    new Function(code);
+                    outputCode.value = "✅ Valid JavaScript code!";
+                    showNotification('Code is valid!');
+                } catch (error) {
+                    outputCode.value = `❌ Invalid JavaScript code:\n${error.message}`;
+                    showNotification('Invalid JavaScript code!', 'error');
+                }
+            }
+            
+            function obfuscateCode() {
+                try {
+                    const code = inputCode.value;
+                    if (!code.trim()) {
+                        showNotification('Please enter some code first!', 'error');
+                        return;
+                    }
+                    
+                    // Simple obfuscation - variable name substitution
+                    let obfuscated = code;
+                    const variables = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'];
+                    let varIndex = 0;
+                    
+                    // This is a very basic obfuscation - in reality you'd use a proper obfuscator
+                    obfuscated = obfuscated.replace(/\b(function|var|let|const)\s+([a-zA-Z_$][a-zA-Z0-9_$]*)\b/g, (match, keyword, varName) => {
+                        if (varIndex >= variables.length) varIndex = 0;
+                        return `${keyword} ${variables[varIndex++]}`;
+                    });
+                    
+                    outputCode.value = obfuscated;
+                    showNotification('Code obfuscated successfully!');
+                } catch (error) {
+                    showNotification('Error obfuscating code: ' + error.message, 'error');
+                }
+            }
+            
+            function copyOutput() {
+                if (!outputCode.value.trim()) {
+                    showNotification('Nothing to copy!', 'error');
+                    return;
+                }
+                
+                outputCode.select();
+                document.execCommand('copy');
+                showNotification('Output copied to clipboard!');
+            }
+            
+            function clearAll() {
+                inputCode.value = '';
+                outputCode.value = '';
+                updateCharCount();
+                showNotification('All fields cleared!');
+            }
+        });
+    </script>
+</body>
+</html>
